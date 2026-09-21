@@ -179,11 +179,10 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .recall-step-head span { color: var(--orange); font-size: 12px; font-weight: 800; }
 .recall-step-head strong { font-size: 17px; }
 .recall-step-head small { grid-column: 2; color: var(--muted); font-size: 12px; }
-.recall-step input { width: 100%; min-height: 50px; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 16px; color: var(--ink); background: white; outline: none; }
-.recall-step input:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4px rgba(29,96,78,.08); }
-.recall-step input.input-error { border-color: var(--red); box-shadow: 0 0 0 4px rgba(166,66,59,.1); }
+.custom-answer { display: flex; align-items: center; width: 100%; min-height: 50px; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 18px; font-weight: 700; letter-spacing: .03em; color: var(--ink); background: white; overflow-wrap: anywhere; }
+.custom-answer.input-error { border-color: var(--red); box-shadow: 0 0 0 4px rgba(166,66,59,.1); }
 .recall-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
-.custom-answer { caret-color: transparent; cursor: default; }
+.custom-placeholder { color: #9ca6a2; font-weight: 500; letter-spacing: 0; }
 .keyboard-label { margin-top: 14px; color: var(--muted); font-size: 11px; text-align: center; }
 .inline-keyboard { display: grid; gap: 5px; margin-top: 7px; user-select: none; }
 .keyboard-row { display: flex; justify-content: center; gap: 5px; }

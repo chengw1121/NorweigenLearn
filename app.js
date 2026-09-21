@@ -144,7 +144,7 @@ function renderLearnStudy() {
     const fields = [{ key: "pres", label: "现在时", hint: "表示现在或习惯" }, { key: "past", label: "过去时", hint: "表示已经发生" }, { key: "pp", label: "完成分词", hint: "放在 har 后面" }];
     const step = Math.min(s.recallStep || 0, fields.length - 1); const field = fields[step];
     const value = s.recallValues?.[field.key] || "";
-    return `<section class="question-card vocab-card"><div class="study-topline"><div><span class="eyebrow">背词回忆</span><strong>先回忆，再看答案</strong></div><span class="study-counter">${s.index + 1}/${s.ids.length}</span></div><div class="study-progress">${fields.map((item, i) => `<span class="${i < step ? "done" : i === step ? "current" : ""}">${i + 1} ${item.label}</span>`).join("")}</div><div class="vocab-front"><span class="eyebrow">目标词 · 原形</span><h1>${esc(v.v1)}</h1><p class="vocab-meaning">${esc(v.zh)}</p><p class="muted">搭配提示：<span class="example">${esc(v.phrase)}</span></p></div><div class="recall-step"><div class="recall-step-head"><span>第 ${step + 1} / 3 项</span><strong>${field.label}</strong><small>${field.hint}</small></div><input id="vocab-current" class="custom-answer" value="${esc(value)}" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="none" readonly aria-label="${field.label}" placeholder="写出 ${field.label} …"><p class="recall-help">先凭记忆，再点击下方键盘输入；系统键盘不会弹出。</p>${renderInlineKeyboard()}</div><div class="actions vocab-actions"><button class="button primary" data-vocab-step>${step === 2 ? "检查并显示答案" : "下一项"}</button><button class="button secondary" data-vocab-reveal>直接显示答案</button></div></section>`;
+    return `<section class="question-card vocab-card"><div class="study-topline"><div><span class="eyebrow">背词回忆</span><strong>先回忆，再看答案</strong></div><span class="study-counter">${s.index + 1}/${s.ids.length}</span></div><div class="study-progress">${fields.map((item, i) => `<span class="${i < step ? "done" : i === step ? "current" : ""}">${i + 1} ${item.label}</span>`).join("")}</div><div class="vocab-front"><span class="eyebrow">目标词 · 原形</span><h1>${esc(v.v1)}</h1><p class="vocab-meaning">${esc(v.zh)}</p><p class="muted">搭配提示：<span class="example">${esc(v.phrase)}</span></p></div><div class="recall-step"><div class="recall-step-head"><span>第 ${step + 1} / 3 项</span><strong>${field.label}</strong><small>${field.hint}</small></div><div id="vocab-current" class="custom-answer" data-value="${esc(value)}" data-placeholder="写出 ${esc(field.label)} …" role="textbox" aria-readonly="true" aria-label="${field.label}" aria-live="polite">${value ? esc(value) : `<span class="custom-placeholder">写出 ${esc(field.label)} …</span>`}</div><p class="recall-help">先凭记忆，再点击下方键盘输入；系统键盘不会弹出。</p>${renderInlineKeyboard()}</div><div class="actions vocab-actions"><button class="button primary" data-vocab-step>${step === 2 ? "检查并显示答案" : "下一项"}</button><button class="button secondary" data-vocab-reveal>直接显示答案</button></div></section>`;
   }
   const result = s.lastResult; return `<section class="question-card vocab-card"><div class="question-meta"><span>背词反馈 · ${s.index + 1}/${s.ids.length}</span><span>跟读四句话</span></div><div class="vocab-front"><span class="eyebrow">${esc(v.zh)}</span><h1>${esc(v.v1)}</h1></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 三种形式都对了" : "有形式需要再记一次"}</h3><p>${result.message}</p></div>` : ""}<div class="big-forms"><span>现在时 <strong>${esc(v.pres)}</strong></span><span>过去时 <strong>${esc(v.past)}</strong></span><span>完成分词 <strong>${esc(v.pp)}</strong></span></div><div class="four-sentences"><div><span>现在</span><code>Jeg ${esc(v.pres)} ${esc(v.tail)}.</code><button class="sound-button" data-say="Jeg ${esc(v.pres)} ${esc(v.tail)}." type="button">🔊 听一遍</button></div><div><span>情态</span><code>Jeg skal ${esc(v.v1)} ${esc(v.tail)}.</code><button class="sound-button" data-say="Jeg skal ${esc(v.v1)} ${esc(v.tail)}." type="button">🔊 听一遍</button></div><div><span>过去</span><code>Jeg ${esc(v.past)} ${esc(v.tail)}.</code><button class="sound-button" data-say="Jeg ${esc(v.past)} ${esc(v.tail)}." type="button">🔊 听一遍</button></div><div><span>完成</span><code>Jeg har ${esc(v.pp)} ${esc(v.tail)}.</code><button class="sound-button" data-say="Jeg har ${esc(v.pp)} ${esc(v.tail)}." type="button">🔊 听一遍</button></div></div><div class="memory-tip"><strong>现在做一次主动回忆</strong><span>合上答案，自己说出四个形式和四句话。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再来一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
 }
@@ -185,10 +185,10 @@ function startVocabSession(total) {
   state.vocabSession = { ids: [...due, ...review].slice(0, total).map(v => v.id), index: 0, revealed: false, recallStep: 0, recallValues: {}, lastResult: null }; saveState(); location.hash = "learnstudy";
 }
 function advanceVocabStep() {
-  const s = state.vocabSession; const v = getVerb(s.ids[s.index]); const keys = ["pres", "past", "pp"]; const input = document.querySelector("#vocab-current"); const value = input?.value || "";
-  if (!value.trim()) { input?.classList.add("input-error"); input?.focus(); return; }
+  const s = state.vocabSession; const v = getVerb(s.ids[s.index]); const keys = ["pres", "past", "pp"]; const input = document.querySelector("#vocab-current"); const value = input?.dataset.value || "";
+  if (!value.trim()) { input?.classList.add("input-error"); return; }
   const recallValues = { ...(s.recallValues || {}), [keys[Math.min(s.recallStep || 0, 2)]]: value };
-  if ((s.recallStep || 0) < 2) { s.recallValues = recallValues; s.recallStep = (s.recallStep || 0) + 1; saveState(); render(); requestAnimationFrame(() => { const next = document.querySelector("#vocab-current"); next?.focus(); next?.scrollIntoView({ block: "center", behavior: "smooth" }); }); return; }
+  if ((s.recallStep || 0) < 2) { s.recallValues = recallValues; s.recallStep = (s.recallStep || 0) + 1; saveState(); render(); requestAnimationFrame(() => document.querySelector("#vocab-current")?.scrollIntoView({ block: "center", behavior: "smooth" })); return; }
   const values = keys.map(key => recallValues[key] || ""); const expected = [v.pres, v.past, v.pp]; const correct = values.map((x, i) => normalize(x) === normalize(expected[i]));
   s.recallValues = recallValues;
   s.revealed = true; s.lastResult = { ok: correct.every(Boolean), message: correct.every(Boolean) ? "现在时、过去时和完成分词都正确。现在请大声读四句话。" : `现在时${correct[0] ? "✓" : "✗"}，过去时${correct[1] ? "✓" : "✗"}，完成分词${correct[2] ? "✓" : "✗"}。先看正确形式，再遮住答案重新回忆。` }; saveState(); render();
@@ -211,11 +211,14 @@ function bindView() {
   document.querySelectorAll("[data-key]").forEach(b => b.addEventListener("click", () => {
     const input = document.querySelector("#vocab-current"); if (!input) return;
     const key = b.dataset.key;
-    if (key === "backspace") input.value = input.value.slice(0, -1);
-    else if (key === "clear") input.value = "";
-    else input.value += key;
+    let value = input.dataset.value || "";
+    if (key === "backspace") value = value.slice(0, -1);
+    else if (key === "clear") value = "";
+    else value += key;
+    input.dataset.value = value;
+    input.innerHTML = value ? esc(value) : `<span class="custom-placeholder">${esc(input.dataset.placeholder || "")}</span>`;
     input.classList.remove("input-error");
-    const s = state.vocabSession; const keys = ["pres", "past", "pp"]; if (s) s.recallValues = { ...(s.recallValues || {}), [keys[Math.min(s.recallStep || 0, 2)]]: input.value };
+    const s = state.vocabSession; const keys = ["pres", "past", "pp"]; if (s) s.recallValues = { ...(s.recallValues || {}), [keys[Math.min(s.recallStep || 0, 2)]]: value };
     saveState();
   }));
   document.querySelector("[data-vocab-reveal]")?.addEventListener("click", () => { state.vocabSession.revealed = true; state.vocabSession.recallStep = 0; state.vocabSession.recallValues = {}; state.vocabSession.lastResult = null; saveState(); render(); });
