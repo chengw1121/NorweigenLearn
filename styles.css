@@ -14,7 +14,7 @@
 }
 
 * { box-sizing: border-box; }
-html { background: var(--paper); }
+html { background: var(--paper); -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   color: var(--ink);
@@ -162,6 +162,29 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .vocab-front { text-align: center; padding: 18px 0 6px; }
 .vocab-front h1 { margin-bottom: 8px; }
 .vocab-meaning { font-size: 21px; margin: 0; color: var(--green); font-weight: 750; }
+.focus-mode .bottom-nav { display: none; }
+.focus-mode .app-shell { padding-bottom: 24px; }
+.vocab-card { overflow: visible; }
+.study-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.study-topline strong { display: block; margin-top: 3px; font-size: 14px; }
+.study-counter { color: var(--muted); font-size: 13px; font-weight: 750; }
+.study-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0 0 6px; }
+.study-progress span { padding: 7px 5px; border-radius: 9px; background: #eef1ed; color: var(--muted); text-align: center; font-size: 11px; font-weight: 750; }
+.study-progress span.current { background: var(--orange-soft); color: #914b1d; }
+.study-progress span.done { background: var(--green-soft); color: var(--green); }
+.vocab-card .vocab-front { position: sticky; top: max(8px, env(safe-area-inset-top)); z-index: 3; margin: 0 -8px; padding: 14px 8px 12px; background: rgba(255,253,248,.96); border-bottom: 1px solid rgba(216,221,216,.85); box-shadow: 0 8px 15px rgba(25,55,47,.06); backdrop-filter: blur(10px); }
+.vocab-card .vocab-front h1 { font-size: clamp(38px, 8vw, 58px); }
+.recall-step { margin-top: 18px; padding: 16px; border-radius: 16px; background: #f1f4ef; }
+.recall-step-head { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 4px 10px; margin-bottom: 10px; }
+.recall-step-head span { color: var(--orange); font-size: 12px; font-weight: 800; }
+.recall-step-head strong { font-size: 17px; }
+.recall-step-head small { grid-column: 2; color: var(--muted); font-size: 12px; }
+.recall-step input { width: 100%; min-height: 50px; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 16px; color: var(--ink); background: white; outline: none; }
+.recall-step input:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4px rgba(29,96,78,.08); }
+.recall-step input.input-error { border-color: var(--red); box-shadow: 0 0 0 4px rgba(166,66,59,.1); }
+.recall-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.vocab-actions { position: sticky; bottom: max(8px, env(safe-area-inset-bottom)); z-index: 4; padding: 10px 0 2px; background: rgba(255,253,248,.96); backdrop-filter: blur(10px); }
+.vocab-actions .button { flex: 1; min-width: 0; }
 .speak-button { width: 88px; height: 88px; border-radius: 50%; border: 0; background: var(--orange); color: white; font-size: 32px; box-shadow: 0 12px 25px rgba(216,120,54,.3); }
 .center { text-align: center; }
 
@@ -191,5 +214,15 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
   .hero-main, .hero-side, .panel { padding: 20px; }
   .hero-main::after { font-size: 110px; }
   .ghost-button { font-size: 12px; }
+  .question-card { padding: 16px; }
+  .vocab-card { padding: 14px; }
+  .vocab-card .vocab-front { margin: 0 -2px; padding: 12px 4px 10px; }
+  .vocab-card .vocab-front h1 { font-size: clamp(36px, 14vw, 52px); }
+  .vocab-meaning { font-size: 18px; }
+  .study-topline { margin-bottom: 10px; }
+  .study-progress span { font-size: 10px; padding: 7px 2px; }
+  .recall-step { margin-top: 14px; padding: 13px; }
+  .vocab-actions { gap: 7px; }
+  .vocab-actions .button { padding: 12px 8px; font-size: 13px; }
   .bottom-nav { bottom: max(8px, env(safe-area-inset-bottom)); }
 }
