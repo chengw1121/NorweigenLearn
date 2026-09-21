@@ -167,7 +167,7 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 
 .bottom-nav {
   position: fixed; z-index: 10; left: 50%; bottom: 14px; transform: translateX(-50%);
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; width: min(620px, calc(100% - 24px));
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: min(560px, calc(100% - 24px));
   padding: 7px; border: 1px solid rgba(216,221,216,.9); border-radius: 22px;
   background: rgba(255,253,248,.9); backdrop-filter: blur(16px); box-shadow: 0 16px 45px rgba(25,55,47,.18);
 }
