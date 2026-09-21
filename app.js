@@ -67,12 +67,15 @@ function getVerb(id) { return VERBS.find(v => v.id === id) || VERBS[0]; }
 function currentQuestion() { return state.session?.questions?.[state.session.index]; }
 
 function countsFor(total) {
-  const counts = DISTRIBUTION.map(([type,,ratio]) => ({ type, count: Math.floor(total * ratio) }));
-  let left = total - counts.reduce((sum, x) => sum + x.count, 0);
-  const priority = ["form","modal","past","perfect","infinitive","collocation","correction","v2","output"];
+  const required = total >= 10
+    ? ["form","modal","past","perfect","infinitive","collocation","correction","v2","output"]
+    : total >= 8
+      ? ["form","modal","past","perfect","infinitive","collocation","v2","output"]
+      : ["form","modal","past","perfect","output"];
+  const counts = DISTRIBUTION.map(([type]) => ({ type, count: required.includes(type) ? 1 : 0 }));
+  let left = total - required.length;
+  const priority = ["form","modal","past","perfect","infinitive","collocation","v2","correction","output"];
   let i = 0; while (left-- > 0) { counts.find(x => x.type === priority[i % priority.length]).count++; i++; }
-  if (total >= 8 && !counts.find(x => x.type === "output").count) { counts.find(x => x.type === "output").count = 1; counts.find(x => x.type === "form").count--; }
-  if (total >= 10 && !counts.find(x => x.type === "v2").count) { counts.find(x => x.type === "v2").count = 1; counts.find(x => x.type === "form").count--; }
   return counts;
 }
 function answerChoices(verb, correct, extra = []) {
