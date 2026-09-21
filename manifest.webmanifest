@@ -1,0 +1,10 @@
+{
+  "name": "Norsk hver dag",
+  "short_name": "Norsk",
+  "description": "为中文母语者设计的挪威语动词训练器",
+  "start_url": "./index.html#today",
+  "display": "standalone",
+  "background_color": "#f7f4ec",
+  "theme_color": "#173f35",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
