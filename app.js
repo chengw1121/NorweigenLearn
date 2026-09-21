@@ -208,5 +208,13 @@ function bindView() {
 
 document.querySelector("#reset-day").addEventListener("click", () => { if (confirm("确定清除今日进度和错题吗？")) { state = { ...DEFAULT_STATE }; saveState(); location.hash = "today"; render(); } });
 window.addEventListener("hashchange", render);
+let lastScrollY = window.scrollY;
+window.addEventListener("scroll", () => {
+  const nav = document.querySelector(".bottom-nav"); if (!nav) return;
+  const currentY = window.scrollY;
+  if (currentY > 70 && currentY > lastScrollY + 6) nav.classList.add("nav-hidden");
+  if (currentY < lastScrollY - 6 || currentY <= 30) nav.classList.remove("nav-hidden");
+  lastScrollY = currentY;
+}, { passive: true });
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 render();
