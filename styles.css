@@ -183,6 +183,13 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .recall-step input:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4px rgba(29,96,78,.08); }
 .recall-step input.input-error { border-color: var(--red); box-shadow: 0 0 0 4px rgba(166,66,59,.1); }
 .recall-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.custom-answer { caret-color: transparent; cursor: default; }
+.keyboard-label { margin-top: 14px; color: var(--muted); font-size: 11px; text-align: center; }
+.inline-keyboard { display: grid; gap: 5px; margin-top: 7px; user-select: none; }
+.keyboard-row { display: flex; justify-content: center; gap: 5px; }
+.key-button { flex: 1 1 0; min-width: 0; min-height: 38px; padding: 5px 3px; border: 1px solid #d5ddd6; border-radius: 9px; background: white; color: var(--ink); font-size: 15px; font-weight: 750; box-shadow: 0 1px 0 rgba(23,50,45,.05); touch-action: manipulation; }
+.key-button:active { transform: translateY(1px); background: var(--green-soft); border-color: #76a994; }
+.keyboard-tools .key-button { flex: 1 1 50%; color: var(--green); background: #e7f1ec; font-size: 12px; }
 .vocab-actions { position: sticky; bottom: max(8px, env(safe-area-inset-bottom)); z-index: 4; padding: 10px 0 2px; background: rgba(255,253,248,.96); backdrop-filter: blur(10px); }
 .vocab-actions .button { flex: 1; min-width: 0; }
 .speak-button { width: 88px; height: 88px; border-radius: 50%; border: 0; background: var(--orange); color: white; font-size: 32px; box-shadow: 0 12px 25px rgba(216,120,54,.3); }
@@ -222,6 +229,9 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
   .study-topline { margin-bottom: 10px; }
   .study-progress span { font-size: 10px; padding: 7px 2px; }
   .recall-step { margin-top: 14px; padding: 13px; }
+  .inline-keyboard { gap: 4px; }
+  .keyboard-row { gap: 4px; }
+  .key-button { min-height: 36px; border-radius: 8px; font-size: 14px; }
   .vocab-actions { gap: 7px; }
   .vocab-actions .button { padding: 12px 8px; font-size: 13px; }
   .bottom-nav { bottom: max(8px, env(safe-area-inset-bottom)); }
