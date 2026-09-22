@@ -35,6 +35,29 @@ const VERBS = [
   ["bestå","består","besto","bestått","通过（考试）","B1"]
 ].map(([v1,pres,past,pp,zh,tail], index) => ({ id: `${v1}-${index}`, v1, pres, past, pp, zh, tail, phrase: `${v1} ${tail}` }));
 
+const VERB_USAGE_ZH = {
+  "være":"待在家里", "ha":"有时间", "gjøre":"付出努力", "gå":"步行去上班", "komme":"很快过来", "ta":"乘坐公交车", "se":"看这部电影", "si":"说这件事", "vite":"知道这件事", "finne":"找到一个解决办法", "få":"得到帮助", "bli":"变得更好", "stå":"站在外面", "sitte":"坐在咖啡馆里", "ligge":"位于挪威", "gi":"把书给他", "drikke":"喝咖啡", "sove":"睡得好", "forstå":"懂一点挪威语", "spørre":"询问老师", "fortelle":"把这件事告诉我", "holde":"扶着门", "velge":"选择这个", "selge":"卖掉汽车", "kunne":"会说挪威语", "ville":"想学挪威语", "skulle":"打算工作", "måtte":"必须练习", "burde":"应该休息", "jobbe":"在奥斯陆工作", "lære":"学习挪威语", "øve":"每天练习", "lese":"读一本书", "skrive":"写一条消息", "søke":"申请一份工作", "bo":"住在挪威", "møte":"见老师", "hjelpe":"帮助我", "bruke":"使用手机", "trenge":"需要帮助", "prøve":"尝试说挪威语", "spise":"吃早餐", "lage":"做晚饭", "kjøpe":"购买食物", "betale":"支付账单", "kjøre":"开车去奥斯陆", "reise":"去瑞典旅行", "vaske":"洗衣服", "snakke":"和邻居交谈", "like":"喜欢学挪威语", "tenke":"思考未来", "mene":"表达这个意思", "synes":"觉得是这样", "huske":"记得这件事", "glemme":"忘记钥匙", "begynne":"开始工作", "slutte":"四点下班", "vente":"等公交车", "høre":"听见你说话", "sette":"坐下来", "legge":"躺下来", "løpe":"跑回家", "bære":"搬这个东西", "treffe":"见到她", "bestå":"通过B1考试"
+};
+
+const MODAL_EXAMPLES = {
+  "kunne":[["现在","Jeg kan snakke norsk.","我会说挪威语。"],["原形","Det er nyttig å kunne snakke norsk.","会说挪威语很有用。"],["过去","Jeg kunne snakke litt norsk.","我以前会说一点挪威语。"],["完成","Jeg har kunnet snakke norsk på jobb.","我已经能够在工作中说挪威语了。"]],
+  "ville":[["现在","Jeg vil lære norsk.","我想学挪威语。"],["原形","Det er viktig å ville lære.","有学习的意愿很重要。"],["过去","Jeg ville lære norsk.","我当时想学挪威语。"],["完成","Jeg har villet lære norsk lenge.","我想学挪威语已经很久了。"]],
+  "skulle":[["现在","Jeg skal jobbe i morgen.","我明天要工作。"],["原形","Det er vanskelig å skulle velge nå.","现在就必须作选择很难。"],["过去","Jeg skulle jobbe i går.","我昨天原本要工作。"],["完成","Jeg har skullet jobbe mye denne uka.","这周我一直得工作很多。"]],
+  "måtte":[["现在","Jeg må øve hver dag.","我必须每天练习。"],["原形","Det er vanlig å måtte vente.","不得不等待是很常见的。"],["过去","Jeg måtte øve i går.","我昨天必须练习。"],["完成","Jeg har måttet øve mye.","我一直不得不大量练习。"]],
+  "burde":[["现在","Jeg bør hvile.","我应该休息。"],["原形","Det er lett å vite hva man burde gjøre.","知道自己应该做什么很容易。"],["过去","Jeg burde hvile mer.","我当时应该多休息。"],["完成","Jeg har burdet hvile mer.","我本来一直应该多休息。"]]
+};
+
+function verbExamples(entry) {
+  if (MODAL_EXAMPLES[entry.v1]) return MODAL_EXAMPLES[entry.v1].map(([label, no, zh]) => ({ label, no, zh }));
+  const action = VERB_USAGE_ZH[entry.v1] || entry.zh;
+  return [
+    { label: "现在", no: `Jeg ${entry.pres} ${entry.tail}.`, zh: `我现在${action}。` },
+    { label: "计划", no: `Jeg skal ${entry.v1} ${entry.tail}.`, zh: `我打算${action}。` },
+    { label: "过去", no: `Jeg ${entry.past} ${entry.tail}.`, zh: `我当时${action}。` },
+    { label: "完成", no: `Jeg har ${entry.pp} ${entry.tail}.`, zh: `我已经${action}了。` }
+  ];
+}
+
 const NOUNS = [
   ["dag","en","dag","dagen","dager","dagene","天","Hver dag lærer jeg litt norsk.","每天我学一点挪威语。"],
   ["tid","ei","tid","tida","tider","tidene","时间","Jeg har tid i dag.","我今天有时间。"],
@@ -83,6 +106,57 @@ const NOUNS = [
   ["språk","et","språk","språket","språk","språkene","语言","Norsk er et fint språk.","挪威语是一门很美的语言。"],
   ["lærer","en","lærer","læreren","lærere","lærerne","老师","Læreren hjelper elevene.","老师帮助学生们。"]
 ].map(([id,gender,lemma,definite,plural,pluralDefinite,zh,sentence,sentenceZh]) => ({ id, gender, lemma, zh, sentence, sentenceZh, forms: [gender === "—" ? lemma : `${gender} ${lemma}`, definite, plural, pluralDefinite], formLabels: id === "penger" ? ["复数", "定指复数", "—", "—"] : gender === "—" ? ["无冠词形式", "定指形式", "复数", "定指复数"] : ["不定单数", "定指单数", "不定复数", "定指复数"], phrase: "", kind: "noun" }));
+
+const NOUN_GUIDES = {
+  "dag":["一天、日子；也可表示白天", "这里是时间单位 day，不是天空。天空是 himmel。"],
+  "tid":["时间；一段时间", "ha tid 表示“有时间”；问几点通常用 Hva er klokka?"],
+  "hjem":["家、归属感或居所", "gå hjem 表示“回家”，前面通常不用 til；房屋建筑本身常用 hus。"],
+  "jobb":["工作、职位；也可指工作地点", "gå på jobb 是“去上班”；更宽泛的“劳动/工作”还可用 arbeid。"],
+  "mat":["食物、饭菜的总称", "通常作为不可数概念使用；不是某一道具体菜名。"],
+  "vann":["水", "表示物质时通常不可数；一杯水可说 et glass vann。"],
+  "familie":["家庭、家人这一群体", "指整个家庭；单独一位亲属通常用 familiemedlem。"],
+  "barn":["孩子；儿童", "et barn 是一个孩子，barn 也可以是不定复数，要靠上下文判断。"],
+  "venn":["朋友", "指一个具体朋友；vennlig 是“友好的”，不要混淆。"],
+  "mor":["母亲、妈妈", "复数是不规则形式 mødre。口语中常说 mora mi。"],
+  "far":["父亲、爸爸", "复数是不规则形式 fedre。"],
+  "mann":["男人；丈夫", "具体是“男人”还是“丈夫”由语境决定；复数是不规则形式 menn。"],
+  "kvinne":["女人、女性", "指成年女性；女孩通常用 jente。"],
+  "navn":["名字、名称", "Hva heter du? 和 Hva er navnet ditt? 都可询问姓名。"],
+  "hus":["房子、建筑物", "强调建筑本身；hjem 更强调“家/归属之处”。"],
+  "leilighet":["公寓、住宅单元", "指一套公寓，不是整栋楼；公寓楼可说 boligblokk。"],
+  "rom":["房间；空间", "这里指 house 中的房间；也能表示“空间”，需看语境。"],
+  "kjøkken":["厨房", "既可指家里的厨房，也可指餐厅的后厨。"],
+  "seng":["床", "gå til sengs 是“上床睡觉”，与卧室 soverom 不同。"],
+  "bord":["桌子", "这里是家具 table；不是“黑板”，黑板是 tavle。"],
+  "stol":["椅子", "普通有靠背座椅；扶手椅通常用 lenestol。"],
+  "dør":["门", "指门本身；门口/入口根据语境可用 inngang。"],
+  "brød":["面包；一条/一个面包", "et brød 可指一个完整面包；不定复数仍是 brød。"],
+  "melk":["牛奶", "作为饮品通常不可数；一杯牛奶说 et glass melk。"],
+  "kaffe":["咖啡；一杯咖啡", "作为饮品可不带冠词；点单时 en kaffe 常指“一杯咖啡”。"],
+  "butikk":["商店、店铺", "去商店常说 gå i/på butikken，具体介词会随语境变化。"],
+  "penger":["钱、金钱", "这是复数形式，通常不说 en penger；定指形式是 pengene。"],
+  "frokost":["早餐", "spise frokost 表示“吃早餐”，通常不需要冠词。"],
+  "uke":["一周、星期这一时间段", "i uka 是“在这一周/每周”的常见表达；具体星期几用 ukedag。"],
+  "morgen":["早晨", "i morgen 是“明天”，om morgenen 是“在早晨”，意义不同。"],
+  "kveld":["晚上、傍晚", "通常指从傍晚到睡前；夜间更晚的时段是 natt。"],
+  "år":["年；年龄中的岁", "et år 是一年；不定复数仍是 år，例如 fem år。"],
+  "lege":["医生、医师", "专指医疗医生；博士学位称呼通常不是这个词。"],
+  "apotek":["药房、药店", "购买或领取药物的地方；不是普通商店 butikk。"],
+  "medisin":["药、药物；医学", "在本专题里指服用的药物；“学医/医学”也可用 medisin。"],
+  "hode":["头、头部", "ha vondt i hodet 是“头疼”的固定说法。"],
+  "buss":["公交车、大巴", "ta bussen 表示“乘公交”，不是字面上的“拿公交车”。"],
+  "bil":["汽车、轿车", "kjøre bil 是“开车”；坐车则根据语境说 sitte i bilen。"],
+  "tog":["火车", "ta toget 是“坐火车”；不定复数仍是 tog。"],
+  "billett":["票、入场券、车票", "可指交通票或活动门票，具体类型由语境决定。"],
+  "by":["城市、城镇", "大小范围由语境决定；国家 country 是 land。"],
+  "skole":["学校；上学这一活动", "gå på skolen 可指去/在学校；gå på skole 强调上学。"],
+  "bok":["书、一本书", "复数是不规则形式 bøker。"],
+  "ord":["单词；话语", "这里指一个语言单位 word；不定复数仍是 ord。"],
+  "språk":["语言", "可指数一种语言；不定复数仍是 språk。"],
+  "lærer":["老师、教师", "作为名词是“老师”；lærer 也可能是动词 lære 的现在时“学习”，要看句子位置。"]
+};
+
+function nounGuide(entry) { const [meaning, note] = NOUN_GUIDES[entry.id] || [entry.zh, "结合例句判断这个名词在当前专题中的具体意思。"]; return { meaning, note }; }
 
 const VOCAB_TOPICS = [
   { id: "basics", title: "日常基础", level: "A1 · 入门高频", icon: "☀", description: "先掌握每天都会用到的动词和生活词。", verbs: ["være","ha","gjøre","gå","komme","ta","få","bli"], nouns: ["dag","tid","hjem","jobb","mat","vann"], story: "Hver dag står jeg opp, spiser frokost og går på jobb. Om kvelden er jeg hjemme og lærer norsk.", storyZh: "每天我起床、吃早餐、去上班。晚上我在家学习挪威语。" },
@@ -223,27 +297,31 @@ function renderWordForm(label, text) { return `<span class="word-form-card"><sma
 function renderLearnStudy() {
   const s = state.vocabSession; if (!s || !s.ids.length) return renderLearn();
   const entry = getStudyEntry(s.ids[s.index]); const topic = VOCAB_TOPICS.find(item => item.id === s.topicId) || VOCAB_TOPICS[0];
-  const title = entry.kind === "noun" ? entry.lemma : entry.v1; const fields = entryFields(entry);
+  const title = entry.kind === "noun" ? entry.lemma : entry.v1; const fields = entryFields(entry); const nounInfo = entry.kind === "noun" ? nounGuide(entry) : null;
   const studyHeader = `<div class="study-topline"><div><span class="eyebrow">${topic.title} · ${entry.kind === "noun" ? "名词" : "动词"}</span><strong>先回忆，再看答案</strong></div><div class="study-right"><span class="study-counter">${s.index + 1}/${s.ids.length}</span><button class="study-exit" data-back-topics type="button" aria-label="返回专题">×</button></div></div>`;
   if (!s.revealed) {
     const step = Math.min(s.recallStep || 0, fields.length - 1); const field = fields[step];
     const value = s.recallValues?.[field.key] || "";
     const front = entry.kind === "noun"
-      ? `<span class="eyebrow">根据中文和情境回忆名词</span><h1>${esc(entry.zh)}</h1><p class="muted">情境：${esc(entry.sentenceZh)}</p>`
-      : `<span class="eyebrow">动词原形 · 回忆其他形式</span><h1>${esc(entry.v1)}</h1><p class="vocab-meaning">${esc(entry.zh)}</p><p class="muted">情境：<span class="example">${esc(entry.phrase)}</span></p>`;
-    return `<section class="question-card vocab-card">${studyHeader}<div class="study-progress" style="--steps:${fields.length}">${fields.map((item, i) => `<span class="${i < step ? "done" : i === step ? "current" : ""}">${i + 1} ${item.label}</span>`).join("")}</div><div class="vocab-front">${front}</div><div class="recall-step"><div class="recall-step-head"><span>第 ${step + 1} / ${fields.length} 项</span><strong>${field.label}</strong><small>${field.hint}</small></div><div id="vocab-current" class="custom-answer" data-value="${esc(value)}" data-placeholder="写出 ${esc(field.label)} …" aria-live="polite" aria-label="${field.label}">${value ? esc(value) : `<span class="custom-placeholder">写出 ${esc(field.label)} …</span>`}</div><p class="recall-help">凭记忆想一想，再点击下方挪威语键盘。</p>${renderInlineKeyboard()}</div><div class="actions vocab-actions"><button class="button primary" data-vocab-step>${step === fields.length - 1 ? "检查并看答案" : "下一项"}</button><button class="button secondary" data-vocab-reveal>跳过回忆</button></div></section>`;
+      ? `<span class="eyebrow">根据准确语义和情境回忆名词</span><h1>${esc(nounInfo.meaning)}</h1><div class="meaning-cue"><strong>本题语义</strong><p>${esc(nounInfo.note)}</p></div><p class="muted">例句意思：${esc(entry.sentenceZh)}</p>`
+      : `<span class="eyebrow">动词原形 · 回忆其他形式</span><h1>${esc(entry.v1)}</h1><p class="vocab-meaning">${esc(entry.zh)}</p><p class="muted">本题搭配：<span class="example">${esc(entry.phrase)}</span> · ${esc(VERB_USAGE_ZH[entry.v1] || entry.zh)}</p>`;
+    return `<section class="question-card vocab-card">${studyHeader}<div class="study-progress" style="--steps:${fields.length}">${fields.map((item, i) => `<span class="${i < step ? "done" : i === step ? "current" : ""}">${i + 1} ${item.label}</span>`).join("")}</div><div class="vocab-front">${front}</div><div class="recall-step"><div class="recall-step-head"><span>第 ${step + 1} / ${fields.length} 项</span><strong>${field.label}</strong><small>${field.hint}</small></div><div id="vocab-current" class="custom-answer" data-value="${esc(value)}" data-placeholder="写出 ${esc(field.label)} …" aria-live="polite" aria-label="${field.label}">${value ? esc(value) : `<span class="custom-placeholder">写出 ${esc(field.label)} …</span>`}</div><div class="actions vocab-actions recall-actions"><button class="button primary" data-vocab-step>${step === fields.length - 1 ? "检查并看答案" : "下一项"}</button><button class="button secondary" data-vocab-reveal>直接看答案</button></div><p class="recall-help">先想清楚并输入，再点击上面的按钮；键盘位于下方，不会挡住“下一项”。</p>${renderInlineKeyboard()}</div></section>`;
   }
   const result = s.lastResult;
   const headwordSound = entry.kind === "noun" ? fields[0].answer : entry.v1;
   const formCards = (entry.kind === "noun" ? fields.map(field => [field.label, field.answer]) : [["原形", entry.v1], ...fields.map(field => [field.label, field.answer])])
     .map(([label, answer]) => renderWordForm(label, answer)).join("");
+  const verbExampleList = entry.kind === "verb" ? verbExamples(entry) : [];
   const examples = entry.kind === "noun"
     ? `<div class="four-sentences"><div><span>专题例句 · ${topic.title}</span><code>${esc(entry.sentence)}</code><p class="muted">${esc(entry.sentenceZh)}</p><button class="sound-button" data-say="${esc(entry.sentence)}" type="button">🔊 听一遍</button></div></div>`
-    : `<div class="four-sentences"><div><span>现在</span><code>Jeg ${esc(entry.pres)} ${esc(entry.tail)}.</code><button class="sound-button" data-say="Jeg ${esc(entry.pres)} ${esc(entry.tail)}." type="button">🔊 听一遍</button></div><div><span>情态</span><code>Jeg skal ${esc(entry.v1)} ${esc(entry.tail)}.</code><button class="sound-button" data-say="Jeg skal ${esc(entry.v1)} ${esc(entry.tail)}." type="button">🔊 听一遍</button></div><div><span>过去</span><code>Jeg ${esc(entry.past)} ${esc(entry.tail)}.</code><button class="sound-button" data-say="Jeg ${esc(entry.past)} ${esc(entry.tail)}." type="button">🔊 听一遍</button></div><div><span>完成</span><code>Jeg har ${esc(entry.pp)} ${esc(entry.tail)}.</code><button class="sound-button" data-say="Jeg har ${esc(entry.pp)} ${esc(entry.tail)}." type="button">🔊 听一遍</button></div></div>`;
+    : `<div class="four-sentences">${verbExampleList.map(example => `<div><span>${example.label}</span><code>${esc(example.no)}</code><p class="example-translation">${esc(example.zh)}</p><button class="sound-button" data-say="${esc(example.no)}" type="button">🔊 听一遍</button></div>`).join("")}</div>`;
+  const meaningBlock = entry.kind === "noun"
+    ? `<div class="meaning-guide"><span>语义和易混点</span><strong>${esc(nounInfo.meaning)}</strong><p>${esc(nounInfo.note)}</p><p><b>例句：</b>${esc(entry.sentenceZh)}</p></div>`
+    : `<div class="meaning-guide"><span>这里具体怎么理解</span><strong>${esc(entry.phrase)}</strong><p>这个搭配在例句中表示“${esc(VERB_USAGE_ZH[entry.v1] || entry.zh)}”。动词本身可表示“${esc(entry.zh)}”，实际中文要结合后面的宾语或补语判断。</p></div>`;
   const progressNote = entry.kind === "noun" ? "记名词时把冠词一起背：它告诉你词的性别；再留意定指词尾和复数变化。" : "把四形按节奏读出来，再用一个句子把它和日常生活连起来。";
-  return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.zh)}</span><div class="answer-headword"><h1>${esc(title)}</h1><button class="sound-button headword-audio" data-say="${esc(headwordSound)}" type="button" aria-label="播放 ${esc(headwordSound)} 的挪威语发音">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 全部回忆正确" : "看答案，再主动回忆一次"}</h3><p>${result.message}</p></div>` : ""}<p id="pronunciation-status" class="pronunciation-note" aria-live="polite">🔊 单词和词形都可单独播放，发音使用设备提供的挪威语语音。</p><div class="big-forms">${formCards}</div>${examples}<div class="theme-sentence"><span>专题整合句 · ${topic.title}</span><p class="example">${esc(topic.story)}</p><p class="muted">${esc(topic.storyZh)}</p><button class="sound-button" data-say="${esc(topic.story)}" type="button">🔊 听整句</button></div><div class="memory-tip"><strong>记忆小方法</strong><span>${progressNote} 明天、3天后和1周后再复习。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
+  return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.kind === "noun" ? nounInfo.meaning : entry.zh)}</span><div class="answer-headword"><h1>${esc(title)}</h1><button class="sound-button headword-audio" data-say="${esc(headwordSound)}" type="button" aria-label="播放 ${esc(headwordSound)} 的挪威语发音">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 全部回忆正确" : "看答案，再主动回忆一次"}</h3><p>${result.message}</p></div>` : ""}${meaningBlock}<p id="pronunciation-status" class="pronunciation-note" aria-live="polite">🔊 单词和词形都可单独播放，发音使用设备提供的挪威语语音。</p><div class="big-forms">${formCards}</div>${examples}<div class="theme-sentence"><span>专题整合句 · ${topic.title}</span><p class="example">${esc(topic.story)}</p><p class="muted">${esc(topic.storyZh)}</p><button class="sound-button" data-say="${esc(topic.story)}" type="button">🔊 听整句</button></div><div class="memory-tip"><strong>记忆小方法</strong><span>${progressNote} 明天、3天后和1周后再复习。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
 }
-function renderLearnDetail(v) { const n = state.learned[v.id] || 0; const forms = [["现在时", v.pres], ["过去时", v.past], ["完成分词", v.pp]].map(([label, word]) => renderWordForm(label, word)).join(""); return `<section class="panel wide detail-panel"><button class="text-button" data-back-learn>← 返回背词</button><span class="eyebrow">动词卡 · ${esc(v.zh)}</span><div class="answer-headword"><h1 style="font-size:58px">${esc(v.v1)}</h1><button class="sound-button headword-audio" data-say="${esc(v.v1)}" type="button" aria-label="播放 ${esc(v.v1)} 的挪威语发音">🔊 听原形</button></div><div class="big-forms">${forms}</div><div class="rule-box"><strong>固定搭配 / 记忆锚点</strong><p class="example">${esc(v.phrase)}</p><button class="sound-button" data-say="${esc(v.phrase)}" type="button">🔊 听搭配</button></div><div class="four-sentences"><div><span>现在</span><code>Jeg ${esc(v.pres)} ${esc(v.tail)}.</code><button class="sound-button" data-say="Jeg ${esc(v.pres)} ${esc(v.tail)}." type="button">🔊 听例句</button></div><div><span>情态</span><code>Jeg skal ${esc(v.v1)} ${esc(v.tail)}.</code><button class="sound-button" data-say="Jeg skal ${esc(v.v1)} ${esc(v.tail)}." type="button">🔊 听例句</button></div><div><span>过去</span><code>Jeg ${esc(v.past)} ${esc(v.tail)}.</code><button class="sound-button" data-say="Jeg ${esc(v.past)} ${esc(v.tail)}." type="button">🔊 听例句</button></div><div><span>完成</span><code>Jeg har ${esc(v.pp)} ${esc(v.tail)}.</code><button class="sound-button" data-say="Jeg har ${esc(v.pp)} ${esc(v.tail)}." type="button">🔊 听例句</button></div></div><p class="muted">本词已标记：${n}次。连续两次选择“我会了”后，系统会降低新词出现频率，之后按间隔复习。</p><div class="actions"><button class="button orange" data-again-verb="${v.id}">再练这个词</button><button class="button primary" data-know-verb="${v.id}">我会了</button></div></section>`; }
+function renderLearnDetail(v) { const n = state.learned[v.id] || 0; const forms = [["现在时", v.pres], ["过去时", v.past], ["完成分词", v.pp]].map(([label, word]) => renderWordForm(label, word)).join(""); const examples = verbExamples(v); return `<section class="panel wide detail-panel"><button class="text-button" data-back-learn>← 返回背词</button><span class="eyebrow">动词卡 · ${esc(v.zh)}</span><div class="answer-headword"><h1 style="font-size:58px">${esc(v.v1)}</h1><button class="sound-button headword-audio" data-say="${esc(v.v1)}" type="button" aria-label="播放 ${esc(v.v1)} 的挪威语发音">🔊 听原形</button></div><div class="big-forms">${forms}</div><div class="meaning-guide"><span>语义与固定搭配</span><strong>${esc(v.phrase)}</strong><p>这个搭配表示“${esc(VERB_USAGE_ZH[v.v1] || v.zh)}”。动词本身可表示“${esc(v.zh)}”，要和后面的成分一起理解。</p><button class="sound-button" data-say="${esc(v.phrase)}" type="button">🔊 听搭配</button></div><div class="four-sentences">${examples.map(example => `<div><span>${example.label}</span><code>${esc(example.no)}</code><p class="example-translation">${esc(example.zh)}</p><button class="sound-button" data-say="${esc(example.no)}" type="button">🔊 听例句</button></div>`).join("")}</div><p class="muted">本词已标记：${n}次。连续两次选择“我会了”后，系统会降低新词出现频率，之后按间隔复习。</p><div class="actions"><button class="button orange" data-again-verb="${v.id}">再练这个词</button><button class="button primary" data-know-verb="${v.id}">我会了</button></div></section>`; }
 function renderMistakes() { return `<section class="panel wide"><span class="eyebrow">Mine feil · 我的错误</span><h1 style="font-size:44px">错误会回来，直到你会。</h1>${state.mistakes.length ? `<div class="mistake-list">${[...state.mistakes].reverse().map(m => `<div class="mistake-item"><span class="tag">${esc(m.skill)}</span><h3 style="margin-top:10px">${esc(m.prompt)}</h3><div>你的答案：<code>${esc(m.given)}</code></div><div>建议答案：<code>${esc(m.answer)}</code></div><p class="muted">${esc(m.explanation)}</p></div>`).join("")}</div>` : `<div class="empty">还没有错题。做完训练后，系统会按技能自动收集。</div>`}</section>`; }
 function renderSpeak() { return `<section class="panel wide center"><span class="eyebrow">Snakke · 口语模式</span><h1 style="font-size:44px">Hva skal du gjøre i morgen?</h1><p class="muted">浏览器支持语音识别时可以直接说；也可以输入文字。系统会检查你常犯的动词和语序问题。</p><button class="speak-button" data-speak aria-label="开始录音">●</button><p id="speech-status" class="muted">Trykk for å snakke</p><textarea id="speech-text" placeholder="识别结果会出现在这里，也可以直接输入。"></textarea><div class="actions" style="justify-content:center"><button class="button primary" data-check-speech>分析回答</button></div><div id="feedback" style="text-align:left"></div></section>`; }
 
@@ -328,7 +406,7 @@ function bindView() {
     input.dataset.value = value;
     input.innerHTML = value ? esc(value) : `<span class="custom-placeholder">${esc(input.dataset.placeholder || "")}</span>`;
     input.classList.remove("input-error");
-    const s = state.vocabSession; const keys = ["pres", "past", "pp"]; if (s) s.recallValues = { ...(s.recallValues || {}), [keys[Math.min(s.recallStep || 0, 2)]]: value };
+    const s = state.vocabSession; if (s) { const currentEntry = getStudyEntry(s.ids[s.index]); const currentFields = entryFields(currentEntry); const currentField = currentFields[Math.min(s.recallStep || 0, currentFields.length - 1)]; if (currentField) s.recallValues = { ...(s.recallValues || {}), [currentField.key]: value }; }
     saveState();
   }));
   document.querySelector("[data-vocab-reveal]")?.addEventListener("click", () => { state.vocabSession.revealed = true; state.vocabSession.recallStep = 0; state.vocabSession.recallValues = {}; state.vocabSession.lastResult = null; saveState(); render(); });

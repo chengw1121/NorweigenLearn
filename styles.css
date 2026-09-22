@@ -185,6 +185,7 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .four-sentences div { padding: 15px; background: #fff8ef; border-radius: 13px; display: grid; gap: 8px; }
 .four-sentences span { color: var(--orange); font-size: 12px; font-weight: 800; }
 .four-sentences code { font-size: 14px; line-height: 1.5; }
+.four-sentences .example-translation { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
 .four-sentences .sound-button { justify-self: start; }
 .recall-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 24px 0; }
 .recall-grid label { display: grid; gap: 7px; color: var(--muted); font-size: 13px; }
@@ -215,6 +216,14 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .custom-answer { display: flex; align-items: center; width: 100%; min-height: 50px; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 18px; font-weight: 700; letter-spacing: .03em; color: var(--ink); background: white; overflow-wrap: anywhere; }
 .custom-answer.input-error { border-color: var(--red); box-shadow: 0 0 0 4px rgba(166,66,59,.1); }
 .recall-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.meaning-cue { max-width: 520px; margin: 9px auto 5px; padding: 9px 11px; border-radius: 12px; background: #fff2de; text-align: left; }
+.meaning-cue strong { display: block; color: var(--orange); font-size: 11px; }
+.meaning-cue p { margin: 3px 0 0 !important; color: var(--ink); font-size: 12px; line-height: 1.45 !important; }
+.meaning-guide { margin: 14px 0; padding: 14px 16px; border: 1px solid #dce7df; border-radius: 15px; background: #f3f8f5; }
+.meaning-guide > span { display: block; color: var(--orange); font-size: 12px; font-weight: 800; }
+.meaning-guide > strong { display: block; margin-top: 6px; color: var(--green); font-size: 17px; }
+.meaning-guide p { margin: 6px 0 0; color: var(--ink); font-size: 13px; line-height: 1.55; }
+.meaning-guide .sound-button { margin-top: 9px; }
 .custom-placeholder { color: #9ca6a2; font-weight: 500; letter-spacing: 0; }
 .keyboard-label { margin-top: 10px; color: var(--muted); font-size: 11px; text-align: center; }
 .inline-keyboard { display: grid; gap: 5px; margin-top: 6px; user-select: none; }
@@ -227,6 +236,8 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .keyboard-tools .clear-key { flex-basis: 100%; min-height: 34px; }
 .vocab-actions { position: static; z-index: 4; padding: 10px 0 0; background: transparent; }
 .vocab-actions .button { flex: 1; min-width: 0; }
+.recall-actions { margin: 9px 0 2px; padding: 0; }
+.recall-actions .primary { flex: 1.55; }
 .theme-sentence { margin: 14px 0; padding: 14px 16px; border-radius: 15px; background: #eff4f1; }
 .theme-sentence > span { color: var(--orange); font-size: 12px; font-weight: 800; }
 .theme-sentence p { margin: 6px 0; }
@@ -290,6 +301,9 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
   .key-button { min-height: 46px; border-radius: 10px; font-size: 17px; }
   .vocab-actions { gap: 7px; }
   .vocab-actions .button { padding: 12px 8px; font-size: 13px; }
+  .recall-actions { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+  .recall-actions .button { width: 100%; min-height: 46px; }
+  .meaning-cue { margin-top: 6px; padding: 8px 10px; }
   .focus-mode main { padding: 5px 7px calc(16px + env(safe-area-inset-bottom)); }
   .focus-mode .vocab-card { padding: 11px; }
   .focus-mode .study-topline { margin-bottom: 8px; }
