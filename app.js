@@ -177,7 +177,7 @@ function topicEntries(topicId) {
   const mixed = []; for (let i = 0; i < Math.max(verbs.length, nouns.length); i++) { if (verbs[i]) mixed.push(verbs[i]); if (nouns[i]) mixed.push(nouns[i]); }
   return mixed;
 }
-function getStudyEntry(key) { return key.startsWith("noun:") ? NOUN_BY_ID[key.slice(5)] : VERBS.find(v => v.id === key) || VERBS[0]; }
+function getStudyEntry(key) { if (key.startsWith("noun:")) return NOUN_BY_ID[key.slice(5)]; const verb = VERBS.find(v => v.id === key) || VERBS[0]; return { ...verb, kind: "verb", key: verb.id }; }
 function entryFields(entry) {
   if (entry.kind === "noun") return entry.forms.map((answer, i) => ({ key: `form${i}`, answer, label: entry.formLabels[i], hint: ["把冠词和名词当成一个词记", "留意定指词尾 -en / -a / -et", "留意复数词尾", "复数定指常见 -ene / -a"][i] })).filter(field => field.answer !== "—");
   return [{ key: "pres", answer: entry.pres, label: "现在时", hint: "表示现在或习惯" }, { key: "past", answer: entry.past, label: "过去时", hint: "表示已经发生" }, { key: "pp", answer: entry.pp, label: "完成分词", hint: "放在 har 后面" }];
