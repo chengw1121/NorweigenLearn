@@ -213,8 +213,6 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .recall-step-head span { color: var(--orange); font-size: 12px; font-weight: 800; }
 .recall-step-head strong { font-size: 17px; }
 .recall-step-head small { grid-column: 2; color: var(--muted); font-size: 12px; }
-.custom-answer { display: flex; align-items: center; width: 100%; min-height: 50px; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 18px; font-weight: 700; letter-spacing: .03em; color: var(--ink); background: white; overflow-wrap: anywhere; }
-.custom-answer.input-error { border-color: var(--red); box-shadow: 0 0 0 4px rgba(166,66,59,.1); }
 .recall-help { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
 .meaning-cue { max-width: 520px; margin: 9px auto 5px; padding: 9px 11px; border-radius: 12px; background: #fff2de; text-align: left; }
 .meaning-cue strong { display: block; color: var(--orange); font-size: 11px; }
@@ -225,14 +223,6 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .meaning-guide p { margin: 6px 0 0; color: var(--ink); font-size: 13px; line-height: 1.55; }
 .meaning-guide .sound-button { margin-top: 9px; }
 .custom-placeholder { color: #9ca6a2; font-weight: 500; letter-spacing: 0; }
-.keyboard-label { margin-top: 10px; color: var(--muted); font-size: 11px; text-align: center; }
-.inline-keyboard { display: grid; gap: 5px; margin-top: 6px; user-select: none; }
-.keyboard-row { display: flex; justify-content: center; gap: 5px; }
-.key-button { flex: 1 1 0; min-width: 0; min-height: 43px; padding: 5px 3px; border: 1px solid #d5ddd6; border-radius: 10px; background: white; color: var(--ink); font-size: 16px; font-weight: 750; box-shadow: 0 1px 0 rgba(23,50,45,.05); touch-action: manipulation; }
-.key-button:active { transform: translateY(1px); background: var(--green-soft); border-color: #76a994; }
-.keyboard-tools .key-button { flex: 1 1 50%; color: var(--green); background: #e7f1ec; font-size: 12px; }
-.keyboard-row.row-3 .utility { flex: 1.25 1 0; font-size: 18px; }
-.keyboard-row.row-4 .space { flex: 1.7 1 0; font-size: 12px; }
 .keyboard-tools .clear-key { flex-basis: 100%; min-height: 34px; }
 .vocab-actions { position: static; z-index: 4; padding: 10px 0 0; background: transparent; }
 .vocab-actions .button { flex: 1; min-width: 0; }
@@ -365,9 +355,6 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
   .study-topline { margin-bottom: 10px; }
   .study-progress span { font-size: 10px; padding: 7px 2px; }
   .recall-step { margin-top: 14px; padding: 13px; }
-  .inline-keyboard { gap: 5px; }
-  .keyboard-row { gap: 5px; }
-  .key-button { min-height: 46px; border-radius: 10px; font-size: 17px; }
   .vocab-actions { gap: 7px; }
   .vocab-actions .button { padding: 12px 8px; font-size: 13px; }
   .recall-actions { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
@@ -380,11 +367,6 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
   .focus-mode .study-progress span { padding: 7px 1px; font-size: 10px; }
   .focus-mode .vocab-front h1 { font-size: clamp(30px, 9vw, 40px); }
   .focus-mode .vocab-front .muted { font-size: 12px; }
-  .focus-mode .keyboard-label { margin-top: 7px; }
-  .focus-mode .inline-keyboard { gap: 4px; }
-  .focus-mode .keyboard-row { gap: 4px; }
-  .focus-mode .key-button { min-height: 48px; border-radius: 9px; font-size: 17px; }
-  .focus-mode .keyboard-row.row-4 .space { font-size: 11px; }
   .learn-overview > div { min-width: 0; }
   .bottom-nav { bottom: max(8px, env(safe-area-inset-bottom)); }
   .bottom-nav a { font-size: 10px; padding-inline: 1px; }
