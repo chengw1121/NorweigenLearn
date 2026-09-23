@@ -1,0 +1,10 @@
+.git/**
+.github/**
+.codex/**
+.agents/**
+worker/**
+migrations/**
+README.md
+wrangler.jsonc
+.assetsignore
+*.sql

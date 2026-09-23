@@ -211,6 +211,25 @@ const DISTRIBUTION = [
 const DEFAULT_STATE = { mistakes: [], attempts: 0, correct: 0, streak: 1, learned: {}, review: {}, session: null, vocabSession: null, lastSummary: null };
 const STORAGE_KEY = "norsk-state-v2";
 let state = loadState();
+let accountSession = null;
+let accountUser = null;
+let accountMedals = [];
+let accountNotice = "";
+let accountMode = "login";
+let boardPeriod = "all";
+let boardRows = [];
+let accountBackendUnavailable = false;
+let verificationEmail = "";
+
+try { accountSession = JSON.parse(localStorage.getItem("norsk-auth-session") || "null"); } catch { accountSession = null; }
+const authCallback = new URLSearchParams(location.hash.startsWith("#") ? location.hash.slice(1) : "");
+if (authCallback.has("access_token") && authCallback.has("refresh_token")) {
+  accountSession = { access_token: authCallback.get("access_token"), refresh_token: authCallback.get("refresh_token"), expires_at: Date.now() + Number(authCallback.get("expires_in") || 3600) * 1000 };
+  localStorage.setItem("norsk-auth-session", JSON.stringify(accountSession));
+  const recovery = authCallback.get("type") === "recovery";
+  history.replaceState(null, "", `${location.pathname}${recovery ? "?recovery=1" : "?verified=1"}#account`);
+  if (recovery) accountMode = "reset";
+}
 
 function loadState() { try { return { ...DEFAULT_STATE, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") }; } catch { return { ...DEFAULT_STATE }; } }
 function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -268,8 +287,18 @@ function render() {
   document.querySelectorAll("[data-route]").forEach(a => a.classList.toggle("active", a.dataset.route === activeRoute));
   document.body.classList.toggle("focus-mode", ["learnstudy", "practice"].includes(route()));
   if (route() === "learn" && query().get("verb")) { document.querySelector("#app").innerHTML = renderLearnDetail(getVerb(query().get("verb"))); bindView(); return; }
-  const views = { today: renderToday, setup: renderSetup, practice: renderPractice, summary: renderSummary, verbs: renderVerbs, learn: renderLearn, learnstudy: renderLearnStudy, topics: renderTopics, topic: renderFremtidUnit, mistakes: renderMistakes, speak: renderSpeak };
+  const views = { today: renderToday, setup: renderSetup, practice: renderPractice, summary: renderSummary, verbs: renderVerbs, learn: renderLearn, learnstudy: renderLearnStudy, topics: renderTopics, topic: renderFremtidUnit, mistakes: renderMistakes, speak: renderSpeak, account: renderAccount };
   document.querySelector("#app").innerHTML = (views[route()] || renderToday)(); bindView();
+}
+function renderAccount() {
+  const params = new URLSearchParams(location.search); const resetToken = params.get("reset"); if(params.get("verified")==="1") accountNotice="邮箱已验证，现在可以登录了。";
+  if (resetToken || params.get("recovery")==="1" || accountMode==="reset") return `<section class="panel account-panel"><span class="eyebrow">账号安全 · 重置密码</span><h1>设置新密码</h1><p class="muted">新密码至少12位。保存后请用新密码登录。</p><form class="account-form" data-account-form="reset"><label>新密码<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><button class="button primary" type="submit">更新密码</button></form>${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}</section>`;
+  if (accountUser) {
+    const rows = boardRows.length ? boardRows.map((row,i)=>`<li class="leader-row ${row.nickname===accountUser.nickname?"me":""}"><span class="leader-rank">${i+1}</span><strong>${esc(row.nickname)}</strong><span>${Number(row.points).toLocaleString()} 分</span></li>`).join("") : `<li class="leader-empty">排行榜加载中，完成练习后这里会更新。</li>`;
+    return `<section class="panel wide account-panel"><span class="eyebrow">账户 · 学习积分</span><h1>你好，${esc(accountUser.nickname)}！</h1><p class="muted">邮箱由登录服务安全管理，不会显示在排行榜。完成练习、答题和主动回忆可累计积分；每天最多计入300分。</p><div class="account-stats"><div><strong>${Number(accountUser.points||0).toLocaleString()}</strong><span>总积分</span></div><div><strong>${accountMedals.length}</strong><span>获得奖牌</span></div></div><h2>我的奖牌</h2><div class="medal-grid">${accountMedals.length?accountMedals.map(m=>`<article class="medal-card"><span>${esc(m.icon)}</span><strong>${esc(m.title)}</strong><small>${esc(String(m.earnedAt||"").slice(0,10))}</small></article>`).join(""):`<p class="muted">继续学习，达到积分里程碑或在挪威/中国特别日完成练习即可获得奖牌。</p>`}</div><div class="leader-heading"><div><span class="eyebrow">学习社区</span><h2>排行榜</h2></div><div class="board-tabs"><button class="${boardPeriod==="all"?"selected":""}" data-board-period="all">总榜</button><button class="${boardPeriod==="week"?"selected":""}" data-board-period="week">本周</button></div></div><ol class="leaderboard">${rows}</ol><div class="actions"><button class="button secondary" data-auth-logout>退出登录</button></div>${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}</section>`;
+  }
+  const form = accountMode === "register" ? `<form class="account-form" data-account-form="register"><label>公开昵称<input name="nickname" minlength="2" maxlength="24" autocomplete="nickname" required></label><label>邮箱（不会公开）<input name="email" type="email" maxlength="254" autocomplete="email" required></label><label>密码（至少12位）<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><p class="fine-print">注册即表示你同意使用昵称公开展示积分榜。请勿在昵称中填写邮箱、真实姓名等隐私信息。</p><button class="button primary" type="submit">创建账号并发送验证邮件</button></form>` : accountMode === "forgot" ? `<form class="account-form" data-account-form="forgot"><label>注册邮箱<input name="email" type="email" autocomplete="email" required></label><button class="button primary" type="submit">发送重置链接</button></form>` : `<form class="account-form" data-account-form="login"><label>邮箱<input name="email" type="email" autocomplete="email" required></label><label>密码<input name="password" type="password" autocomplete="current-password" required></label><button class="button primary" type="submit">登录</button></form>`;
+  return `<section class="panel account-panel"><span class="eyebrow">账号 · 排行榜 · 奖牌</span><h1>${accountMode==="register"?"创建学习账号":accountMode==="forgot"?"找回密码":"登录 Norsk hver dag"}</h1><p class="muted">跨设备保存学习积分和奖牌，查看本周与总积分榜。</p>${accountBackendUnavailable?`<div class="feedback close"><h3>账号服务正在配置中</h3><p>需要先配置 Supabase 邮箱认证、Cloudflare D1 数据库并部署 Worker；配置完成后即可注册。</p></div>`:""}${verificationEmail?`<form class="account-form resend-form" data-account-form="resend"><input type="hidden" name="email" value="${esc(verificationEmail)}"><button class="button secondary" type="submit">重发验证邮件</button></form>`:""}${form}<div class="account-switch">${accountMode==="login"?`<button class="text-button" data-account-mode="register">创建账号</button><button class="text-button" data-account-mode="forgot">忘记密码</button>`:`<button class="text-button" data-account-mode="login">返回登录</button>`}</div>${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}<p class="fine-print">邮箱验证和密码由 Supabase Auth 管理；D1 只保存排行榜昵称、积分和奖牌。公开榜单仅展示昵称与分数。</p></section>`;
 }
 function progressForSkill(skill) { return Math.max(25, 78 - state.mistakes.filter(m => m.skill === skill).length * 7); }
 function renderToday() {
@@ -407,7 +436,7 @@ function renderMistakes() {
 }
 function renderSpeak() { return `<section class="panel wide center"><span class="eyebrow">Snakke · 口语模式</span><h1 style="font-size:44px">Hva skal du gjøre i morgen?</h1><p class="muted">浏览器支持语音识别时可以直接说；也可以输入文字。系统会检查你常犯的动词和语序问题。</p><button class="speak-button" data-speak aria-label="开始录音">●</button><p id="speech-status" class="muted">Trykk for å snakke</p><textarea id="speech-text" placeholder="识别结果会出现在这里，也可以直接输入。"></textarea><div class="actions" style="justify-content:center"><button class="button primary" data-check-speech>分析回答</button></div><div id="feedback" style="text-align:left"></div></section>`; }
 
-function record(q, given, ok, answer, explanation) { if (state.session.answers[q.id]) return; state.session.answers[q.id] = { ok, given }; state.attempts++; if (ok) state.correct++; if (!ok) state.mistakes.push({ id: Date.now(), qid: q.id, skill: q.skill, prompt: q.prompt, given, answer, explanation }); saveState(); }
+function record(q, given, ok, answer, explanation) { if (state.session.answers[q.id]) return; state.session.answers[q.id] = { ok, given }; state.attempts++; if (ok) state.correct++; sendLearningEvent("answer",ok); if (!ok) state.mistakes.push({ id: Date.now(), qid: q.id, skill: q.skill, prompt: q.prompt, given, answer, explanation }); saveState(); }
 function speakNorwegian(text) {
   if (!window.speechSynthesis || typeof SpeechSynthesisUtterance === "undefined") { const status = document.querySelector("#pronunciation-status"); if (status) status.textContent = "当前浏览器不支持语音朗读；请使用系统朗读功能。"; return; }
   const synth = window.speechSynthesis; synth.cancel(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = "nb-NO"; utterance.rate = .82;
@@ -436,7 +465,7 @@ function analyze(text, q = null) {
   return { ok: issues.length === 0, issues };
 }
 function freeCheck(q, text) { const result = analyze(text, q); const ok = result.ok; const explanation = ok ? "目标结构和已知常见错误检查通过。" : result.issues.join(" "); record(q, text, ok, q.example, explanation); document.querySelector("#feedback").innerHTML = detailedFeedback(q, ok ? "good" : "close", ok ? "✓ 本地规则检查通过" : "接近正确，看看这些地方", text); document.querySelector("[data-next]")?.addEventListener("click", nextQuestion); document.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => speakNorwegian(b.dataset.say))); }
-function nextQuestion() { state.session.index++; saveState(); if (state.session.index >= state.session.total) { const answers = Object.values(state.session.answers); state.lastSummary = { total: state.session.total, correct: answers.filter(x => x.ok).length, mistakes: answers.filter(x => !x.ok).length }; state.session = null; saveState(); location.hash = "summary"; } else render(); }
+function nextQuestion() { state.session.index++; saveState(); if (state.session.index >= state.session.total) { const answers = Object.values(state.session.answers); state.lastSummary = { total: state.session.total, correct: answers.filter(x => x.ok).length, mistakes: answers.filter(x => !x.ok).length }; sendLearningEvent("completion",true); state.session = null; saveState(); location.hash = "summary"; } else render(); }
 function startSession(total, onlyVerbId = null) { state.session = buildSession(total, onlyVerbId); saveState(); location.hash = "practice"; }
 function startVocabSession(total, topicId = "basics") {
   const pool = topicEntries(topicId); const now = Date.now();
@@ -457,13 +486,51 @@ function advanceVocabStep() {
 function finishVocabCard() {
   const s = state.vocabSession; const key = s.ids[s.index]; const previous = state.review?.[key] || { streak: 0 };
   const remembered = s.lastResult?.ok === true; const streak = remembered ? previous.streak + 1 : 0; const intervals = [1, 3, 7, 14, 30]; const delayDays = remembered ? intervals[Math.min(Math.max(streak - 1, 0), intervals.length - 1)] : 1;
+  sendLearningEvent("vocab", remembered);
   state.learned[key] = (state.learned[key] || 0) + 1; state.review[key] = { streak, dueAt: Date.now() + delayDays * 86400000 };
   s.index++; s.revealed = false; s.recallStep = 0; s.recallValues = {}; s.lastResult = null;
   if (s.index >= s.ids.length) { state.vocabSession = null; location.hash = "learn"; } saveState(); render();
 }
 function startSpeech() { const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition; const status = document.querySelector("#speech-status"); if (!Recognition) { status.textContent = "当前浏览器不支持语音识别，请直接输入。"; return; } const rec = new Recognition(); rec.lang = "nb-NO"; rec.interimResults = false; status.textContent = "Lytter … 正在听"; rec.onresult = e => { document.querySelector("#speech-text").value = e.results[0][0].transcript; status.textContent = "识别完成，可以分析。"; }; rec.onerror = () => { status.textContent = "没有识别成功，请重试或直接输入。"; }; rec.start(); }
 
+async function accountApi(path, options = {}) {
+  if (accountSession?.refresh_token && accountSession.expires_at < Date.now() + 60000 && !path.endsWith("/refresh")) {
+    try { const fresh = await accountApi("/api/auth/refresh", { method: "POST", body: JSON.stringify({ refresh_token: accountSession.refresh_token }) }); setAccountSession(fresh); }
+    catch { clearAccountSession(); }
+  }
+  const response = await fetch(path, { credentials: "same-origin", ...options, headers: { ...(options.body ? { "content-type": "application/json" } : {}), ...(accountSession?.access_token && !path.endsWith("/refresh") ? { authorization: `Bearer ${accountSession.access_token}` } : {}), ...(options.headers || {}) } });
+  let data; try { data = await response.json(); } catch { throw new Error("账号服务未部署或当前不可用。"); }
+  if (!response.ok) { const error = new Error(data.error || "请求失败。"); error.data = data; throw error; } return data;
+}
+function setAccountSession(session) { const rawExpiry=Number(session.expires_at||0);accountSession={...session,expires_at:rawExpiry?(rawExpiry<1e12?rawExpiry*1000:rawExpiry):Date.now()+Number(session.expires_in||3600)*1000};localStorage.setItem("norsk-auth-session",JSON.stringify(accountSession)); }
+function clearAccountSession() { accountSession = null; localStorage.removeItem("norsk-auth-session"); }
+function updateAccountButton() { const button=document.querySelector("[data-account-label]"); if(button) button.textContent=accountUser?`${accountUser.nickname} · ${Number(accountUser.points||0)}分`:"登录 / 排行"; }
+async function refreshAccount() {
+  try { const data=await accountApi("/api/auth/me"); accountUser=data.user; accountMedals=data.medals||[]; accountBackendUnavailable=false; }
+  catch { accountUser=null; accountMedals=[]; accountBackendUnavailable=true; }
+  updateAccountButton();
+}
+async function refreshLeaderboard() { try { const data=await accountApi(`/api/leaderboard?period=${boardPeriod}`); boardRows=data.rows||[]; } catch { boardRows=[]; } }
+async function sendLearningEvent(type, correct = false) {
+  if(!accountUser) return;
+  try { const eventId=crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16);}); const data=await accountApi("/api/score",{method:"POST",body:JSON.stringify({eventId,type,correct})}); accountUser={...accountUser,points:data.points}; if(data.newMedals?.length) accountMedals=[...data.newMedals,...accountMedals]; updateAccountButton(); if(route()==="account"){await refreshLeaderboard();render();} }
+  catch { /* The learning app stays usable when the account service is offline. */ }
+}
+async function submitAccountForm(form) {
+  const action=form.dataset.accountForm; const values=Object.fromEntries(new FormData(form).entries());
+  try {
+    if(action==="register"){const data=await accountApi("/api/auth/register",{method:"POST",body:JSON.stringify(values)});accountNotice=data.message||"请打开邮箱完成验证。";accountMode="login";}
+    else if(action==="login"){const data=await accountApi("/api/auth/login",{method:"POST",body:JSON.stringify(values)});setAccountSession(data);verificationEmail="";accountNotice="登录成功。";await refreshAccount();await refreshLeaderboard();}
+    else if(action==="forgot"||action==="resend"){const data=await accountApi(`/api/auth/${action}`,{method:"POST",body:JSON.stringify(values)});accountNotice=data.message||"邮件已发送。";}
+    else if(action==="reset"){const data=await accountApi("/api/auth/reset",{method:"POST",body:JSON.stringify(values)});accountNotice=data.message||"密码已更新，请重新登录。";clearAccountSession();accountUser=null;accountMedals=[];history.replaceState(null,"",`${location.pathname}#account`);accountMode="login";}
+  } catch(error){accountNotice=error.message;if(error.data?.needsVerification)verificationEmail=values.email||"";}
+  render();
+}
 function bindView() {
+  document.querySelectorAll("[data-account-mode]").forEach(button=>button.addEventListener("click",()=>{accountMode=button.dataset.accountMode;accountNotice="";render();}));
+  document.querySelectorAll("[data-account-form]").forEach(form=>form.addEventListener("submit",event=>{event.preventDefault();submitAccountForm(form);}));
+  document.querySelector("[data-auth-logout]")?.addEventListener("click",async()=>{try{await accountApi("/api/auth/logout",{method:"POST",body:"{}"});}catch{}clearAccountSession();accountUser=null;accountMedals=[];accountNotice="已退出登录。";updateAccountButton();render();});
+  document.querySelectorAll("[data-board-period]").forEach(button=>button.addEventListener("click",async()=>{boardPeriod=button.dataset.boardPeriod;await refreshLeaderboard();render();}));
   document.querySelector("[data-start]")?.addEventListener("click", () => { location.hash = state.session ? "practice" : "setup?n=10"; });
   document.querySelectorAll("[data-count]").forEach(b => b.addEventListener("click", () => { location.hash = `setup?n=${b.dataset.count}`; }));
   document.querySelector("[data-begin]")?.addEventListener("click", () => startSession(Number(document.querySelector("[data-begin]").dataset.begin)));
@@ -482,8 +549,8 @@ function bindView() {
   document.querySelectorAll("[data-grammar-next]").forEach(b => b.addEventListener("click", () => { const n = Number(b.dataset.grammarNext); if (n >= window.FREMTID_TOPIC.grammar.length) { state.topicProgress = { ...(state.topicProgress||{}), fremtid: { ...(state.topicProgress?.fremtid||{}), grammar: true } }; saveState(); location.hash = "topics"; } else location.hash = `topic?unit=grammar&n=${n}`; }));
   document.querySelectorAll("[data-pos-filter]").forEach(b => b.addEventListener("click", () => { location.hash = `topic?unit=vocab&pos=${encodeURIComponent(b.dataset.posFilter)}`; }));
   document.querySelectorAll("[data-topic-done]").forEach(b => b.addEventListener("click", () => { const id=b.dataset.topicDone; state.topicProgress = { ...(state.topicProgress||{}), fremtid: { ...(state.topicProgress?.fremtid||{}), [id]: true } }; saveState(); location.hash = "topics"; }));
-  document.querySelectorAll("[data-topic-choice]").forEach(b => b.addEventListener("click", () => { const quiz=state.topicQuiz; const q=topicQuestionBank().find(item=>item.id===quiz?.ids?.[quiz.index]); if(!q)return; const given=q.options[Number(b.dataset.topicChoice)]; const ok=given===q.answer; quiz.answers={...quiz.answers,[q.id]:{ok,given}}; const old=state.topicReview?.[q.id]||{streak:0}; const streak=ok?old.streak+1:0; const days=ok?[1,3,7,14,30][Math.min(streak-1,4)]:0; state.topicReview={...(state.topicReview||{}),[q.id]:{streak,dueAt:Date.now()+(days?days*86400000:10*60000),correct:(old.correct||0)+(ok?1:0),wrong:(old.wrong||0)+(ok?0:1)}}; if(!ok) state.mistakes.push({id:Date.now(),qid:q.id,skill:q.skill,prompt:q.prompt,given,answer:q.answer,explanation:q.why}); state.topicQuiz=quiz; saveState(); render(); }));
-  document.querySelector("[data-topic-next]")?.addEventListener("click", () => { const quiz=state.topicQuiz; quiz.index++; if(quiz.index>=quiz.ids.length) state.topicProgress={...(state.topicProgress||{}),fremtid:{...(state.topicProgress?.fremtid||{}),practice:true}}; saveState(); render(); });
+  document.querySelectorAll("[data-topic-choice]").forEach(b => b.addEventListener("click", () => { const quiz=state.topicQuiz; const q=topicQuestionBank().find(item=>item.id===quiz?.ids?.[quiz.index]); if(!q)return; const given=q.options[Number(b.dataset.topicChoice)]; const ok=given===q.answer; sendLearningEvent("answer",ok); quiz.answers={...quiz.answers,[q.id]:{ok,given}}; const old=state.topicReview?.[q.id]||{streak:0}; const streak=ok?old.streak+1:0; const days=ok?[1,3,7,14,30][Math.min(streak-1,4)]:0; state.topicReview={...(state.topicReview||{}),[q.id]:{streak,dueAt:Date.now()+(days?days*86400000:10*60000),correct:(old.correct||0)+(ok?1:0),wrong:(old.wrong||0)+(ok?0:1)}}; if(!ok) state.mistakes.push({id:Date.now(),qid:q.id,skill:q.skill,prompt:q.prompt,given,answer:q.answer,explanation:q.why}); state.topicQuiz=quiz; saveState(); render(); }));
+  document.querySelector("[data-topic-next]")?.addEventListener("click", () => { const quiz=state.topicQuiz; quiz.index++; if(quiz.index>=quiz.ids.length){state.topicProgress={...(state.topicProgress||{}),fremtid:{...(state.topicProgress?.fremtid||{}),practice:true}};sendLearningEvent("completion",true);} saveState(); render(); });
   document.querySelector("[data-topic-reset-quiz]")?.addEventListener("click", () => { state.topicQuiz={ids:weightedQuestionSample(topicQuestionBank(),20),index:0,answers:{}}; saveState(); render(); });
   document.querySelectorAll("[data-writing]").forEach(area => area.addEventListener("input", () => { state.writing={...(state.writing||{}),[area.dataset.writing]:area.value}; saveState(); }));
   document.querySelectorAll("[data-writing-done]").forEach(box => box.addEventListener("change", () => { state.writingDone={...(state.writingDone||{}),[box.dataset.writingDone]:box.checked}; const allDone=window.FREMTID_TOPIC.writingPrompts.every((_,i)=>state.writingDone?.[i]); if(allDone) state.topicProgress={...(state.topicProgress||{}),fremtid:{...(state.topicProgress?.fremtid||{}),writing:true}}; saveState(); }));
@@ -518,3 +585,4 @@ window.addEventListener("scroll", () => {
 }, { passive: true });
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 render();
+refreshAccount().then(async()=>{if(accountUser)await refreshLeaderboard();if(route()==="account")render();});

@@ -18,6 +18,42 @@
 
 自动训练暂不包含需要AI才能可靠判断的开放式作文或口语评分题。专题写作任务提供保存草稿和自检清单。
 
+## 账号、排行榜和奖牌
+
+邮箱注册、邮箱验证、登录和密码重置由 Supabase Auth 托管；Cloudflare Worker 通过 Supabase Auth 校验 access token，D1 只保存公开昵称、积分事件和奖牌，不存邮箱或密码。不要把 Supabase `service_role` 密钥放进网页或 Worker；本项目只需要 Project URL 和 publishable/anon key。
+
+排行榜目前用于学习激励，不是反作弊系统：积分在服务端计分并有每日上限，但浏览器端学习事件仍可能被伪造，不要用它发放有现金价值的奖励。可删除 D1 学习积分，但 Supabase Auth 账号删除需在 Supabase 控制台管理（当前界面不提供误删风险较高的账号删除按钮）。
+
+### 首次部署到 Cloudflare Workers + D1
+
+先在 Supabase 创建项目，在 Authentication → URL Configuration 中把 Site URL 设为你的站点（例如 `https://norweigenlearn.chengw1121.workers.dev`），并把该站点和本地测试地址 `http://localhost:4173/**` 加入 Redirect URLs。Authentication → Providers 中启用 Email，并保持邮箱确认开启。Supabase 内置邮件发送有严格的试用速率限制（目前默认每小时2封），适合小规模验证流程；公开邀请更多人之前需配置自有 SMTP，并检查邮件模板中的确认/重置链接。
+
+在 Supabase 项目 API/Connect 页面取得 Project URL 和 publishable key（旧项目也可能显示 anon key）。然后在本地项目目录运行：
+
+```powershell
+npx wrangler d1 create norweigenlearn
+```
+
+把命令返回的数据库 ID 填入 `wrangler.jsonc` 的 `database_id`，然后配置 Worker 变量（这两项是公开客户端标识，不是 service-role 密钥）：
+
+```jsonc
+"vars": {
+  "SUPABASE_URL": "https://你的项目编号.supabase.co",
+  "SUPABASE_ANON_KEY": "你的 publishable 或 anon key"
+}
+```
+
+接着创建远端表并部署静态站点与 Worker：
+
+```powershell
+npx wrangler d1 migrations apply norweigenlearn --remote
+npx wrangler deploy
+```
+
+Cloudflare 端不需要 Resend 密钥，也不保存用户密码。注册用户须先点击 Supabase 邮件验证链接；若 Workers Free 不满足当前运行需求，再评估套餐，不要在未确认前升级付费方案。每个真实环境只运行一次 D1 migration；修改已应用的 schema 时应新增 migration，不要改写已执行的迁移。
+
+本地仅运行 `python -m http.server` 时，账号接口不会工作；需用 `npx wrangler dev --remote` 测试 Worker/D1/Supabase 联通，并确保 `wrangler.jsonc` 已配置数据库 ID 与 Supabase 变量。不要把真实密钥提交到 Git。
+
 ## 运行
 
 在项目目录执行：

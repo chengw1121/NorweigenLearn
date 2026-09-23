@@ -44,6 +44,36 @@ button { cursor: pointer; }
 .brand strong, .brand small { display: block; }
 .brand small { margin-top: 2px; color: var(--muted); font-size: 12px; }
 .ghost-button { border: 1px solid var(--line); background: rgba(255,255,255,.45); color: var(--muted); border-radius: 999px; padding: 8px 13px; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.account-link { text-decoration: none; white-space: nowrap; }
+.account-panel { max-width: 820px; margin: 10px auto; }
+.account-form { display: grid; gap: 14px; margin: 22px 0 10px; }
+.account-form label { display: grid; gap: 7px; color: var(--muted); font-size: 14px; font-weight: 700; }
+.account-form input { width: 100%; min-height: 48px; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: white; color: var(--ink); }
+.account-form input:focus { outline: 3px solid rgba(29,96,78,.18); border-color: var(--green); }
+.account-form .button { justify-self: start; }
+.account-switch, .board-tabs { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
+.account-notice { padding: 12px 14px; border-radius: 12px; background: var(--green-soft); color: var(--green); font-weight: 700; }
+.fine-print { color: var(--muted); font-size: 12px; line-height: 1.55; }
+.account-stats { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin: 20px 0 26px; }
+.account-stats > div { display: grid; gap: 3px; padding: 16px; border-radius: 14px; background: var(--green-soft); }
+.account-stats strong { font: 700 32px Georgia,serif; color: var(--green); }
+.account-stats span { color: var(--muted); font-size: 13px; }
+.medal-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(135px,1fr)); gap: 10px; margin: 14px 0 28px; }
+.medal-card { display: grid; gap: 5px; justify-items: center; padding: 14px 10px; border: 1px solid var(--line); border-radius: 14px; text-align: center; background: white; }
+.medal-card > span { font-size: 29px; }
+.medal-card strong { font-size: 13px; }
+.medal-card small { color: var(--muted); }
+.leader-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin: 12px 0; }
+.board-tabs button { border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; background: white; color: var(--muted); }
+.board-tabs button.selected { color: white; background: var(--green); border-color: var(--green); }
+.leaderboard { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.leader-row { display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 10px; padding: 13px 8px; border-bottom: 1px solid var(--line); }
+.leader-row.me { background: #f1f7f2; }
+.leader-row > span:last-child { color: var(--green); font-weight: 800; }
+.leader-rank { color: var(--orange); font-weight: 900; }
+.leader-empty { padding: 18px 4px; color: var(--muted); }
+.danger-link { color: var(--red); margin: 0; }
 
 main { max-width: 1040px; margin: auto; padding: 18px 22px 48px; }
 .hero { display: grid; grid-template-columns: 1.4fr .8fr; gap: 18px; margin-bottom: 18px; }
@@ -347,6 +377,10 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
   .hero-main, .hero-side, .panel { padding: 20px; }
   .hero-main::after { font-size: 110px; }
   .ghost-button { font-size: 12px; }
+  .topbar-actions { gap: 5px; }
+  .topbar-actions .ghost-button { padding: 7px 9px; font-size: 11px; }
+  .leader-heading { align-items: start; flex-direction: column; }
+  .leader-row { grid-template-columns: 30px 1fr auto; }
   .question-card { padding: 16px; }
   .vocab-card { padding: 14px; }
   .vocab-card .vocab-front { margin: 0 -2px; padding: 12px 4px 10px; }
