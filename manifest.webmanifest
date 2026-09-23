@@ -1,7 +1,7 @@
 {
   "name": "Norsk hver dag",
   "short_name": "Norsk",
-  "description": "为中文母语者设计的挪威语动词训练器",
+  "description": "为中文母语者设计的挪威语词汇、专题与错题练习",
   "start_url": "./index.html#today",
   "display": "standalone",
   "background_color": "#f7f4ec",
