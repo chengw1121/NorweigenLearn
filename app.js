@@ -176,19 +176,58 @@ function studyPriority(word) {
   return 1;
 }
 function topicEntries(topicId) {
+  if (topicId === "saved") return (state.savedWords || []).map(word => ({ ...word, key: `saved:${word.id}`, kind: "future", priority: 1.5 }));
+  if (topicId === "daily") return [...new Map([...VOCAB_TOPICS.flatMap(topic => topicEntries(topic.id)), ...topicEntries("fremtid"), ...topicEntries("saved")].map(entry => [entry.key, entry])).values()];
   if (topicId === "fremtid") return window.FREMTID_TOPIC.vocabulary.map((entry, index) => ({ ...entry, id: `future-${index}`, key: `future:${index}`, kind: "future", priority: studyPriority(entry.word) }));
   const topic = VOCAB_TOPICS.find(item => item.id === topicId) || VOCAB_TOPICS[0];
   const verbs = topic.verbs.map(name => { const v = VERBS.find(item => item.v1 === name); return v ? { ...v, kind: "verb", key: v.id } : null; }).filter(Boolean);
   const nouns = topic.nouns.map(id => NOUN_BY_ID[id]).filter(Boolean).map(noun => ({ ...noun, key: `noun:${noun.id}`, priority: studyPriority(noun.lemma) }));
+  const additions = (window.VOCAB_V2?.additions || []).filter(item => item.topic === topicId).map(item => ({ ...item, kind: "lexeme", key: `lex:${item.id}`, lemma: item.word, priority: item.frequency || 1, contexts: item.contexts.map((row, i) => ({ id: `${item.id}:ctx${i}`, no: row[0], zh: row[1], note: row[2] })) }));
   verbs.forEach(verb => { verb.priority = studyPriority(verb.v1); });
-  const mixed = []; for (let i = 0; i < Math.max(verbs.length, nouns.length); i++) { if (verbs[i]) mixed.push(verbs[i]); if (nouns[i]) mixed.push(nouns[i]); }
+  const mixed = []; const base = [...verbs, ...nouns]; for (let i = 0; i < Math.max(base.length, additions.length); i++) { if (base[i]) mixed.push(base[i]); if (additions[i]) mixed.push(additions[i]); }
   return mixed;
 }
-function getStudyEntry(key) { if (key.startsWith("future:")) return topicEntries("fremtid")[Number(key.slice(7))]; if (key.startsWith("noun:")) return NOUN_BY_ID[key.slice(5)]; const verb = VERBS.find(v => v.id === key) || VERBS[0]; return { ...verb, kind: "verb", key: verb.id }; }
+function getStudyEntry(key) { if (key.startsWith("future:")) return topicEntries("fremtid")[Number(key.slice(7))]; if (key.startsWith("saved:")) return topicEntries("saved").find(entry => entry.key === key) || topicEntries("saved")[0]; if (key.startsWith("noun:")) return { ...NOUN_BY_ID[key.slice(5)], key }; if (key.startsWith("lex:")) return topicEntries("daily").find(entry => entry.key === key); const verb = VERBS.find(v => v.id === key) || VERBS[0]; return { ...verb, kind: "verb", key: verb.id }; }
 function entryFields(entry) {
   if (entry.kind === "future") return [{ key: "word", answer: entry.word, label: "主题词", hint: "回想词条；可带 å 或冠词，核对时看完整词形" }];
   if (entry.kind === "noun") return entry.forms.map((answer, i) => ({ key: `form${i}`, answer, label: entry.formLabels[i], hint: ["把冠词和名词当成一个词记", "留意定指词尾 -en / -a / -et", "留意复数词尾", "复数定指常见 -ene / -a"][i] })).filter(field => field.answer !== "—");
-  return [{ key: "pres", answer: entry.pres, label: "现在时", hint: "表示现在或习惯" }, { key: "past", answer: entry.past, label: "过去时", hint: "表示已经发生" }, { key: "pp", answer: entry.pp, label: "完成分词", hint: "放在 har 后面" }];
+  if (entry.kind === "lexeme") return entry.forms.map((answer, i) => ({ key: `form${i}`, answer, label: entry.labels[i], hint: entry.pos === "形容词" ? "想一想名词的性数如何影响词尾" : entry.pos === "名词" ? "冠词、定指和复数都要与词一起记" : "回忆这个词形及其常见使用位置" }));
+  return [{ key: "v1", answer: entry.v1, label: "动词原形", hint: "先根据中文和情境主动回忆词根" }, { key: "pres", answer: entry.pres, label: "现在时", hint: "表示现在或习惯" }, { key: "past", answer: entry.past, label: "过去时", hint: "表示已经发生" }, { key: "pp", answer: entry.pp, label: "完成分词", hint: "放在 har 后面" }];
+}
+
+function vocabContexts(entry, topicId = "daily") {
+  const candidates = [...(entry.contexts || [])];
+  if (entry.kind === "noun" && entry.sentence) candidates.push({ id: `${entry.key}:sentence`, no: entry.sentence, zh: entry.sentenceZh || "", note: "注意句子中的冠词和名词词尾。" });
+  if (entry.kind === "verb") verbExamples(entry).forEach((row, i) => candidates.push({ id: `${entry.key}:verb${i}`, no: row.no, zh: row.zh, note: row.label }));
+  const topic = VOCAB_TOPICS.find(item => item.id === topicId);
+  if (topic?.story) candidates.push({ id: `${topicId}:story`, no: topic.story, zh: topic.storyZh, note: "把词放回主题整合句理解。" });
+  const lemma = (entry.word || entry.lemma || entry.v1 || "").replace(/^(en|ei|et|å)\s+/i, "").toLocaleLowerCase("nb-NO");
+  (window.READING_LIBRARY || []).forEach(article => article.sentences?.forEach((line, i) => {
+    const no = Array.isArray(line) ? line[0] : line.no; const zh = Array.isArray(line) ? line[1] : (line.zh || line.translation || "");
+    if (lemma && no?.toLocaleLowerCase("nb-NO").includes(lemma)) candidates.push({ id: `${article.id}:s${i}`, no, zh, note: `阅读语料：${article.title}` });
+  }));
+  return [...new Map(candidates.filter(row => row?.no).map(row => [row.id || row.no, row])).values()];
+}
+
+function usageQuestion(entry, context) {
+  if (entry.kind === "verb") {
+    const tail = entry.tail || ""; const tense = context?.no?.match(/i går|forrige (uke|år)|i fjor/i) ? "past" : "pres";
+    const answer = tense === "past" ? entry.past : entry.pres;
+    return { prompt: tense === "past" ? "句首 i går 表示过去，选择过去时：" : "Hver dag 表示习惯，选择现在时：", choices: shuffle([...new Set([answer, entry.v1, entry.pp, entry.past])]).slice(0, 4), answer, why: tense === "past" ? "i går 明确表示过去，主句谓语用过去时；完成分词通常要和 har 一起使用。" : "Hver dag 表示习惯，现在时用于一般习惯；å + 原形不能直接充当主句谓语。", sentence: tense === "past" ? `I går ${answer} jeg ${tail}.` : `Hver dag ${answer} jeg ${tail}.`, zh: "先抓时间线索，再决定谓语形式。" };
+  }
+  if (entry.kind === "noun" || (entry.kind === "lexeme" && entry.pos === "名词")) {
+    const forms = entry.forms; const answer = forms[1] || forms[0];
+    const lemma = (entry.lemma || entry.word).replace(/^(en|ei|et)\s+/i, "");
+    const options = [...new Set([answer, forms[0], forms[2], forms[3]].filter(form => form && form !== "—"))];
+    const pluralOnly = entry.kind === "noun" && entry.formLabels?.[0] === "复数";
+    return { prompt: pluralOnly ? `前文提到了这笔${entry.zh || "钱"}，现在说“我找不到这些钱”：选择定指复数。` : `前文已经提到这一个${entry.zh || "名词"}，现在说“我找不到它”：选择定指单数。`, choices: shuffle(options).slice(0, 4), answer, why: "这里不是泛指，而是前文已知的特定对象，因此用定指形式。定指词尾取决于名词的性和变化类型。", sentence: pluralOnly ? `Hvor er ${answer}? Jeg finner ikke ${answer}.` : `Hvor er ${answer}? Jeg finner ikke ${answer}.`, zh: `我找不到${lemma}。` };
+  }
+  if (entry.kind === "lexeme" && entry.pos === "形容词") {
+    const answer = entry.forms[1] || entry.forms[0];
+    return { prompt: "名词 hus 是中性(et)，选择形容词与它搭配的形式。", choices: shuffle([...new Set([answer, entry.forms[0], entry.forms[2], entry.forms[3]].filter(Boolean))]).slice(0, 4), answer, why: "单数中性名词 et hus 前，形容词通常用中性形式；常见规则是在原形后加 -t，但也有例外。", sentence: `Vi har et ${answer} hus.`, zh: "我们有一栋……的房子。" };
+  }
+  if (entry.kind === "lexeme") return { prompt: `读情境，选出能表达“${entry.zh}”的挪威语词/短语。`, choices: shuffle([...new Set([entry.forms[0], ...(entry.collocations || []).slice(0, 3)])]).slice(0, 4), answer: entry.forms[0], why: entry.note, sentence: context?.no || entry.contexts?.[0]?.no || "", zh: context?.zh || entry.contexts?.[0]?.zh || "" };
+  return null;
 }
 
 const COLLLOCATIONS = [
@@ -208,7 +247,7 @@ const DISTRIBUTION = [
   ["perfect", "har + 完成分词", .14], ["infinitive", "å + V1", .10], ["collocation", "固定搭配", .08],
   ["correction", "改错", .06], ["v2", "V2 语序", .06]
 ];
-const DEFAULT_STATE = { mistakes: [], attempts: 0, correct: 0, streak: 1, learned: {}, review: {}, session: null, vocabSession: null, lastSummary: null };
+const DEFAULT_STATE = { mistakes: [], attempts: 0, correct: 0, streak: 1, learned: {}, review: {}, questionMastery: {}, session: null, vocabSession: null, lastSummary: null, questionHistory: [], practiceSessions: 0, savedWords: [], readingProgress: {}, dailyProgress: {} };
 const STORAGE_KEY = "norsk-state-v2";
 let state = loadState();
 let accountSession = null;
@@ -236,21 +275,21 @@ function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 function esc(value = "") { return String(value).replace(/[&<>'"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" }[c])); }
 function normalize(value = "") { return value.trim().replace(/\s+/g, " ").replace(/[.!?]+$/, "").toLocaleLowerCase("nb-NO"); }
 function shuffle(list) { const out = [...list]; for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; } return out; }
-function route() { return (location.hash.slice(1) || "today").split("?")[0]; }
+function route() { return (location.hash.slice(1) || "study").split("?")[0]; }
 function query() { return new URLSearchParams(location.hash.split("?")[1] || ""); }
 function getVerb(id) { return VERBS.find(v => v.id === id) || VERBS[0]; }
 function currentQuestion() { return state.session?.questions?.[state.session.index]; }
 
 function countsFor(total) {
-  const required = total >= 10
-    ? ["form","modal","past","perfect","infinitive","collocation","correction","v2"]
-    : total >= 8
-      ? ["form","modal","past","perfect","infinitive","collocation","v2","correction"]
-      : ["form","modal","past","perfect","collocation"];
-  const counts = DISTRIBUTION.map(([type]) => ({ type, count: required.includes(type) ? 1 : 0 }));
-  let left = total - required.length;
-  const priority = ["form","modal","past","perfect","infinitive","collocation","v2","correction"];
-  let i = 0; while (left-- > 0) { counts.find(x => x.type === priority[i % priority.length]).count++; i++; }
+  const shift = (state.practiceSessions || 0) % DISTRIBUTION.length;
+  const rotated = DISTRIBUTION.map((_, i) => DISTRIBUTION[(i + shift) % DISTRIBUTION.length]);
+  const counts = DISTRIBUTION.map(([type]) => ({ type, count: 0 }));
+  rotated.slice(0, Math.min(total, rotated.length)).forEach(([type]) => counts.find(x => x.type === type).count++);
+  let left = total - Math.min(total, rotated.length);
+  while (left-- > 0) {
+    const sum = DISTRIBUTION.reduce((n, row) => n + row[2], 0); let pick = Math.random() * sum;
+    const chosen = DISTRIBUTION.find(row => (pick -= row[2]) <= 0) || DISTRIBUTION[0]; counts.find(x => x.type === chosen[0]).count++;
+  }
   return counts;
 }
 function answerChoices(verb, correct, extra = []) {
@@ -275,20 +314,33 @@ function makeQuestion(type, verb, serial) {
   if (type === "correction") return { id, type: "input", skill: "改错", prompt: `改正句子：Jeg skal ${verb.pres} ${verb.tail}.`, answers: [`Jeg skal ${verb.v1} ${verb.tail}.`], answer: `Jeg skal ${verb.v1} ${verb.tail}.`, verbId: verb.id, explanation: `错误在于 skal 后使用了现在时 ${verb.pres}。应改为原形：skal ${verb.v1}。`, translation: `改正：我打算${verb.zh}。`, correctSentence: `Jeg skal ${verb.v1} ${verb.tail}.`, answerTranslation: `我打算${verb.zh}。`, rule: `情态动词 skal 已经承担了时态和人称信息，后面的动作只用V1原形。` };
   return { id, type: "free", skill: "自由输出", prompt: `用挪威语写一句关于你自己的句子，使用：${verb.v1}。`, verbId: verb.id, target: verb.v1, example: `Jeg skal ${verb.v1} ${verb.tail}.`, translation: `用挪威语表达你自己的计划或愿望。`, correctSentence: `Jeg skal ${verb.v1} ${verb.tail}.`, answerTranslation: `我打算${verb.zh}。` };
 }
-function makeV2Question(serial) { return { id: `v2-${serial}`, type: "input", skill: "V2 语序", prompt: "把词语组成自然句子（时间可以放句首或句末）：I morgen / jeg / skal / jobbe", answers: ["I morgen skal jeg jobbe", "Jeg skal jobbe i morgen"], answer: "I morgen skal jeg jobbe", explanation: "两种语序都正确：I morgen + skal + jeg + jobbe，或 Jeg + skal + jobbe + i morgen。只有时间放句首时，变位动词必须在第二位。", translation: "我明天打算工作。", correctSentence: "I morgen skal jeg jobbe.", answerTranslation: "我明天打算工作。", rule: "挪威语主句遵守V2：如果时间放在句首，变位动词skal仍然必须是第二个成分。时间也可以放句末。" }; }
+function makeV2Question(serial, verb = VERBS[0]) { return { id: `v2-${verb.id}-${serial}`, type: "input", skill: "V2 语序", prompt: `把词语组成自然句子（时间可以放句首或句末）：I morgen / jeg / skal / ${verb.v1}`, answers: [`I morgen skal jeg ${verb.v1}`, `Jeg skal ${verb.v1} i morgen`], answer: `I morgen skal jeg ${verb.v1}`, verbId: verb.id, explanation: `两种语序都正确：I morgen + skal + jeg + ${verb.v1}，或 Jeg + skal + ${verb.v1} + i morgen。时间放句首时，变位动词必须在第二位。`, translation: `我明天打算${verb.zh}。`, correctSentence: `I morgen skal jeg ${verb.v1}.`, answerTranslation: `我明天打算${verb.zh}。`, rule: "挪威语主句遵守V2：如果时间放在句首，变位动词skal仍然必须是第二个成分。" }; }
 function buildSession(total, onlyVerbId = null) {
-  const counts = countsFor(total); const pool = onlyVerbId ? [getVerb(onlyVerbId)] : shuffle(VERBS); let serial = Date.now(); const qs = [];
-  counts.forEach(({ type, count }) => { for (let i = 0; i < count; i++) qs.push(makeQuestion(type, pool[(qs.length + i) % pool.length], serial++)); });
+  const counts = countsFor(total), history = state.questionHistory || []; const pool = onlyVerbId ? [getVerb(onlyVerbId)] : shuffle(VERBS); let serial = Date.now(); const qs = [];
+  counts.forEach(({ type, count }) => { for (let i = 0; i < count; i++) {
+    const available = pool.filter(v => !qs.some(q => q.type === type && q.verbId === v.id));
+    const fresh = available.filter(v => !history.slice(-80).includes(`${type}:${v.id}`));
+    const candidates = fresh.length ? fresh : available;
+    const weighted = candidates.map(v => { const mastery = state.questionMastery?.[`${type}:${v.id}`]; return { v, weight: studyPriority(v.v1) * (mastery ? (mastery.streak >= 2 ? .35 : mastery.streak === 0 ? 2 : .8) : 1) }; });
+    const weightSum = weighted.reduce((sum, item) => sum + item.weight, 0); let pick = Math.random() * weightSum;
+    const verb = (weighted.find(item => (pick -= item.weight) <= 0) || weighted[0])?.v || pool[i % pool.length];
+    let q;
+    if (type === "v2") q = makeV2Question(serial++, verb);
+    else if (type === "collocation") { const c = shuffle(COLLOCATIONS.filter(x => !history.slice(-80).includes(`collocation:${x[0]}`)))[0] || shuffle(COLLOCATIONS)[0]; q = { id: `${type}-${serial++}`, type: "choice", skill: "固定搭配", prompt: `选择与“${c[1]}”对应的自然搭配。`, options: shuffle([c[0], ...shuffle(COLLOCATIONS.filter(x => x[0] !== c[0])).slice(0, 3).map(x => x[0])]), answer: c[0], verbId: verb.id, explanation: `固定搭配 ${c[0]} 表示“${c[1]}”。请把短语连同例句一起记忆。`, translation: c[1], correctSentence: c[2], answerTranslation: c[1], rule: "挪威语动词常和介词或不定式组成搭配，适合整块记忆。" }; }
+    else q = makeQuestion(type, verb, serial++);
+    q.rotationKey = `${type}:${type === "collocation" ? q.answer : verb.id}`; qs.push(q);
+  }});
+  state.practiceSessions = (state.practiceSessions || 0) + 1; state.questionHistory = [...history, ...qs.map(q => q.rotationKey)].slice(-120);
   return { questions: shuffle(qs), index: 0, answers: {}, total };
 }
 
 function render() {
-  const activeRoute = route() === "topic" ? "topics" : route() === "verbs" ? "learn" : route();
+  const activeRoute = ["topic","topics","verbs","learn","learnstudy","today","setup","practice","summary"].includes(route()) ? "study" : route();
   document.querySelectorAll("[data-route]").forEach(a => a.classList.toggle("active", a.dataset.route === activeRoute));
   document.body.classList.toggle("focus-mode", ["learnstudy", "practice"].includes(route()));
   if (route() === "learn" && query().get("verb")) { document.querySelector("#app").innerHTML = renderLearnDetail(getVerb(query().get("verb"))); bindView(); return; }
-  const views = { today: renderToday, setup: renderSetup, practice: renderPractice, summary: renderSummary, verbs: renderVerbs, learn: renderLearn, learnstudy: renderLearnStudy, topics: renderTopics, topic: renderFremtidUnit, mistakes: renderMistakes, speak: renderSpeak, account: renderAccount };
-  document.querySelector("#app").innerHTML = (views[route()] || renderToday)(); bindView();
+  const views = { study: renderStudy, today: renderStudy, setup: renderSetup, practice: renderPractice, summary: renderSummary, verbs: renderVerbs, learn: renderLearn, learnstudy: renderLearnStudy, topics: renderTopics, topic: renderFremtidUnit, read: renderReading, mistakes: renderMistakes, speak: renderSpeak, account: renderAccount };
+  document.querySelector("#app").innerHTML = (views[route()] || renderStudy)(); bindView();
 }
 function renderAccount() {
   const params = new URLSearchParams(location.search); const resetToken = params.get("reset"); if(params.get("verified")==="1") accountNotice="邮箱已验证，现在可以登录了。";
@@ -304,6 +356,32 @@ function progressForSkill(skill) { return Math.max(25, 78 - state.mistakes.filte
 function renderToday() {
   const s = state.session; const done = s ? Object.keys(s.answers || {}).length : 0; const total = s?.total || 0; const pct = total ? Math.round(done / total * 100) : 0;
   return `<section class="hero"><div class="hero-main"><div class="eyebrow">Dagens økt · 今日训练</div><h1>练到开口时<br>不再犹豫。</h1><p>先选择题量，系统会按学习目标分配题型。每个动词会在四形、情态、过去、完成和固定搭配中反复出现。</p><button class="button primary" data-start>${s ? "继续今日训练" : "选择题量并开始"}</button></div><aside class="hero-side"><div><span class="streak">${state.streak}<small>天连续学习 · streak</small></span></div><div><div class="metric-head"><strong>${s ? "本次进度" : "准备开始"}</strong><span>${s ? `${done}/${total}` : "5–30题"}</span></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div></aside></section><section class="grid"><article class="panel"><span class="tag">弱项雷达</span><h2 style="margin-top:12px">你的四个盒子</h2><div class="metric-row">${["动词四形","情态 + V1","过去时","har + 完成分词","V2 语序"].map(skill => `<div><div class="metric-head"><strong>${skill}</strong><span>${progressForSkill(skill)}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${progressForSkill(skill)}%"></div></div></div>`).join("")}</div></article><article class="panel"><span class="tag">科学分配</span><h2 style="margin-top:12px">每次都练完整链条</h2><p class="muted">先识别形态，再放进情境，最后用固定搭配和复习迁移。错题会回到你的错误库，不会只出现一次。</p><div class="rule-box"><strong>四句话记一个词：</strong><br><span class="example">Jeg jobber. · Jeg skal jobbe. · Jeg jobbet. · Jeg har jobbet.</span></div></article></section>`;
+}
+function localDayKey() { return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date()); }
+function dailyReadingArticle() { const day = Math.floor(Date.parse(`${localDayKey()}T12:00:00Z`) / 86400000); return window.READING_LIBRARY[((day % window.READING_LIBRARY.length) + window.READING_LIBRARY.length) % window.READING_LIBRARY.length]; }
+function renderStudy() {
+  const day = localDayKey(), done = state.readingProgress?.[day]?.done, daily = state.dailyProgress?.[day] || {}, due = Object.values(state.review || {}).filter(item => item.dueAt <= Date.now()).length;
+  const s = state.session, completed = s ? Object.keys(s.answers || {}).length : 0;
+  return `<section class="hero"><div class="hero-main"><div class="eyebrow">Dagens læring · 今日学习</div><h1>每天一点，<br>把挪威语用起来。</h1><p>一个入口安排复习、结构练习和情境阅读。先回忆，再核对，再把词句用于自己的生活。</p><div class="actions"><button class="button primary" data-start-daily>${s ? `继续上次练习 ${completed}/${s.total}` : "开始今日练习"}</button><button class="button secondary" data-start-vocab-daily>复习到期词 ${due ? `· ${due}` : ""}</button></div></div><aside class="hero-side"><span class="streak">${state.streak}<small>天连续学习</small></span><div class="metric-head"><strong>今日任务</strong><span>${Number(!!daily.practice)+Number(!!daily.vocab)+Number(!!done)}/3</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.round((Number(!!daily.practice)+Number(!!daily.vocab)+Number(!!done))/3*100)}%"></div></div><p class="muted">建议：练习 10 题 · 记忆 5 词 · 阅读 1 篇</p></aside></section><section class="grid"><article class="panel daily-task"><span class="tag">① 结构练习</span><h2>短时集中练习</h2><p class="muted">题型按比例轮换，最近做过的动词尽量暂缓出现。</p><button class="button primary" data-start-daily>${s ? "继续上次练习" : "开始10题"}</button></article><article class="panel daily-task"><span class="tag">② 词汇记忆</span><h2>在句子里记词</h2><p class="muted">优先复习到期词与高频词；混合动词、名词和专题词汇。</p><button class="button secondary" data-start-vocab-daily>开始5词主动回忆</button></article><article class="panel daily-task"><span class="tag">③ 今日阅读</span><h2>${esc(dailyReadingArticle().title)}</h2><p class="muted">${esc(dailyReadingArticle().deck)} · ${done?"已完成":"约5分钟"}</p><a class="button secondary topic-shortcut" href="#read">${done?"重读并复习":"打开今日短文"}</a></article><article class="panel daily-task"><span class="tag">内容库</span><h2>按需要继续学习</h2><p class="muted">词汇按主题组织，专题将词汇、语法、句子与练习串起来。</p><div class="actions"><a class="button secondary topic-shortcut" href="#learn">词汇库</a><a class="button secondary topic-shortcut" href="#topics">专题库</a></div></article></section>`;
+}
+function readingTokens(article, sentence) {
+  const surfaces = article.words.flatMap(word => word.surface.map(surface => ({ surface, word }))).sort((a, b) => b.surface.length - a.surface.length);
+  const matcher = new RegExp("(" + surfaces.map(item => item.surface).join("|") + ")", "giu");
+  return sentence.split(matcher).map(part => {
+    const found = surfaces.find(item => item.surface.toLocaleLowerCase("nb-NO") === part.toLocaleLowerCase("nb-NO"));
+    return found ? '<button class="article-token" data-read-word="' + esc(found.word.id) + '">' + esc(part) + "</button>" : esc(part);
+  }).join("");
+}
+function renderReading() {
+  const articles = window.READING_LIBRARY, article = articles.find(item => item.id === query().get("id")) || dailyReadingArticle();
+  const saved = state.readingProgress?.[localDayKey()]?.articleId === article.id && state.readingProgress?.[localDayKey()]?.done;
+  const lines = article.sentences.map(([no, zh, grammar], i) => {
+    const tokens = readingTokens(article, no);
+    return `<article class="reading-line"><div class="reading-no"><span>${i+1}</span><p>${tokens}</p></div><button class="text-button" data-read-line="${i}">显示翻译与语法</button><div class="reading-translation" id="read-line-${i}" hidden><p>${esc(zh)}</p><small>${esc(grammar)}</small><button class="sound-button" data-say="${esc(no)}">🔊 听句子</button></div></article>`;
+  }).join("");
+  const lookup = state.readingLookup?.articleId === article.id ? state.readingLookup : null;
+  const lookupHtml = lookup ? `<section class="reading-lookup" id="reading-lookup"><span class="eyebrow">${esc(lookup.kind === "word" ? lookup.word.pos : "句子讲解")}</span><h2>${esc(lookup.kind === "word" ? lookup.word.lemma : lookup.no)}</h2><p><strong>${esc(lookup.kind === "word" ? lookup.word.zh : lookup.zh)}</strong></p><p>${esc(lookup.kind === "word" ? lookup.word.note : lookup.note)}</p>${lookup.kind === "word" ? `<p class="muted">${esc(lookup.word.forms)}</p><div class="rule-box"><b>情境例句：</b>${esc(lookup.word.example)}<br>${esc(lookup.word.exampleZh)}</div><div class="actions"><button class="button secondary" data-read-speak="${esc(lookup.word.lemma)}">🔊 听发音</button><button class="button primary" data-read-save="${esc(lookup.word.id)}">${state.savedWords.some(w=>w.id===`${article.id}:${lookup.word.id}`)?"已加入复习":"加入词汇复习"}</button></div>`:`<button class="sound-button" data-read-speak="${esc(lookup.no)}">🔊 听句子</button>`}</section>` : "";
+  return `<section class="panel wide reading-page"><div class="reading-top"><div><span class="eyebrow">Les · 分级阅读 · ${esc(article.level)} · ${esc(article.theme)}</span><h1>${esc(article.title)}</h1><p class="muted">${esc(article.deck)} <span class="tag">原创分级短文</span></p></div><select data-reading-select aria-label="选择阅读文章">${articles.map(item=>`<option value="${esc(item.id)}" ${item.id===article.id?"selected":""}>${esc(item.title)}</option>`).join("")}</select></div><p class="reading-instruction">先读挪威语，点橙色词看词义；每句下方可展开翻译和语法。页面内容为人工编写，不是实时新闻。</p><div class="reading-lines">${lines}</div>${lookupHtml}<div class="actions"><button class="button ${saved?"secondary":"primary"}" data-read-done>${saved?"✓ 今日已完成阅读":"完成今日阅读"}</button><button class="button secondary" data-go-study>返回学习</button></div><h2 class="topic-heading">本篇重点词</h2><div class="topic-grid">${article.words.map(word=>`<button class="learn-card" data-read-word="${esc(word.id)}"><strong>${esc(word.lemma)}</strong><div>${esc(word.zh)} · ${esc(word.pos)}</div><span class="learn-forms">${esc(word.forms)}</span></button>`).join("")}</div><h2 class="topic-heading">选择其他短文</h2><div class="topic-grid">${articles.map(item=>`<button class="topic-card article-choice" data-article="${esc(item.id)}"><div class="topic-icon">文</div><div class="topic-info"><span class="topic-level">${esc(item.level)} · ${esc(item.theme)}</span><h3>${esc(item.title)}</h3><p>${esc(item.deck)}</p></div></button>`).join("")}</div></section>`;
 }
 function renderSetup() {
   const selected = Number(query().get("n")) || 10; const counts = countsFor(selected);
@@ -393,39 +471,50 @@ function renderLearn() {
   const dueCount = allEntries.filter(entry => state.review?.[entry.key] && state.review[entry.key].dueAt <= Date.now()).length;
   const active = state.vocabSession;
   const futureEntries = topicEntries("fremtid"); const futureMastered = futureEntries.filter(e => (state.review?.[e.key]?.streak || 0) >= 2).length;
-  return `<section class="panel wide learning-home"><span class="eyebrow">Lær · 词汇记忆</span><h1>从高频词开始，放进句子和场景里记。</h1><p class="muted">先读情境句和译文，回忆目标词，再用系统键盘输入；正确词会拉长复习间隔，易忘词和高频重点词会更常出现。</p><div class="study-method"><strong>一张卡的记忆流程</strong><div><span>① 看主题句</span><span>② 回忆目标词</span><span>③ 听音跟读</span><span>④ 间隔复习</span></div></div><div class="topic-actions"><button class="button primary" data-study="5" data-topic="fremtid">学未来专题5词</button><button class="button secondary" data-study="10" data-topic="fremtid">复习未来专题10词</button><a class="button secondary topic-shortcut" href="#topic?unit=vocab">浏览82个专题词</a></div>${active ? `<button class="resume-study" data-resume-session>继续${active.topicId === "fremtid" ? "未来专题" : VOCAB_TOPICS.find(topic => topic.id === active.topicId)?.title || "当前专题"} · ${Math.min(active.index + 1, active.ids.length)}/${active.ids.length} 词</button>` : ""}<div class="learn-overview"><div><strong>${futureMastered}/${futureEntries.length}</strong><span>未来专题已连续记住两次</span></div><div><strong>${dueCount}</strong><span>到期待复习</span></div></div><h2 class="topic-heading">常用词汇练习</h2><div class="topic-grid">${VOCAB_TOPICS.map(topic => { const entries = topicEntries(topic.id); const done = entries.filter(entry => (state.review?.[entry.key]?.streak || 0) >= 2).length; return `<article class="topic-card"><div class="topic-icon">${topic.icon}</div><div class="topic-info"><span class="topic-level">${topic.level}</span><h3>${topic.title}</h3><p>${topic.description}</p><div class="topic-meta"><span>${entries.filter(entry => entry.kind === "verb").length} 个动词 · ${entries.filter(entry => entry.kind === "noun").length} 个名词</span><span>${done}/${entries.length} 熟练</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.round(done / entries.length * 100)}%"></div></div><div class="topic-actions"><button class="button primary" data-study="5" data-topic="${topic.id}">学5个</button><button class="button secondary" data-study="10" data-topic="${topic.id}">复习10个</button></div></div></article>`; }).join("")}</div></section>`;
+  return `<section class="panel wide learning-home"><span class="eyebrow">Lær · 词汇记忆 V2</span><h1>从高频词开始，放进句子和场景里记。</h1><p class="muted">练习不只背中文：先回忆词形，再判断它在真实句子里怎么用。熟练词降低频率，薄弱词和到期词优先。</p><div class="study-method"><strong>一张卡的学习循环</strong><div><span>① 场景理解</span><span>② 主动回忆词形</span><span>③ 语境选用</span><span>④ 间隔复习</span></div></div><div class="topic-actions"><button class="button primary" data-study="5" data-topic="daily">混合复习5词</button><button class="button secondary" data-study="10" data-topic="fremtid">复习未来专题10词</button><a class="button secondary topic-shortcut" href="#topic?unit=vocab">浏览专题词汇</a></div>${(state.savedWords||[]).length?`<article class="panel saved-words"><h2>阅读收藏 · ${state.savedWords.length} 词</h2><p class="muted">从短文收藏的词会进入间隔复习。</p><button class="button primary" data-study="5" data-topic="saved">练习收藏词</button></article>`:""}${active ? `<button class="resume-study" data-resume-session>继续${active.topicId === "fremtid" ? "未来专题" : VOCAB_TOPICS.find(topic => topic.id === active.topicId)?.title || "当前专题"} · ${Math.min(active.index + 1, active.ids.length)}/${active.ids.length} 词</button>` : ""}<div class="learn-overview"><div><strong>${mastered}/${allEntries.length}</strong><span>词条已连续记住两次</span></div><div><strong>${dueCount}</strong><span>到期待复习</span></div></div><h2 class="topic-heading">常用词汇主题</h2><div class="topic-grid">${VOCAB_TOPICS.map(topic => { const entries = topicEntries(topic.id); const done = entries.filter(entry => (state.review?.[entry.key]?.streak || 0) >= 2).length; const types = [...new Set(entries.map(entry => entry.kind === "verb" ? "动词" : entry.kind === "noun" || entry.pos === "名词" ? "名词" : entry.pos || "词汇"))]; const clusters = window.VOCAB_V2?.clusters?.[topic.id] || []; return `<article class="topic-card"><div class="topic-icon">${topic.icon}</div><div class="topic-info"><span class="topic-level">${topic.level}</span><h3>${topic.title}</h3><p>${topic.description}</p><div class="topic-meta"><span>${types.join(" · ")} · ${entries.length} 词条</span><span>${done}/${entries.length} 熟练</span></div>${clusters.length ? `<div class="topic-clusters">${clusters.map(cluster => `<span>${esc(cluster)}</span>`).join("")}</div>` : ""}<div class="progress-track"><div class="progress-fill" style="width:${Math.round(done / Math.max(1, entries.length) * 100)}%"></div></div><div class="topic-actions"><button class="button primary" data-study="5" data-topic="${topic.id}">学5个</button><button class="button secondary" data-study="10" data-topic="${topic.id}">复习10个</button></div></div></article>`; }).join("")}</div></section>`;
 }
 function renderWordForm(label, text) { return `<span class="word-form-card"><small>${esc(label)}</small><strong>${esc(text)}</strong><button class="sound-button word-audio" data-say="${esc(text)}" type="button" aria-label="播放 ${esc(text)} 的挪威语发音">🔊 听词</button></span>`; }
 function renderLearnStudy() {
   const s = state.vocabSession; if (!s || !s.ids.length) return renderLearn();
   const entry = getStudyEntry(s.ids[s.index]); const topic = VOCAB_TOPICS.find(item => item.id === s.topicId) || { title: "Fremtid · 未来", story: "Jeg vil lære et nytt språk. Jeg skal nå målet mitt.", storyZh: "我想学习一门新语言。我会实现自己的目标。" };
-  const title = entry.kind === "future" ? entry.word : entry.kind === "noun" ? entry.lemma : entry.v1; const fields = entryFields(entry); const nounInfo = entry.kind === "noun" ? nounGuide(entry) : null;
-  const category = entry.kind === "future" ? entry.pos : entry.kind === "noun" ? "名词" : "动词";
+  const title = entry.kind === "future" ? entry.word : entry.kind === "noun" ? entry.lemma : entry.kind === "lexeme" ? entry.word : entry.v1; const fields = entryFields(entry); const nounInfo = entry.kind === "noun" ? nounGuide(entry) : null;
+  const category = entry.kind === "future" ? entry.pos : entry.kind === "noun" ? "名词" : entry.kind === "lexeme" ? entry.pos : "动词";
   const studyHeader = `<div class="study-topline"><div><span class="eyebrow">${topic.title} · ${category}</span><strong>先回忆，再看答案</strong></div><div class="study-right"><span class="study-counter">${s.index + 1}/${s.ids.length}</span><button class="study-exit" data-back-topics type="button" aria-label="返回专题">×</button></div></div>`;
   if (!s.revealed) {
     const step = Math.min(s.recallStep || 0, fields.length - 1); const field = fields[step];
     const value = s.recallValues?.[field.key] || "";
+    const context = s.contexts?.[entry.key];
     const front = entry.kind === "future"
       ? `<div class="word-scene" aria-hidden="true">${entry.scene}</div><span class="eyebrow">${esc(entry.pos)} · 看句子回忆主题词</span><h1>${esc(entry.zh)}</h1><p class="example">${esc(entry.sentence)}</p><p class="muted">${esc(entry.translation)}</p><button class="sound-button" data-say="${esc(entry.sentence)}" type="button">🔊 听例句</button>`
       : entry.kind === "noun"
-      ? `<span class="eyebrow">根据准确语义和情境回忆名词</span><h1>${esc(nounInfo.meaning)}</h1><div class="meaning-cue"><strong>本题语义</strong><p>${esc(nounInfo.note)}</p></div><p class="muted">例句意思：${esc(entry.sentenceZh)}</p>`
-      : `<span class="eyebrow">动词原形 · 回忆其他形式</span><h1>${esc(entry.v1)}</h1><p class="vocab-meaning">${esc(entry.zh)}</p><p class="muted">本题搭配：<span class="example">${esc(entry.phrase)}</span> · ${esc(VERB_USAGE_ZH[entry.v1] || entry.zh)}</p>`;
+      ? `<span class="eyebrow">根据准确语义和情境回忆名词</span><h1>${esc(nounInfo.meaning)}</h1><div class="meaning-cue"><strong>本题语义</strong><p>${esc(nounInfo.note)}</p></div><p class="example">${esc(context?.no || entry.sentence)}</p><p class="muted">${esc(context?.zh || entry.sentenceZh)}</p>`
+      : entry.kind === "lexeme"
+      ? `<span class="eyebrow">${esc(entry.pos)} · ${esc(entry.cluster)}</span><h1>${esc(entry.zh)}</h1><div class="meaning-cue"><strong>先想语境，不要只背中文</strong><p>${esc(entry.note)}</p></div>${context ? `<p class="example">${esc(context.no)}</p><p class="muted">${esc(context.zh)}</p><button class="sound-button" data-say="${esc(context.no)}" type="button">🔊 听情境句</button>` : ""}`
+      : `<span class="eyebrow">动词 · 从语义和句子回忆词形</span><h1>${esc(entry.zh)}</h1><p class="muted">结合这个常见搭配理解：<span class="example">${esc(entry.phrase)}</span></p>${context ? `<p class="example">${esc(context.no)}</p><p class="muted">${esc(context.zh)}</p>` : ""}`;
     return `<section class="question-card vocab-card">${studyHeader}<div class="study-progress" style="--steps:${fields.length}">${fields.map((item, i) => `<span class="${i < step ? "done" : i === step ? "current" : ""}">${i + 1} ${item.label}</span>`).join("")}</div><div class="vocab-front">${front}</div><div class="recall-step"><div class="recall-step-head"><span>第 ${step + 1} / ${fields.length} 项</span><strong>${field.label}</strong><small>${field.hint}</small></div><input id="vocab-current" class="answer vocab-answer" type="text" value="${esc(value)}" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="写出 ${esc(field.label)} …" aria-label="${field.label}"><div class="actions vocab-actions recall-actions"><button class="button primary" data-vocab-step>${step === fields.length - 1 ? "检查并看答案" : "下一项"}</button><button class="button secondary" data-vocab-reveal>直接看答案</button></div><p class="recall-help">使用手机系统键盘输入。也可以先口头回忆，再点击“直接看答案”。</p></div></section>`;
   }
   const result = s.lastResult;
+  if (s.usagePending && s.usageQuestion) { const q = s.usageQuestion; return `<section class="question-card vocab-card">${studyHeader}<div class="meaning-guide"><span>词形会背了，还要会选</span><strong>${esc(q.prompt)}</strong><p>${esc(q.zh)}</p></div>${q.sentence ? `<div class="example-card"><code>${esc(q.sentence)}</code></div>` : ""}<div class="usage-options">${q.choices.map((choice, i) => `<button class="choice-button" data-vocab-usage-choice="${i}">${esc(choice)}</button>`).join("")}</div><p class="muted">选出放在这个具体语境中最合适的形式。</p></section>`; }
   if (entry.kind === "future") return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.pos)} · ${esc(entry.zh)}</span><div class="answer-headword"><h1>${esc(entry.word)}</h1><button class="sound-button headword-audio" data-say="${esc(entry.word)}" type="button">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 回忆正确" : "看答案，再主动回忆一次"}</h3><p>${esc(result.message)}</p></div>` : ""}<div class="meaning-guide"><span>词义与词形</span><strong>${esc(entry.zh)}</strong><p>${esc(entry.forms)}</p><p><b>例句译文：</b>${esc(entry.translation)}</p></div><div class="example-card"><code>${esc(entry.sentence)}</code><p>${esc(entry.translation)}</p><button class="sound-button" data-say="${esc(entry.sentence)}">🔊 听例句</button></div><div class="memory-tip"><strong>记忆方法</strong><span>先想象“${esc(entry.scene)}”所代表的场景，再把词放回整句；遮住中文复述挪威语，最后听读两遍。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
+  if (entry.kind === "lexeme") {
+    const context = s.contexts?.[entry.key] || entry.contexts?.[0];
+    const q = s.usageQuestion;
+    const forms = fields.map(field => renderWordForm(field.label, field.answer)).join("");
+    const usage = q ? `<div class="meaning-guide"><span>放进语境里判断</span><strong>${esc(q.prompt)}</strong><p class="example">${esc(q.sentence)}</p><p>${esc(q.zh)}</p><p><b>为什么：</b>${esc(q.why)}</p></div>` : "";
+    return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.pos)} · ${esc(entry.zh)}</span><div class="answer-headword"><h1>${esc(entry.word)}</h1><button class="sound-button headword-audio" data-say="${esc(entry.word)}" type="button">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 回忆与运用都正确" : "还要巩固"}</h3><p>${esc(result.message)}</p>${s.usageQuestion ? `<p>你选：<code>${esc(s.usageGiven || "未选择")}</code> · 推荐形式：<code>${esc(s.usageQuestion.answer)}</code></p>` : ""}</div>` : ""}<div class="meaning-guide"><span>具体语义与用法</span><strong>${esc(entry.zh)}</strong><p>${esc(entry.note)}</p>${entry.collocations?.length ? `<p><b>常见搭配：</b>${entry.collocations.map(esc).join(" · ")}</p>` : ""}</div><div class="big-forms">${forms}</div>${context ? `<div class="example-card"><span>真实语境 · ${esc(entry.cluster)}</span><code>${esc(context.no)}</code><p>${esc(context.zh)}</p><p class="muted">${esc(context.note)}</p><button class="sound-button" data-say="${esc(context.no)}" type="button">🔊 听例句</button></div>` : ""}${usage}<div class="memory-tip"><strong>把形式和场景绑定</strong><span>遮住译文，先复述例句；再换掉主语或时间词，自己造一个新句。复习时系统会轮换词条和例句。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
+  }
   const headwordSound = entry.kind === "noun" ? fields[0].answer : entry.v1;
-  const formCards = (entry.kind === "noun" ? fields.map(field => [field.label, field.answer]) : [["原形", entry.v1], ...fields.map(field => [field.label, field.answer])])
+  const formCards = fields.map(field => [field.label, field.answer])
     .map(([label, answer]) => renderWordForm(label, answer)).join("");
-  const verbExampleList = entry.kind === "verb" ? verbExamples(entry) : [];
+  const verbExampleList = entry.kind === "verb" ? verbExamples(entry) : []; const selectedContext = s.contexts?.[entry.key];
   const examples = entry.kind === "noun"
-    ? `<div class="four-sentences"><div><span>专题例句 · ${topic.title}</span><code>${esc(entry.sentence)}</code><p class="muted">${esc(entry.sentenceZh)}</p><button class="sound-button" data-say="${esc(entry.sentence)}" type="button">🔊 听一遍</button></div></div>`
-    : `<div class="four-sentences">${verbExampleList.map(example => `<div><span>${example.label}</span><code>${esc(example.no)}</code><p class="example-translation">${esc(example.zh)}</p><button class="sound-button" data-say="${esc(example.no)}" type="button">🔊 听一遍</button></div>`).join("")}</div>`;
+    ? `<div class="four-sentences"><div><span>语境例句 · ${esc(entry.cluster || topic.title)}</span><code>${esc(selectedContext?.no || entry.sentence)}</code><p class="muted">${esc(selectedContext?.zh || entry.sentenceZh)}</p><p class="muted">${esc(selectedContext?.note || "注意句子中的冠词和名词词尾。")}</p><button class="sound-button" data-say="${esc(selectedContext?.no || entry.sentence)}" type="button">🔊 听一遍</button></div></div>`
+    : `<div class="four-sentences"><div><span>${esc(selectedContext?.note || verbExampleList[0]?.label || "情境例句")}</span><code>${esc(selectedContext?.no || verbExampleList[0]?.no || "")}</code><p class="example-translation">${esc(selectedContext?.zh || verbExampleList[0]?.zh || "")}</p><button class="sound-button" data-say="${esc(selectedContext?.no || verbExampleList[0]?.no || "")}" type="button">🔊 听一遍</button></div><details><summary>查看其他时态例句</summary>${verbExampleList.slice(1).map(example => `<p><b>${esc(example.label)}：</b><code>${esc(example.no)}</code><br>${esc(example.zh)}</p>`).join("")}</details></div>`;
   const meaningBlock = entry.kind === "noun"
     ? `<div class="meaning-guide"><span>语义和易混点</span><strong>${esc(nounInfo.meaning)}</strong><p>${esc(nounInfo.note)}</p><p><b>例句：</b>${esc(entry.sentenceZh)}</p></div>`
     : `<div class="meaning-guide"><span>这里具体怎么理解</span><strong>${esc(entry.phrase)}</strong><p>这个搭配在例句中表示“${esc(VERB_USAGE_ZH[entry.v1] || entry.zh)}”。动词本身可表示“${esc(entry.zh)}”，实际中文要结合后面的宾语或补语判断。</p></div>`;
   const progressNote = entry.kind === "noun" ? "记名词时把冠词一起背：它告诉你词的性别；再留意定指词尾和复数变化。" : "把四形按节奏读出来，再用一个句子把它和日常生活连起来。";
-  return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.kind === "noun" ? nounInfo.meaning : entry.zh)}</span><div class="answer-headword"><h1>${esc(title)}</h1><button class="sound-button headword-audio" data-say="${esc(headwordSound)}" type="button" aria-label="播放 ${esc(headwordSound)} 的挪威语发音">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 全部回忆正确" : "看答案，再主动回忆一次"}</h3><p>${result.message}</p></div>` : ""}${meaningBlock}<p id="pronunciation-status" class="pronunciation-note" aria-live="polite">🔊 单词和词形都可单独播放，发音使用设备提供的挪威语语音。</p><div class="big-forms">${formCards}</div>${examples}<div class="theme-sentence"><span>专题整合句 · ${topic.title}</span><p class="example">${esc(topic.story)}</p><p class="muted">${esc(topic.storyZh)}</p><button class="sound-button" data-say="${esc(topic.story)}" type="button">🔊 听整句</button></div><div class="memory-tip"><strong>记忆小方法</strong><span>${progressNote} 明天、3天后和1周后再复习。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
+  return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.kind === "noun" ? nounInfo.meaning : entry.zh)}</span><div class="answer-headword"><h1>${esc(title)}</h1><button class="sound-button headword-audio" data-say="${esc(headwordSound)}" type="button" aria-label="播放 ${esc(headwordSound)} 的挪威语发音">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 词形与运用都正确" : "还需要巩固"}</h3><p>${esc(result.message)}</p>${s.usageQuestion ? `<p>你选：<code>${esc(s.usageGiven || "未选择")}</code> · 推荐形式：<code>${esc(s.usageQuestion.answer)}</code></p>` : ""}</div>` : ""}${meaningBlock}<p id="pronunciation-status" class="pronunciation-note" aria-live="polite">🔊 单词和词形都可单独播放，发音使用设备提供的挪威语语音。</p><div class="big-forms">${formCards}</div>${examples}<div class="theme-sentence"><span>专题整合句 · ${topic.title}</span><p class="example">${esc(topic.story)}</p><p class="muted">${esc(topic.storyZh)}</p><button class="sound-button" data-say="${esc(topic.story)}" type="button">🔊 听整句</button></div><div class="memory-tip"><strong>记忆小方法</strong><span>${progressNote} 明天、3天后和1周后再复习。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
 }
 function renderLearnDetail(v) { const n = state.learned[v.id] || 0; const forms = [["现在时", v.pres], ["过去时", v.past], ["完成分词", v.pp]].map(([label, word]) => renderWordForm(label, word)).join(""); const examples = verbExamples(v); return `<section class="panel wide detail-panel"><button class="text-button" data-back-learn>← 返回背词</button><span class="eyebrow">动词卡 · ${esc(v.zh)}</span><div class="answer-headword"><h1 style="font-size:58px">${esc(v.v1)}</h1><button class="sound-button headword-audio" data-say="${esc(v.v1)}" type="button" aria-label="播放 ${esc(v.v1)} 的挪威语发音">🔊 听原形</button></div><div class="big-forms">${forms}</div><div class="meaning-guide"><span>语义与固定搭配</span><strong>${esc(v.phrase)}</strong><p>这个搭配表示“${esc(VERB_USAGE_ZH[v.v1] || v.zh)}”。动词本身可表示“${esc(v.zh)}”，要和后面的成分一起理解。</p><button class="sound-button" data-say="${esc(v.phrase)}" type="button">🔊 听搭配</button></div><div class="four-sentences">${examples.map(example => `<div><span>${example.label}</span><code>${esc(example.no)}</code><p class="example-translation">${esc(example.zh)}</p><button class="sound-button" data-say="${esc(example.no)}" type="button">🔊 听例句</button></div>`).join("")}</div><p class="muted">本词已标记：${n}次。连续两次选择“我会了”后，系统会降低新词出现频率，之后按间隔复习。</p><div class="actions"><button class="button orange" data-again-verb="${v.id}">再练这个词</button><button class="button primary" data-know-verb="${v.id}">我会了</button></div></section>`; }
 function renderMistakes() {
@@ -436,7 +525,7 @@ function renderMistakes() {
 }
 function renderSpeak() { return `<section class="panel wide center"><span class="eyebrow">Snakke · 口语模式</span><h1 style="font-size:44px">Hva skal du gjøre i morgen?</h1><p class="muted">浏览器支持语音识别时可以直接说；也可以输入文字。系统会检查你常犯的动词和语序问题。</p><button class="speak-button" data-speak aria-label="开始录音">●</button><p id="speech-status" class="muted">Trykk for å snakke</p><textarea id="speech-text" placeholder="识别结果会出现在这里，也可以直接输入。"></textarea><div class="actions" style="justify-content:center"><button class="button primary" data-check-speech>分析回答</button></div><div id="feedback" style="text-align:left"></div></section>`; }
 
-function record(q, given, ok, answer, explanation) { if (state.session.answers[q.id]) return; state.session.answers[q.id] = { ok, given }; state.attempts++; if (ok) state.correct++; sendLearningEvent("answer",ok); if (!ok) state.mistakes.push({ id: Date.now(), qid: q.id, skill: q.skill, prompt: q.prompt, given, answer, explanation }); saveState(); }
+function record(q, given, ok, answer, explanation) { if (state.session.answers[q.id]) return; state.session.answers[q.id] = { ok, given }; state.attempts++; const key = q.rotationKey || `${q.type}:${q.verbId||q.id}`; const previous = state.questionMastery?.[key] || { streak: 0, seen: 0 }; state.questionMastery = { ...(state.questionMastery||{}), [key]: { streak: ok ? previous.streak + 1 : 0, seen: previous.seen + 1, lastSeenAt: Date.now() } }; if (ok) state.correct++; sendLearningEvent("answer",ok); if (!ok) state.mistakes.push({ id: Date.now(), qid: q.id, skill: q.skill, prompt: q.prompt, given, answer, explanation }); saveState(); }
 function speakNorwegian(text) {
   if (!window.speechSynthesis || typeof SpeechSynthesisUtterance === "undefined") { const status = document.querySelector("#pronunciation-status"); if (status) status.textContent = "当前浏览器不支持语音朗读；请使用系统朗读功能。"; return; }
   const synth = window.speechSynthesis; synth.cancel(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = "nb-NO"; utterance.rate = .82;
@@ -465,31 +554,38 @@ function analyze(text, q = null) {
   return { ok: issues.length === 0, issues };
 }
 function freeCheck(q, text) { const result = analyze(text, q); const ok = result.ok; const explanation = ok ? "目标结构和已知常见错误检查通过。" : result.issues.join(" "); record(q, text, ok, q.example, explanation); document.querySelector("#feedback").innerHTML = detailedFeedback(q, ok ? "good" : "close", ok ? "✓ 本地规则检查通过" : "接近正确，看看这些地方", text); document.querySelector("[data-next]")?.addEventListener("click", nextQuestion); document.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => speakNorwegian(b.dataset.say))); }
-function nextQuestion() { state.session.index++; saveState(); if (state.session.index >= state.session.total) { const answers = Object.values(state.session.answers); state.lastSummary = { total: state.session.total, correct: answers.filter(x => x.ok).length, mistakes: answers.filter(x => !x.ok).length }; sendLearningEvent("completion",true); state.session = null; saveState(); location.hash = "summary"; } else render(); }
+function nextQuestion() { state.session.index++; saveState(); if (state.session.index >= state.session.total) { const answers = Object.values(state.session.answers); state.dailyProgress = { ...(state.dailyProgress||{}), [localDayKey()]: { ...(state.dailyProgress?.[localDayKey()]||{}), practice: true } }; state.lastSummary = { total: state.session.total, correct: answers.filter(x => x.ok).length, mistakes: answers.filter(x => !x.ok).length }; sendLearningEvent("completion",true); state.session = null; saveState(); location.hash = "summary"; } else render(); }
 function startSession(total, onlyVerbId = null) { state.session = buildSession(total, onlyVerbId); saveState(); location.hash = "practice"; }
 function startVocabSession(total, topicId = "basics") {
   const pool = topicEntries(topicId); const now = Date.now();
-  const ranked = shuffle(pool).map(entry => { const review = state.review?.[entry.key]; const due = review && review.dueAt <= now; const overdue = due ? Math.min(12, 1 + (now - review.dueAt) / 86400000) : 0; const weight = (entry.priority || 1) * (due ? 7 + overdue : review ? Math.max(.25, 2 / (1 + review.streak)) : 3); return { entry, weight }; });
-  const chosen = []; while (ranked.length && chosen.length < total) { const sum = ranked.reduce((n, item) => n + item.weight, 0); let pick = Math.random() * sum; let index = ranked.findIndex(item => (pick -= item.weight) <= 0); if (index < 0) index = ranked.length - 1; chosen.push(ranked.splice(index, 1)[0].entry); }
+  const recent = new Set((state.vocabHistory || []).slice(-36));
+  const ranked = shuffle(pool).map(entry => { const review = state.review?.[entry.key]; const due = review && review.dueAt <= now; const overdue = due ? Math.min(12, 1 + (now - review.dueAt) / 86400000) : 0; const frequency = Math.max(1, entry.priority || 1); const weak = review && (review.formStreak ?? review.streak ?? 0) < 2; const base = due ? 8 + overdue : review ? (weak ? 2.4 : Math.max(.2, 1.6 / (1 + review.streak))) : 3.4; const recencyPenalty = recent.has(entry.key) && !due ? .12 : 1; const weight = frequency * base * recencyPenalty; return { entry, weight }; });
+  const freshRanked = ranked.filter(item => !recent.has(item.entry.key) || (state.review?.[item.entry.key]?.dueAt || Infinity) <= now);
+  const eligible = freshRanked.length >= total ? freshRanked : ranked;
+  const chosen = []; while (eligible.length && chosen.length < total) { const sum = eligible.reduce((n, item) => n + item.weight, 0); let pick = Math.random() * sum; let index = eligible.findIndex(item => (pick -= item.weight) <= 0); if (index < 0) index = eligible.length - 1; chosen.push(eligible.splice(index, 1)[0].entry); }
   const ids = chosen.map(entry => entry.key);
-  state.vocabSession = { topicId, ids, index: 0, revealed: false, recallStep: 0, recallValues: {}, lastResult: null }; saveState(); location.hash = "learnstudy";
+  const contexts = {}; const history = { ...(state.vocabContextHistory || {}) };
+  chosen.forEach(entry => { const candidates = vocabContexts(entry, topicId); if (!candidates.length) return; const recentIds = new Set(history[entry.key] || []); const fresh = candidates.filter(item => !recentIds.has(item.id)); const context = shuffle(fresh.length ? fresh : candidates)[0]; contexts[entry.key] = context; history[entry.key] = [...(history[entry.key] || []), context.id].slice(-Math.min(5, candidates.length)); });
+  state.vocabContextHistory = history; state.vocabHistory = [...(state.vocabHistory || []), ...ids].slice(-120);
+  state.vocabSession = { topicId, ids, contexts, index: 0, revealed: false, recallStep: 0, recallValues: {}, lastResult: null, usagePending: false, usageQuestion: null, usageOk: null }; saveState(); location.hash = "learnstudy";
 }
 function advanceVocabStep() {
   const s = state.vocabSession; const entry = getStudyEntry(s.ids[s.index]); const fields = entryFields(entry); const step = s.recallStep || 0; const field = fields[step]; const input = document.querySelector("#vocab-current"); const value = input?.value || "";
   if (!value.trim()) { input?.classList.add("input-error"); return; }
   const recallValues = { ...(s.recallValues || {}), [field.key]: value };
   if (step < fields.length - 1) { s.recallValues = recallValues; s.recallStep = step + 1; saveState(); render(); requestAnimationFrame(() => document.querySelector("#vocab-current")?.scrollIntoView({ block: "center", behavior: "smooth" })); return; }
-  const values = fields.map(item => recallValues[item.key] || ""); const correct = fields.map((item, i) => item.key === "word" ? [item.answer, item.answer.replace(/^å\s+/i, "")].some(answer => normalize(values[i]) === normalize(answer)) : normalize(values[i]) === normalize(item.answer));
+  const values = fields.map(item => recallValues[item.key] || ""); const correct = fields.map((item, i) => ["word", "v1"].includes(item.key) ? [item.answer, item.answer.replace(/^å\s+/i, "")].some(answer => normalize(values[i]) === normalize(answer)) : normalize(values[i]) === normalize(item.answer));
   s.recallValues = recallValues;
-  s.revealed = true; s.lastResult = { ok: correct.every(Boolean), message: correct.every(Boolean) ? `所有${fields.length}项都正确。把它放进专题例句里读一遍。` : fields.map((item, i) => `${item.label}${correct[i] ? "✓" : "✗"}`).join("，") + "。看一遍后，合上答案再回想。" }; saveState(); render();
+  s.lastResult = { meaningOk: correct[0], morphologyOk: correct.slice(1).every(Boolean), formsOk: correct.every(Boolean), ok: false, message: correct.every(Boolean) ? `词义回忆和${fields.length - 1}项词形都正确。再判断一次真实语境中的用法。` : fields.map((item, i) => `${item.label}${correct[i] ? "✓" : "✗"}`).join("，") + "。看一遍后，合上答案再回想。" };
+  const context = s.contexts?.[entry.key]; s.usageQuestion = usageQuestion(entry, context); s.usagePending = Boolean(s.usageQuestion); s.usageOk = null; s.revealed = !s.usagePending; s.lastResult.ok = s.lastResult.formsOk; saveState(); render();
 }
 function finishVocabCard() {
   const s = state.vocabSession; const key = s.ids[s.index]; const previous = state.review?.[key] || { streak: 0 };
-  const remembered = s.lastResult?.ok === true; const streak = remembered ? previous.streak + 1 : 0; const intervals = [1, 3, 7, 14, 30]; const delayDays = remembered ? intervals[Math.min(Math.max(streak - 1, 0), intervals.length - 1)] : 1;
+  const meaningOk = s.lastResult?.meaningOk ?? s.lastResult?.formsOk ?? false; const morphologyOk = s.lastResult?.morphologyOk ?? s.lastResult?.formsOk ?? false; const usageOk = s.usageQuestion ? s.usageOk === true : true; const remembered = meaningOk && morphologyOk && usageOk; const streak = remembered ? previous.streak + 1 : 0; const meaningStreak = meaningOk ? (previous.meaningStreak || 0) + 1 : 0; const formStreak = morphologyOk ? (previous.formStreak || 0) + 1 : 0; const usageStreak = usageOk ? (previous.usageStreak || 0) + 1 : 0; const intervals = [1, 3, 7, 14, 30]; const delayDays = remembered ? intervals[Math.min(Math.max(streak - 1, 0), intervals.length - 1)] : 1;
   sendLearningEvent("vocab", remembered);
-  state.learned[key] = (state.learned[key] || 0) + 1; state.review[key] = { streak, dueAt: Date.now() + delayDays * 86400000 };
-  s.index++; s.revealed = false; s.recallStep = 0; s.recallValues = {}; s.lastResult = null;
-  if (s.index >= s.ids.length) { state.vocabSession = null; location.hash = "learn"; } saveState(); render();
+  state.learned[key] = (state.learned[key] || 0) + 1; state.review[key] = { ...previous, streak, meaningStreak, formStreak, usageStreak, lastSeenAt: Date.now(), dueAt: Date.now() + delayDays * 86400000 };
+  s.index++; s.revealed = false; s.recallStep = 0; s.recallValues = {}; s.lastResult = null; s.usagePending = false; s.usageQuestion = null; s.usageOk = null;
+  if (s.index >= s.ids.length) { if (s.topicId === "daily") state.dailyProgress = { ...(state.dailyProgress||{}), [localDayKey()]: { ...(state.dailyProgress?.[localDayKey()]||{}), vocab: true } }; state.vocabSession = null; location.hash = "learn"; } saveState(); render();
 }
 function startSpeech() { const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition; const status = document.querySelector("#speech-status"); if (!Recognition) { status.textContent = "当前浏览器不支持语音识别，请直接输入。"; return; } const rec = new Recognition(); rec.lang = "nb-NO"; rec.interimResults = false; status.textContent = "Lytter … 正在听"; rec.onresult = e => { document.querySelector("#speech-text").value = e.results[0][0].transcript; status.textContent = "识别完成，可以分析。"; }; rec.onerror = () => { status.textContent = "没有识别成功，请重试或直接输入。"; }; rec.start(); }
 
@@ -532,6 +628,25 @@ function bindView() {
   document.querySelector("[data-auth-logout]")?.addEventListener("click",async()=>{try{await accountApi("/api/auth/logout",{method:"POST",body:"{}"});}catch{}clearAccountSession();accountUser=null;accountMedals=[];accountNotice="已退出登录。";updateAccountButton();render();});
   document.querySelectorAll("[data-board-period]").forEach(button=>button.addEventListener("click",async()=>{boardPeriod=button.dataset.boardPeriod;await refreshLeaderboard();render();}));
   document.querySelector("[data-start]")?.addEventListener("click", () => { location.hash = state.session ? "practice" : "setup?n=10"; });
+  document.querySelectorAll("[data-start-daily]").forEach(button => button.addEventListener("click", () => state.session ? (location.hash = "practice") : startSession(10)));
+  document.querySelectorAll("[data-start-vocab-daily]").forEach(button => button.addEventListener("click", () => startVocabSession(5, "daily")));
+  document.querySelector("[data-go-study]")?.addEventListener("click", () => { location.hash = "study"; });
+  document.querySelector("[data-reading-select]")?.addEventListener("change", event => { location.hash = "read?id=" + encodeURIComponent(event.target.value); });
+  document.querySelectorAll("[data-article]").forEach(button => button.addEventListener("click", () => { state.readingLookup = null; location.hash = "read?id=" + encodeURIComponent(button.dataset.article); }));
+  document.querySelectorAll("[data-read-word]").forEach(button => button.addEventListener("click", () => {
+    const article = window.READING_LIBRARY.find(item => item.id === query().get("id")) || dailyReadingArticle();
+    const word = article.words.find(item => item.id === button.dataset.readWord); if (!word) return;
+    state.readingLookup = { kind: "word", articleId: article.id, word }; saveState(); render(); document.querySelector("#reading-lookup")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }));
+  document.querySelectorAll("[data-read-line]").forEach(button => button.addEventListener("click", () => { const box = document.querySelector("#read-line-" + button.dataset.readLine); if (box) { box.hidden = !box.hidden; button.textContent = box.hidden ? "显示翻译与语法" : "收起翻译与语法"; } }));
+  document.querySelectorAll("[data-read-speak]").forEach(button => button.addEventListener("click", () => speakNorwegian(button.dataset.readSpeak)));
+  document.querySelectorAll("[data-read-save]").forEach(button => button.addEventListener("click", () => {
+    const article = window.READING_LIBRARY.find(item => item.id === query().get("id")) || dailyReadingArticle(); const word = article.words.find(item => item.id === button.dataset.readSave); if (!word) return;
+    const id = article.id + ":" + word.id;
+    if (!state.savedWords.some(item => item.id === id)) state.savedWords.push({ id, word: word.lemma, zh: word.zh, pos: word.pos, forms: word.forms, sentence: word.example, translation: word.exampleZh, scene: word.scene + " " + article.title, priority: 1.5 });
+    saveState(); render();
+  }));
+  document.querySelector("[data-read-done]")?.addEventListener("click", () => { const article = window.READING_LIBRARY.find(item => item.id === query().get("id")) || dailyReadingArticle(); const day = localDayKey(); state.readingProgress = { ...(state.readingProgress||{}), [day]: { articleId: article.id, done: true } }; saveState(); render(); sendLearningEvent("completion", true); });
   document.querySelectorAll("[data-count]").forEach(b => b.addEventListener("click", () => { location.hash = `setup?n=${b.dataset.count}`; }));
   document.querySelector("[data-begin]")?.addEventListener("click", () => startSession(Number(document.querySelector("[data-begin]").dataset.begin)));
   document.querySelector("[data-back-today]")?.addEventListener("click", () => { location.hash = "today"; });
@@ -560,8 +675,14 @@ function bindView() {
   document.querySelector("[data-mistake-next]")?.addEventListener("click", () => { const practice=state.mistakePractice; if(!practice) return; if(practice.result?.ok) state.mistakes=state.mistakes.filter(m=>m.id!==practice.id); const next=[...state.mistakes].reverse()[0]; state.mistakePractice=next?{id:next.id,index:(practice.index||0)+1,result:null}:null; saveState(); render(); });
   document.querySelector("[data-vocab-step]")?.addEventListener("click", advanceVocabStep);
   document.querySelector("#vocab-current")?.addEventListener("input", event => { const s=state.vocabSession; if(!s) return; const entry=getStudyEntry(s.ids[s.index]); const fields=entryFields(entry); const field=fields[Math.min(s.recallStep||0,fields.length-1)]; s.recallValues={...(s.recallValues||{}),[field.key]:event.target.value}; event.target.classList.remove("input-error"); saveState(); });
-  document.querySelector("[data-vocab-reveal]")?.addEventListener("click", () => { state.vocabSession.revealed = true; state.vocabSession.recallStep = 0; state.vocabSession.recallValues = {}; state.vocabSession.lastResult = null; saveState(); render(); });
-  document.querySelector("[data-vocab-retry]")?.addEventListener("click", () => { state.vocabSession.revealed = false; state.vocabSession.recallStep = 0; state.vocabSession.recallValues = {}; state.vocabSession.lastResult = null; saveState(); render(); });
+  document.querySelector("[data-vocab-reveal]")?.addEventListener("click", () => { state.vocabSession.revealed = true; state.vocabSession.usagePending = false; state.vocabSession.recallStep = 0; state.vocabSession.recallValues = {}; state.vocabSession.lastResult = null; saveState(); render(); });
+  document.querySelector("[data-vocab-usage-choice]")?.closest(".vocab-card")?.querySelectorAll("[data-vocab-usage-choice]").forEach(button => button.addEventListener("click", () => {
+    const session = state.vocabSession; const q = session?.usageQuestion; if (!q || !session.usagePending) return;
+    const given = q.choices[Number(button.dataset.vocabUsageChoice)]; session.usageGiven = given; session.usageOk = normalize(given) === normalize(q.answer); session.usagePending = false; session.revealed = true;
+    const formOk = session.lastResult?.formsOk === true; session.lastResult = { ...session.lastResult, ok: formOk && session.usageOk, message: `${formOk ? "词形回忆正确" : "词形还需复习"}；语境选择${session.usageOk ? "正确" : "需再看讲解"}。${q.why}` };
+    saveState(); render();
+  }));
+  document.querySelector("[data-vocab-retry]")?.addEventListener("click", () => { state.vocabSession.revealed = false; state.vocabSession.usagePending = false; state.vocabSession.usageQuestion = null; state.vocabSession.usageOk = null; state.vocabSession.recallStep = 0; state.vocabSession.recallValues = {}; state.vocabSession.lastResult = null; saveState(); render(); });
   document.querySelector("[data-vocab-know]")?.addEventListener("click", finishVocabCard);
   document.querySelectorAll("[data-choice]").forEach(btn => btn.addEventListener("click", () => { document.querySelectorAll("[data-choice]").forEach(x => x.disabled = true); const q = currentQuestion(); const ok = (q.answers || [q.answer]).some(a => normalize(a) === normalize(btn.dataset.choice)); btn.classList.add(ok ? "correct" : "wrong"); if (!ok) document.querySelectorAll("[data-choice]").forEach(x => { if ((q.answers || [q.answer]).some(a => normalize(a) === normalize(x.dataset.choice))) x.classList.add("correct"); }); record(q, btn.dataset.choice, ok, (q.answers || [q.answer])[0], q.explanation); document.querySelector("#feedback").innerHTML = detailedFeedback(q, ok ? "good" : "bad", ok ? "✓ 正确，但请看讲解" : "需要修改 · 这道题的规则", btn.dataset.choice); document.querySelector("[data-next]")?.addEventListener("click", nextQuestion); document.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => speakNorwegian(b.dataset.say))); }));
   document.querySelector("[data-check]")?.addEventListener("click", () => structuredCheck(currentQuestion(), document.querySelector("#answer-input").value));
@@ -573,7 +694,7 @@ function bindView() {
   document.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => speakNorwegian(b.dataset.say)));
 }
 
-document.querySelector("#reset-day").addEventListener("click", () => { if (confirm("确定清除今日进度和错题吗？")) { state = { ...DEFAULT_STATE }; saveState(); location.hash = "today"; render(); } });
+document.querySelector("#reset-day").addEventListener("click", () => { if (confirm("重置今日的练习记录？不会删除错题、词汇记忆和历史记录。")) { const day = localDayKey(); state.session = null; state.vocabSession = null; if (state.dailyProgress) delete state.dailyProgress[day]; if (state.readingProgress) delete state.readingProgress[day]; saveState(); location.hash = "study"; render(); } });
 window.addEventListener("hashchange", render);
 let lastScrollY = window.scrollY;
 window.addEventListener("scroll", () => {

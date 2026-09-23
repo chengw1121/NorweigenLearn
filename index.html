@@ -4,32 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#173f35" />
-    <meta name="description" content="为中文母语者设计的挪威语动词训练器" />
+    <meta name="description" content="为中文母语者设计的挪威语学习、词汇记忆和分级阅读应用" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=10" />
+    <link rel="stylesheet" href="styles.css?v=12" />
     <title>Norsk hver dag</title>
   </head>
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <a class="brand" href="#today" aria-label="回到今日训练">
+        <a class="brand" href="#study" aria-label="回到学习首页">
           <span class="brand-mark">N</span>
           <span><strong>Norsk hver dag</strong><small>A2 → B1 · 15 minutter</small></span>
         </a>
-        <div class="topbar-actions"><a class="ghost-button account-link" href="#account" data-account-open data-account-label>登录 / 排行</a><button class="ghost-button" id="reset-day" type="button">重置今日</button></div>
+        <div class="topbar-actions"><button class="ghost-button" id="reset-day" type="button">重置今日任务</button></div>
       </header>
 
       <main id="app" tabindex="-1"></main>
 
       <nav class="bottom-nav" aria-label="主导航">
-        <a href="#today" data-route="today"><span>●</span>I dag</a>
-        <a href="#learn" data-route="learn"><span>词</span>词汇记忆</a>
-        <a href="#topics" data-route="topics"><span>▣</span>专题</a>
-        <a href="#mistakes" data-route="mistakes"><span>↻</span>错题练习</a>
+        <a href="#study" data-route="study"><span>学</span>学习</a>
+        <a href="#read" data-route="read"><span>读</span>阅读</a>
+        <a href="#mistakes" data-route="mistakes"><span>↻</span>错题</a>
+        <a href="#account" data-route="account"><span>我</span>我的</a>
       </nav>
     </div>
-    <script src="topic-fremtid.js?v=9"></script>
-    <script src="app.js?v=10"></script>
+    <script src="topic-fremtid.js?v=10"></script>
+    <script src="reading-library.js?v=1"></script>
+    <script src="vocab-v2-library.js?v=1"></script>
+    <script src="app.js?v=12"></script>
   </body>
 </html>
