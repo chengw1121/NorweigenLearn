@@ -270,6 +270,8 @@ let state = loadState();
 let accountSession = null;
 let accountUser = null;
 let accountMedals = [];
+let accountMedalGoals = [];
+let accountStudyHabits = { currentStreak: 0, monthDays: 0, yearDays: 0 };
 let accountNotice = "";
 let accountMode = "login";
 let boardPeriod = "all";
@@ -376,10 +378,33 @@ function renderAccount() {
   if (resetToken || params.get("recovery")==="1" || accountMode==="reset") return `<section class="panel account-panel"><span class="eyebrow">账号安全 · 重置密码</span><h1>设置新密码</h1><p class="muted">新密码至少12位。保存后请用新密码登录。</p><form class="account-form" data-account-form="reset"><label>新密码<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><button class="button primary" type="submit">更新密码</button></form>${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}</section>`;
   if (accountUser) {
     const rows = boardRows.length ? boardRows.map((row,i)=>`<li class="leader-row ${row.nickname===accountUser.nickname?"me":""}"><span class="leader-rank">${i+1}</span><strong>${esc(row.nickname)}</strong><span>${Number(row.points).toLocaleString()} 分</span></li>`).join("") : `<li class="leader-empty">排行榜加载中，完成练习后这里会更新。</li>`;
-    return `<section class="panel wide account-panel"><span class="eyebrow">账户 · 学习积分</span><h1>你好，${esc(accountUser.nickname)}！</h1><p class="muted">邮箱由登录服务安全管理，不会显示在排行榜。完成练习、答题和主动回忆可累计积分；每天最多计入300分。</p>${renderTrainingSettings()}<div class="account-stats"><div><strong>${Number(accountUser.points||0).toLocaleString()}</strong><span>总积分</span></div><div><strong>${accountMedals.length}</strong><span>获得奖牌</span></div></div><h2>我的奖牌</h2><div class="medal-grid">${accountMedals.length?accountMedals.map(m=>`<article class="medal-card"><span>${esc(m.icon)}</span><strong>${esc(m.title)}</strong><small>${esc(String(m.earnedAt||"").slice(0,10))}</small></article>`).join(""):`<p class="muted">继续学习，达到积分里程碑或在挪威/中国特别日完成练习即可获得奖牌。</p>`}</div><div class="leader-heading"><div><span class="eyebrow">学习社区</span><h2>排行榜</h2></div><div class="board-tabs"><button class="${boardPeriod==="all"?"selected":""}" data-board-period="all">总榜</button><button class="${boardPeriod==="week"?"selected":""}" data-board-period="week">本周</button></div></div><ol class="leaderboard">${rows}</ol><div class="actions"><button class="button secondary" data-auth-logout>退出登录</button></div>${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}</section>`;
+    const earnedByCode = new Map(accountMedals.map(m => [m.code, m]));
+    const goalCards = accountMedalGoals.map(goal => renderMedalCard(goal, earnedByCode.get(goal.code)));
+    const featuredCodes = new Set(accountMedalGoals.map(goal => goal.code));
+    const specialCards = accountMedals.filter(m => !featuredCodes.has(m.code)).map(m => renderMedalCard({ ...earnedMedalDetails(m), ...m, progress: 1, threshold: 1 }, m));
+    const habits = accountStudyHabits;
+    return `<section class="panel wide account-panel"><span class="eyebrow">账户 · 学习积分</span><h1>你好，${esc(accountUser.nickname)}！</h1><p class="muted">邮箱由登录服务安全管理，不会显示在排行榜。完成练习、答题和主动回忆可累计积分；每天最多计入300分。</p>${renderTrainingSettings()}<div class="account-stats"><div><strong>${Number(accountUser.points||0).toLocaleString()}</strong><span>总积分</span></div><div><strong>${accountMedals.length}</strong><span>已获得奖牌</span></div><div><strong>${habits.currentStreak}</strong><span>当前连续学习日</span></div><div><strong>${habits.monthDays}/20</strong><span>本月有效学习日</span></div></div><section class="medal-intro"><span class="eyebrow">学习日的计算方式</span><p>按挪威当地日期统计，当天累计至少获得 <strong>10 分</strong>才算一个有效学习日；只登录不计。每月达 20 天获得月牌；年度牌按 120 / 180 / 240 天递进。</p><p class="fine-print">连续学习奖励：3、7、30、90、180、365、730、1,095 天。年度与月度奖牌按各自自然年/月记录。</p></section><h2>奖牌陈列室</h2><div class="medal-group-label">连续学习与阶段目标</div><div class="medal-grid">${goalCards.join("")}${specialCards.join("")}</div><div class="leader-heading"><div><span class="eyebrow">学习社区</span><h2>排行榜</h2></div><div class="board-tabs"><button class="${boardPeriod==="all"?"selected":""}" data-board-period="all">总榜</button><button class="${boardPeriod==="week"?"selected":""}" data-board-period="week">本周</button></div></div><ol class="leaderboard">${rows}</ol><div class="actions"><button class="button secondary" data-auth-logout>退出登录</button></div>${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}</section>`;
   }
   const form = accountMode === "register" ? `<form class="account-form" data-account-form="register"><label>公开昵称<input name="nickname" minlength="2" maxlength="24" autocomplete="nickname" required></label><label>邮箱（不会公开）<input name="email" type="email" maxlength="254" autocomplete="email" required></label><label>密码（至少12位）<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><p class="fine-print">注册即表示你同意使用昵称公开展示积分榜。请勿在昵称中填写邮箱、真实姓名等隐私信息。</p><button class="button primary" type="submit">创建账号并发送验证邮件</button></form>` : accountMode === "forgot" ? `<form class="account-form" data-account-form="forgot"><label>注册邮箱<input name="email" type="email" autocomplete="email" required></label><button class="button primary" type="submit">发送重置链接</button></form>` : `<form class="account-form" data-account-form="login"><label>邮箱<input name="email" type="email" autocomplete="email" required></label><label>密码<input name="password" type="password" autocomplete="current-password" required></label><button class="button primary" type="submit">登录</button></form>`;
   return `<section class="panel account-panel"><span class="eyebrow">账号 · 排行榜 · 奖牌</span><h1>${accountMode==="register"?"创建学习账号":accountMode==="forgot"?"找回密码":"登录 Norsk hver dag"}</h1><p class="muted">跨设备保存学习积分和奖牌，查看本周与总积分榜。</p>${renderTrainingSettings()}${accountBackendUnavailable?`<div class="feedback close"><h3>账号服务正在配置中</h3><p>需要先配置 Supabase 邮箱认证、Cloudflare D1 数据库并部署 Worker；配置完成后即可注册。</p></div>`:""}${verificationEmail?`<form class="account-form resend-form" data-account-form="resend"><input type="hidden" name="email" value="${esc(verificationEmail)}"><button class="button secondary" type="submit">重发验证邮件</button></form>`:""}${form}<div class="account-switch">${accountMode==="login"?`<button class="text-button" data-account-mode="register">创建账号</button><button class="text-button" data-account-mode="forgot">忘记密码</button>`:`<button class="text-button" data-account-mode="login">返回登录</button>`}</div>${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}<p class="fine-print">邮箱验证和密码由 Supabase Auth 管理；D1 只保存排行榜昵称、积分和奖牌。公开榜单仅展示昵称与分数。</p></section>`;
+}
+function medalTier(tier = "bronze") { return ["bronze", "silver", "gold", "diamond", "special"].includes(tier) ? tier : "bronze"; }
+function earnedMedalDetails(medal) {
+  if (/^month-\d{4}-\d{2}$/.test(medal.code)) return { description: "本自然月完成 20 个有效学习日", category: "月度学习", tier: "gold" };
+  const yearly = medal.code.match(/^year-\d{4}-(120|180|240)$/);
+  if (yearly) return { description: `本自然年完成 ${yearly[1]} 个有效学习日`, category: "年度学习", tier: yearly[1] === "240" ? "diamond" : yearly[1] === "180" ? "gold" : "silver" };
+  const streak = medal.code.match(/^streak-(\d+)$/);
+  if (streak) return { description: `连续 ${Number(streak[1]).toLocaleString()} 个有效学习日`, category: "连续学习", tier: Number(streak[1]) >= 365 ? "diamond" : Number(streak[1]) >= 90 ? "gold" : Number(streak[1]) >= 30 ? "silver" : "bronze" };
+  return { description: "在特别的日子里坚持学习", category: "特别日期", tier: "special" };
+}
+function medalArt(tier) {
+  return `<svg class="medal-art" viewBox="0 0 100 116" aria-hidden="true"><path class="medal-ribbon" d="M28 5h18l7 32-15-8-15 8zM54 5h18l-2 32-15-8-14 8z"/><circle class="medal-disc" cx="50" cy="66" r="32"/><circle class="medal-ring" cx="50" cy="66" r="25"/><path class="medal-star" d="m50 46 6 12 13 2-9 9 2 13-12-6-12 6 2-13-9-9 13-2z"/><circle class="medal-jewel" cx="50" cy="66" r="3"/></svg>`;
+}
+function renderMedalCard(goal, earned) {
+  const tier = medalTier(goal.tier), completed = Boolean(earned || goal.earned), progress = Number(goal.progress || 0), target = Number(goal.threshold || 1);
+  const ratio = completed ? 100 : Math.max(0, Math.min(100, Math.round(progress / target * 100)));
+  const date = earned?.earnedAt ? String(earned.earnedAt).slice(0, 10) : "";
+  return `<article class="medal-card ${completed ? "is-earned" : "is-locked"} tier-${tier}"><div class="medal-art-wrap">${medalArt(tier)}${completed ? `<span class="medal-check" aria-label="已获得">✓</span>` : ""}</div><span class="medal-category">${esc(goal.category || "学习成就")}</span><strong>${esc(goal.title)}</strong><small class="medal-description">${esc(goal.description || "完成学习挑战，收集这枚纪念奖牌。")}</small><div class="medal-progress"><span style="width:${ratio}%"></span></div><small class="medal-status">${completed ? `已获得${date ? ` · ${esc(date)}` : ""}` : `${progress.toLocaleString()} / ${target.toLocaleString()} · ${ratio}%`}</small></article>`;
 }
 function renderTrainingSettings() {
   const selected = Number(state.trainingSettings?.dailyQuestionCount) || 10;
@@ -644,14 +669,14 @@ function setAccountSession(session) { const rawExpiry=Number(session.expires_at|
 function clearAccountSession() { accountSession = null; localStorage.removeItem("norsk-auth-session"); }
 function updateAccountButton() { const button=document.querySelector("[data-account-label]"); if(button) button.textContent=accountUser?`${accountUser.nickname} · ${Number(accountUser.points||0)}分`:"登录 / 排行"; }
 async function refreshAccount() {
-  try { const data=await accountApi("/api/auth/me"); accountUser=data.user; accountMedals=data.medals||[]; accountBackendUnavailable=false; }
-  catch { accountUser=null; accountMedals=[]; accountBackendUnavailable=true; }
+  try { const data=await accountApi("/api/auth/me"); accountUser=data.user; accountMedals=data.medals||[]; accountMedalGoals=data.medalGoals||[]; accountStudyHabits=data.studyHabits||accountStudyHabits; accountBackendUnavailable=false; }
+  catch { accountUser=null; accountMedals=[]; accountMedalGoals=[]; accountStudyHabits={currentStreak:0,monthDays:0,yearDays:0}; accountBackendUnavailable=true; }
   updateAccountButton();
 }
 async function refreshLeaderboard() { try { const data=await accountApi(`/api/leaderboard?period=${boardPeriod}`); boardRows=data.rows||[]; } catch { boardRows=[]; } }
 async function sendLearningEvent(type, correct = false) {
   if(!accountUser) return;
-  try { const eventId=crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16);}); const data=await accountApi("/api/score",{method:"POST",body:JSON.stringify({eventId,type,correct})}); accountUser={...accountUser,points:data.points}; if(data.newMedals?.length) accountMedals=[...data.newMedals,...accountMedals]; updateAccountButton(); if(route()==="account"){await refreshLeaderboard();render();} }
+  try { const eventId=crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16);}); const data=await accountApi("/api/score",{method:"POST",body:JSON.stringify({eventId,type,correct})}); accountUser={...accountUser,points:data.points}; if(data.newMedals?.length) accountMedals=[...data.newMedals,...accountMedals]; accountMedalGoals=data.medalGoals||accountMedalGoals;accountStudyHabits=data.studyHabits||accountStudyHabits; updateAccountButton(); if(route()==="account"){await refreshLeaderboard();render();} }
   catch { /* The learning app stays usable when the account service is offline. */ }
 }
 async function submitAccountForm(form) {
