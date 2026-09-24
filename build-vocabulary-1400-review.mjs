@@ -43,6 +43,29 @@ const exampleTranslationReviewed = new Set([
   "du", "han", "hun", "denne", "bra", "bedre", "bestemor", "mobilnummer", "veldig", "plaster",
   "ikke", "med", "de", "dere", "hva", "hvor", "jeg", "men", "og", "fordi", "når",
   "få", "gå", "kunne", "se", "ta", "måtte", "skulle", "ville", "lærer",
+  // A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "drikke", "ettermiddag", "finne", "flytte", "gutt", "hjelp", "hjelpe", "hjem",
+  "kafé", "kaffe", "kjøpe", "kjøpesenter", "kjøre", "kopp", "kort", "år",
+  // Second A1 batch reviewed for sentence naturalness and Chinese translation.
+  "bagasje", "bare", "bety", "bussrute", "busstur", "flybuss", "fransk", "gammel",
+  "gift", "her", "i", "igjen", "klokke", "koffert", "kontrollere", "lang",
+  "ledig", "lufthavn", "mamma", "mann", "måte", "nå",
+  // Third A1 batch reviewed for sentence naturalness and Chinese translation.
+  "også", "orden", "pappa", "pass", "passkontroll", "reise", "rope", "så",
+  "sammen", "sitte", "snakke", "stå", "takk", "til", "time", "trøtt",
+  "vente", "bad", "bære", "barnehage", "besøk", "besøke", "bilde", "bord",
+  // Fourth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "brød", "brødskive", "bror", "bygning", "dør", "dusj", "etasje", "far",
+  "forstå", "frokost", "gang", "gitar", "gjest", "hente", "høre", "hus",
+  "jakke", "kjenne", "kjøkken", "kjøleskap", "koke", "kone", "kontrakt", "alene",
+  // Fifth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "av", "balkong", "benk", "bluse", "bokhylle", "borte", "bukse", "dele",
+  "der", "etter", "etternavn", "flyttebil", "flyttebyrå", "fødselsdato", "for", "foran",
+  "formiddag", "garasje", "gardin", "grei", "hår", "hjemme", "hjørne", "hoppe",
+  // Sixth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "hybel", "hylle", "inn", "instrument", "inventarliste", "italiener", "jus", "kalle",
+  "kamera", "kjøkkenbenk", "klesskap", "komfyr", "kommode", "kvarter", "kveld", "lastebil",
+  "le", "leilighet", "lenestol", "ligge", "like", "løpe", "madrass", "mandag",
 ]);
 const records = candidates.map(candidate => {
   const app = inventoryByKey.get(key(candidate.lemma, candidate.pos));

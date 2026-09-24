@@ -47,10 +47,14 @@ const toRow = (source, values) => ({
 });
 
 const rows = [];
+const coreVerbTranslations = {
+  bestå: "我通过 B1 考试。",
+  søke: "我申请一份工作。"
+};
 for (const verb of verbs) {
   const topic = topicByVerb.get(verb.v1);
   const level = topic?.level.includes("A1") && !topic?.level.includes("A2") ? "A1" : topic?.level.includes("A2") && !topic?.level.includes("A1") ? "A2" : "待分级";
-  rows.push(toRow("app.js · 核心动词", { lemma: verb.v1, display: `å ${verb.v1}`, pos: "动词", level, topic: topic?.title, zh: verb.zh, forms: `${verb.v1} – ${verb.pres} – ${verb.past} – ${verb.pp}`, example: `Jeg ${verb.pres} ${verb.tail}.`, levelBasis: level === "待分级" ? "主题标为 A1–A2，需人工定级" : "按当前主题等级暂分，待复核", status: "已有词形与基础例句·待核" }));
+  rows.push(toRow("app.js · 核心动词", { lemma: verb.v1, display: `å ${verb.v1}`, pos: "动词", level, topic: topic?.title, zh: verb.zh, forms: `${verb.v1} – ${verb.pres} – ${verb.past} – ${verb.pp}`, example: `Jeg ${verb.pres} ${verb.tail}.`, translation: coreVerbTranslations[verb.v1] || "", levelBasis: level === "待分级" ? "主题标为 A1–A2，需人工定级" : "按当前主题等级暂分，待复核", status: "已有词形与基础例句·待核" }));
 }
 for (const noun of nouns) {
   const topic = topicByNoun.get(noun.id);
