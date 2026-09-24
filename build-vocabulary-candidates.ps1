@@ -212,6 +212,7 @@ $excludedA2Keys = [System.Collections.Generic.HashSet[string]]::new([System.Stri
 [void]$excludedA2Keys.Add('nr') # abbreviation, not a learner-facing lexical headword
 [void]$excludedA2Keys.Add('ung') # candidate is only an inflection with no complete standalone teaching record
 [void]$excludedA2Keys.Add('god') # comparative/superlative cards bedre/best belong to the A1 base-adjective paradigm
+[void]$excludedA2Keys.Add('lego') # brand name/common-material use; not an independently verified Bokmål headword
 foreach ($item in $ordered | Where-Object currentLevel -eq 'A1') { [void]$knownA1Keys.Add((Get-LemmaKey $item.lemma)) }
 foreach ($item in $ordered | Where-Object currentLevel -eq 'A1') { if ($selectedA1.Count -ge $A1Target) { break }; if ($selectedKeys.Add((Get-LemmaKey $item.lemma))) { $selectedA1.Add($item) } }
 foreach ($item in $ordered) { if ($selectedA1.Count -ge $A1Target) { break }; if ($selectedKeys.Add((Get-LemmaKey $item.lemma))) { $selectedA1.Add($item) } }
