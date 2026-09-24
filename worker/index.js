@@ -16,28 +16,62 @@ const YEAR_MEDALS = [
   [120, "年度勤学者", "本自然年完成 120 个有效学习日"], [180, "年度进阶者", "本自然年完成 180 个有效学习日"], [240, "年度精进者", "本自然年完成 240 个有效学习日"],
 ].map(([days, title, description]) => ({ threshold: days, title, description, icon: "✦", tier: days >= 240 ? "diamond" : days >= 180 ? "gold" : "silver", category: "年度学习" }));
 const MONTH_MEDAL = { title: "月度满勤", description: "本自然月完成 20 个有效学习日", icon: "✦", tier: "gold", category: "月度学习", threshold: 20 };
+// Gregorian dates for Chinese traditional festivals (2026–2034 from the festival calendar); New Year dates through 2037 follow the lunar-year calendar.
 const CHINESE_FESTIVALS = {
-  "2026-02-17": ["chinese-new-year", "春节学习者"], "2026-04-05": ["qingming", "清明读书人"], "2026-06-19": ["dragon-boat", "端午挑战者"], "2026-09-25": ["mid-autumn", "中秋共学"],
-  "2027-02-06": ["chinese-new-year", "春节学习者"], "2027-04-05": ["qingming", "清明读书人"], "2027-06-09": ["dragon-boat", "端午挑战者"], "2027-09-15": ["mid-autumn", "中秋共学"],
-  "2028-01-26": ["chinese-new-year", "春节学习者"], "2028-04-04": ["qingming", "清明读书人"], "2028-05-28": ["dragon-boat", "端午挑战者"], "2028-10-03": ["mid-autumn", "中秋共学"],
-  "2029-02-13": ["chinese-new-year", "春节学习者"], "2029-04-04": ["qingming", "清明读书人"], "2029-06-16": ["dragon-boat", "端午挑战者"], "2029-09-22": ["mid-autumn", "中秋共学"],
-  "2030-02-03": ["chinese-new-year", "春节学习者"], "2030-04-05": ["qingming", "清明读书人"], "2030-06-05": ["dragon-boat", "端午挑战者"], "2030-09-12": ["mid-autumn", "中秋共学"],
+  "2026-02-17": ["chinese-new-year", "春节共学", "中国节日"], "2026-03-03": ["lantern", "元宵灯会", "中国节日"], "2026-04-05": ["qingming", "清明读书人", "中国节日"], "2026-06-19": ["dragon-boat", "端午挑战者", "中国节日"], "2026-08-19": ["qixi", "七夕共学", "中国节日"], "2026-09-25": ["mid-autumn", "中秋共学", "中国节日"], "2026-10-18": ["double-ninth", "重阳登高者", "中国节日"],
+  "2027-02-06": ["chinese-new-year", "春节共学", "中国节日"], "2027-02-20": ["lantern", "元宵灯会", "中国节日"], "2027-04-05": ["qingming", "清明读书人", "中国节日"], "2027-06-09": ["dragon-boat", "端午挑战者", "中国节日"], "2027-08-08": ["qixi", "七夕共学", "中国节日"], "2027-09-15": ["mid-autumn", "中秋共学", "中国节日"], "2027-10-08": ["double-ninth", "重阳登高者", "中国节日"],
+  "2028-01-26": ["chinese-new-year", "春节共学", "中国节日"], "2028-02-09": ["lantern", "元宵灯会", "中国节日"], "2028-04-04": ["qingming", "清明读书人", "中国节日"], "2028-05-28": ["dragon-boat", "端午挑战者", "中国节日"], "2028-08-26": ["qixi", "七夕共学", "中国节日"], "2028-10-03": ["mid-autumn", "中秋共学", "中国节日"], "2028-10-26": ["double-ninth", "重阳登高者", "中国节日"],
+  "2029-02-13": ["chinese-new-year", "春节共学", "中国节日"], "2029-02-27": ["lantern", "元宵灯会", "中国节日"], "2029-04-04": ["qingming", "清明读书人", "中国节日"], "2029-06-16": ["dragon-boat", "端午挑战者", "中国节日"], "2029-08-16": ["qixi", "七夕共学", "中国节日"], "2029-09-22": ["mid-autumn", "中秋共学", "中国节日"], "2029-10-16": ["double-ninth", "重阳登高者", "中国节日"],
+  "2030-02-03": ["chinese-new-year", "春节共学", "中国节日"], "2030-02-17": ["lantern", "元宵灯会", "中国节日"], "2030-04-05": ["qingming", "清明读书人", "中国节日"], "2030-06-05": ["dragon-boat", "端午挑战者", "中国节日"], "2030-08-05": ["qixi", "七夕共学", "中国节日"], "2030-09-12": ["mid-autumn", "中秋共学", "中国节日"], "2030-10-05": ["double-ninth", "重阳登高者", "中国节日"],
+  "2031-01-23": ["chinese-new-year", "春节共学", "中国节日"], "2031-02-06": ["lantern", "元宵灯会", "中国节日"], "2031-04-05": ["qingming", "清明读书人", "中国节日"], "2031-06-24": ["dragon-boat", "端午挑战者", "中国节日"], "2031-08-24": ["qixi", "七夕共学", "中国节日"], "2031-10-01": ["mid-autumn", "中秋共学", "中国节日"], "2031-10-24": ["double-ninth", "重阳登高者", "中国节日"],
+  "2032-02-11": ["chinese-new-year", "春节共学", "中国节日"], "2032-02-25": ["lantern", "元宵灯会", "中国节日"], "2032-04-04": ["qingming", "清明读书人", "中国节日"], "2032-06-12": ["dragon-boat", "端午挑战者", "中国节日"], "2032-08-12": ["qixi", "七夕共学", "中国节日"], "2032-09-19": ["mid-autumn", "中秋共学", "中国节日"], "2032-10-12": ["double-ninth", "重阳登高者", "中国节日"],
+  "2033-01-31": ["chinese-new-year", "春节共学", "中国节日"], "2033-02-14": ["lantern", "元宵灯会", "中国节日"], "2033-04-04": ["qingming", "清明读书人", "中国节日"], "2033-06-01": ["dragon-boat", "端午挑战者", "中国节日"], "2033-08-01": ["qixi", "七夕共学", "中国节日"], "2033-09-08": ["mid-autumn", "中秋共学", "中国节日"], "2033-10-01": ["double-ninth", "重阳登高者", "中国节日"],
+  "2034-02-19": ["chinese-new-year", "春节共学", "中国节日"], "2034-03-05": ["lantern", "元宵灯会", "中国节日"], "2034-04-05": ["qingming", "清明读书人", "中国节日"], "2034-06-20": ["dragon-boat", "端午挑战者", "中国节日"], "2034-08-20": ["qixi", "七夕共学", "中国节日"], "2034-09-27": ["mid-autumn", "中秋共学", "中国节日"], "2034-10-20": ["double-ninth", "重阳登高者", "中国节日"],
+  "2035-02-08": ["chinese-new-year", "春节共学", "中国节日"], "2036-01-28": ["chinese-new-year", "春节共学", "中国节日"], "2037-02-15": ["chinese-new-year", "春节共学", "中国节日"],
 };
+const ZODIAC_NEW_YEARS = {
+  "2026-02-17": ["horse", "马", "🐎"], "2027-02-06": ["goat", "羊", "🐐"], "2028-01-26": ["monkey", "猴", "🐒"], "2029-02-13": ["rooster", "鸡", "🐓"], "2030-02-03": ["dog", "狗", "🐕"],
+  "2031-01-23": ["pig", "猪", "🐖"], "2032-02-11": ["rat", "鼠", "🐀"], "2033-01-31": ["ox", "牛", "🐂"], "2034-02-19": ["tiger", "虎", "🐅"], "2035-02-08": ["rabbit", "兔", "🐇"], "2036-01-28": ["dragon", "龙", "🐉"], "2037-02-15": ["snake", "蛇", "🐍"],
+};
+const FIXED_FESTIVAL_MEDALS = [
+  ["01-01", "norway-new-year", "挪威新年同行", "挪威节日", "在挪威新年这一天完成学习"],
+  ["02-06", "sami-national-day", "萨米日共学", "挪威节日", "在萨米民族日完成学习"],
+  ["05-17", "norway-national-day", "挪威国庆同行", "挪威节日", "在挪威宪法日完成学习"],
+  ["12-24", "norwegian-christmas", "挪威圣诞夜", "挪威节日", "在挪威圣诞夜完成学习"],
+  ["01-01", "international-new-year", "新年启程", "国际节日", "在新年第一天完成学习"],
+  ["02-21", "international-language-day", "母语守护者", "国际节日", "在国际母语日完成学习"],
+  ["03-08", "international-womens-day", "致敬每一份坚持", "国际节日", "在国际妇女节完成学习"],
+  ["04-22", "earth-day", "地球同行者", "国际节日", "在世界地球日完成学习"],
+  ["04-23", "world-book-day", "阅读探索者", "国际节日", "在世界图书与版权日完成学习"],
+  ["05-01", "international-workers-day", "劳动者同行", "国际节日", "在国际劳动节完成学习"],
+  ["06-05", "world-environment-day", "绿色学习者", "国际节日", "在世界环境日完成学习"],
+  ["10-24", "un-day", "世界公民学习者", "国际节日", "在联合国日完成学习"],
+  ["12-25", "international-christmas", "圣诞学习之星", "国际节日", "在圣诞节完成学习"],
+  ["10-01", "china-national-day", "中国国庆共学", "中国节日", "在中国国庆节完成学习"],
+];
 
 const json = (data, status = 200, extra = {}) => new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff", ...extra } });
 const now = () => new Date().toISOString();
 const osloDate = (date = new Date()) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 function osloDayStart() { const date=osloDate();const utcNoon=new Date(`${date}T12:00:00.000Z`);const hour=Number(new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Oslo",hour:"2-digit",hourCycle:"h23"}).format(utcNoon));const offset=hour-12;return new Date(Date.parse(`${date}T00:00:00.000Z`)-offset*3600000).toISOString(); }
 const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
-function osloSpecialDates(date) {
-  const [, month, day] = date.split("-"); const mmdd = `${month}-${day}`; const found=[];
-  if (mmdd === "01-01") found.push(["norway-new-year", "新年学习者"], ["china-new-year-gregorian", "元旦学习者"]);
-  if (mmdd === "02-06") found.push(["sami-national-day", "萨米日共学"]);
-  if (mmdd === "05-17") found.push(["norway-national-day", "挪威国庆日学习者"]);
-  if (mmdd === "12-24") found.push(["norwegian-christmas", "圣诞学习者"]);
-  if (mmdd === "10-01") found.push(["china-national-day", "国庆学习者"]);
-  if (CHINESE_FESTIVALS[date]) found.push(CHINESE_FESTIVALS[date]);
+function festivalMedalsForDate(date) {
+  const [, month, day] = date.split("-"); const mmdd = `${month}-${day}`;
+  const found = FIXED_FESTIVAL_MEDALS.filter(([when]) => when === mmdd).map(([, code, title, category, description]) => ({ code: `${code}-${date.slice(0,4)}`, title, category, description, tier: "special", icon: "✦", date }));
+  const chinese = CHINESE_FESTIVALS[date];
+  if (chinese) found.push({ code: `${chinese[0]}-${date.slice(0,4)}`, title: chinese[1], category: chinese[2], description: `在${chinese[1].replace(/共学|读书人|挑战者/g, "")}当天完成学习`, tier: "special", icon: "✦", date });
+  const zodiac = ZODIAC_NEW_YEARS[date];
+  if (zodiac) found.push({ code: `zodiac-${zodiac[0]}-${date.slice(0,4)}`, title: `${date.slice(0,4)}年 · ${zodiac[1]}年新春`, category: "春节生肖", description: `在${date.slice(0,4)}年春节当天完成学习，收集${zodiac[1]}年生肖纪念奖牌`, tier: "special", icon: zodiac[2], date });
   return found;
+}
+function upcomingFestivalGoals(today) {
+  const year = Number(today.slice(0,4)), dates = new Set();
+  for (let y = year; y <= year + 1; y++) {
+    for (const [mmdd] of FIXED_FESTIVAL_MEDALS) dates.add(`${y}-${mmdd}`);
+    for (const date of Object.keys(CHINESE_FESTIVALS)) if (Number(date.slice(0,4)) === y) dates.add(date);
+  }
+  for (const date of Object.keys(ZODIAC_NEW_YEARS)) dates.add(date);
+  return [...dates].filter(date => date >= today).sort().flatMap(date => festivalMedalsForDate(date)).map(medal => ({ ...medal, progress: 0, threshold: 1, earned: false }));
 }
 function supabaseUrl(env, path) { if (!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) throw new Error("AUTH_NOT_CONFIGURED"); return `${env.SUPABASE_URL.replace(/\/$/, "")}/auth/v1/${path}`; }
 async function authRequest(env, path, payload, accessToken = "", method = payload === null ? "GET" : "POST") {
@@ -79,7 +113,7 @@ async function studyHabits(env, userId) {
   for (const day of qualifying) { run = previous && shiftIsoDay(previous, 1) === day ? run + 1 : 1; longestStreak = Math.max(longestStreak, run); previous = day; }
   const today = osloDate(), yesterday = shiftIsoDay(today, -1); let currentStreak = 0;
   if (qualifying.includes(today) || qualifying.includes(yesterday)) { let cursor = qualifying.includes(today) ? today : yesterday; const set = new Set(qualifying); while (set.has(cursor)) { currentStreak++; cursor = shiftIsoDay(cursor, -1); } }
-  return { today, currentStreak, longestStreak, monthDays: byMonth.get(today.slice(0, 7)) || 0, yearDays: byYear.get(today.slice(0, 4)) || 0, byMonth, byYear };
+  return { today, todayQualifies: (daily.get(today) || 0) >= STUDY_DAY_POINTS, currentStreak, longestStreak, monthDays: byMonth.get(today.slice(0, 7)) || 0, yearDays: byYear.get(today.slice(0, 4)) || 0, byMonth, byYear };
 }
 async function issueMedals(env, userId, points, habits) {
   const candidates=[];
@@ -89,7 +123,7 @@ async function issueMedals(env, userId, points, habits) {
   for (const [month, days] of habits.byMonth) if (days >= MONTH_MEDAL.threshold) award(MONTH_MEDAL, `month-${month}`);
   for (const [year, days] of habits.byYear) for (const medal of YEAR_MEDALS) if (days >= medal.threshold) award(medal, `year-${year}-${medal.threshold}`);
   const date=osloDate();
-  for(const [code,title] of osloSpecialDates(date)) award({ title, description: "在特别的日子里坚持学习", icon: "✦", tier: "special", category: "特别日期" }, `${code}-${date.slice(0,4)}`);
+  if (habits.todayQualifies) for (const medal of festivalMedalsForDate(date)) award(medal, medal.code);
   const results = candidates.length ? await env.DB.batch(candidates.map(m => env.DB.prepare("INSERT OR IGNORE INTO medals (user_id,code,title,icon,earned_at) VALUES (?,?,?,?,?)").bind(userId,m.code,m.title,m.icon,now()))) : [];
   const earned = candidates.filter((_, index) => results[index]?.meta?.changes).map(m => m);
   const goals = [
@@ -97,6 +131,7 @@ async function issueMedals(env, userId, points, habits) {
     ...STREAK_MEDALS.map(m => ({ ...m, progress: Math.min(habits.currentStreak, m.threshold), earned: habits.longestStreak >= m.threshold })),
     { ...MONTH_MEDAL, code: `month-${habits.today.slice(0,7)}`, progress: Math.min(habits.monthDays, MONTH_MEDAL.threshold), earned: habits.monthDays >= MONTH_MEDAL.threshold },
     ...YEAR_MEDALS.map(m => ({ ...m, code: `year-${habits.today.slice(0,4)}-${m.threshold}`, progress: Math.min(habits.yearDays, m.threshold), earned: habits.yearDays >= m.threshold })),
+    ...upcomingFestivalGoals(habits.today).map(goal => ({ ...goal, progress: goal.date === habits.today && habits.todayQualifies ? 1 : 0, earned: goal.date === habits.today && habits.todayQualifies })),
   ];
   return { earned, goals, habits };
 }
