@@ -42,6 +42,8 @@ console.log(`Candidate unique headwords: ${candidateLemmaCounts.size}/${candidat
 console.log(`Strict candidate coverage (lemma + POS + project level): ${hits.length}/${candidates.length}`);
 console.log(`A1: ${count("A1")}/600; A2 additions: ${count("A2")}/800; remaining: ${candidates.length - hits.length}`);
 const hitKeys = new Set(hits.map(candidate => `${normalize(candidate.lemma)}|${candidate.pos}|${candidate.candidateLevel}`));
+console.log("All unmatched candidates:");
+for (const candidate of candidates.filter(row => !hitKeys.has(`${normalize(row.lemma)}|${row.pos}|${row.candidateLevel}`))) console.log(`- ${candidate.candidateLevel} ${candidate.lemma} (${candidate.pos})`);
 const unmatchedOffset = Math.max(0, Number(process.argv[2]) || 0);
 console.log(`Unmatched verified A1 candidates (${unmatchedOffset}–${unmatchedOffset + 79}):`);
 for (const candidate of candidates.filter(row => row.candidateLevel === "A1" && row.officialHeadwordFound === "True" && !hitKeys.has(`${normalize(row.lemma)}|${row.pos}|${row.candidateLevel}`)).slice(unmatchedOffset, unmatchedOffset + 80)) {

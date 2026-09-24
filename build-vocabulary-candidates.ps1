@@ -46,7 +46,10 @@ function Get-Pos([string]$code, [string]$article) {
 }
 
 function Get-LemmaKey([string]$lemma) {
-  return (($lemma.Trim() -replace '\s+', ' ').ToLowerInvariant())
+  $key = (($lemma.Trim() -replace '\s+', ' ').ToLowerInvariant())
+  if ($key -eq 'alle') { return 'all' }
+  if ($key -eq 'penger') { return 'penge' }
+  return $key
 }
 
 function Add-Candidate($table, $word, $pos, $course, $lesson, $article, $forms, $gloss, $current) {

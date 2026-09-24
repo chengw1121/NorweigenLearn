@@ -58,7 +58,7 @@ for (const noun of nouns) {
   rows.push(toRow("app.js · 核心名词", { lemma: noun.lemma, display: noun.forms[0], pos: "名词", level, topic: topic?.title, zh: noun.zh, forms: noun.forms.join(" · "), example: noun.sentence, translation: noun.sentenceZh, levelBasis: level === "待分级" ? "主题标为 A1–A2，需人工定级" : "按当前主题等级暂分，待复核", status: noun.review ? `来源已登记：${noun.review.fields?.join("、") || "核验范围未注明"}` : "已有词形与例句·待核", reviewFields: noun.review?.fields?.join("、") || "", reviewSource: noun.review?.source || "", reviewSourceUrl: noun.review?.sourceUrl || "", reviewedOn: noun.review?.checkedOn || "" }));
 }
 for (const entry of v2) {
-  const lemma = entry.word.replace(/^(en|ei\/en|ei|et|å)\s+/u, "");
+  const lemma = entry.id === "penge" ? "penge" : entry.word.replace(/^(en|ei\/en|ei|et|å)\s+/u, "");
   rows.push(toRow(entry.source || "vocab-v2-library.js · V2 词条", { lemma, display: entry.word, unit: /\s/u.test(lemma) ? "短语" : "单词", pos: entry.pos, level: entry.level, topic: entry.cluster, zh: entry.zh, forms: entry.forms.join(" · "), example: entry.contexts.map(context => context[0]).join(" / "), translation: entry.contexts.map(context => context[1]).join(" / "), levelBasis: entry.levelBasis || "项目内部等级标签，需抽查", status: entry.review ? `来源已登记：${entry.review.fields?.join("、") || "核验范围未注明"}` : "已有完整语境·待审定", reviewFields: entry.review?.fields?.join("、") || "", reviewSource: entry.review?.source || "", reviewSourceUrl: entry.review?.sourceUrl || "", reviewedOn: entry.review?.checkedOn || "" }));
 }
 for (const entry of future.vocabulary) {

@@ -33,13 +33,13 @@ const inventoryByKey = new Map(inventory.map(row => [key(row.lemma, row.pos), ro
 const reviewedInventoryByLemma = new Map(inventory.filter(row => row.reviewedOn).map(row => [normalize(row.lemma), row]));
 const formsByKey = new Map(inflectionAudit.map(row => [key(row.lemma, row.pos), row]));
 // This explicit list is a human read-through of every Norwegian sentence and
-// its Chinese translation for these 20 high-frequency A1 entries. It does not
+// its Chinese translation for these listed high-frequency entries. It does not
 // certify pronunciation, CEFR level, or forms beyond the separate form audit.
 const exampleTranslationReviewed = new Set([
   "avis", "bensinstasjon", "bil", "bli", "bo", "brus", "by", "dag", "dame", "ekspeditør",
   "familie", "fly", "gjøre", "ha", "hete", "hilse", "jente", "jobbe", "kart", "kilometer",
   "komme", "koste", "krone", "antropologi", "arkitektur", "båt", "fra", "god", "hyggelig", "norsk",
-  "på", "være", "adresse", "betale", "billett", "bruke", "buss", "bussjåfør", "bytte", "dra", "vondt",
+  "på", "være", "adresse", "betale", "billett", "bruke", "buss", "bussjåfør", "bytte", "dra", "vondt", "penge",
 ]);
 const records = candidates.map(candidate => {
   const app = inventoryByKey.get(key(candidate.lemma, candidate.pos));
