@@ -158,6 +158,7 @@ $reviewedInflectionOverrides = @{
   'mester' = 'en mester · mesteren · mestere / mestre · mesterne / mestrene'
   'oktober' = 'en oktober · oktoberen · oktoberer · oktoberene'
   'bygg' = 'et bygg · bygget · bygg · byggene'
+  'plaster' = 'et plaster · plasteret · plaster / plastre · plastera / plastrene'
 }
 function Get-CandidateForms($item) {
   if ($reviewedInflectionOverrides.ContainsKey($item.lemma.ToLowerInvariant())) {
