@@ -2,3 +2,8 @@ tmp/
 .DS_Store
 node_modules/
 .wrangler/
+ntnu-learnnow-vocabulary-source.xlsx
+ntnu-now-vocabulary-source.html
+uib-ordbank-boys-source.xlsx
+uib-ordbank-lemma-source.json
+uib-ordbank-boys-source.csv
