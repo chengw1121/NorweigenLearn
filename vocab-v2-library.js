@@ -2902,7 +2902,7 @@ Object.assign(V2_REVIEW_CORRECTIONS, {
   varmegrad:{forms:["en varmegrad","varmegraden","varmegrader","varmegradene"],labels:["不定单数","定指单数","不定复数","定指复数"],note:"零上温度的一度/摄氏度；常用于天气表达以区别 minusgrad（零下度数）。例：Det blir tre varmegrader i Oslo i morgen（奥斯陆明天零上三度）。复合词词头需继续确认词典收录。"},
   videre:{note:"常见副词“继续、进一步、往后”，也可作形容词形式表示“更宽/更广”。Gå videre = 继续往前；lese videre = 继续读。例：Etter pausen gikk møtet videre（休息后会议继续了）。本词条的词性标注需按具体例句复查。"},
   virkelig:{forms:["virkelig","virkelig","virkelige","mer virkelig","mest virkelig"],labels:["阳/阴性","中性","复数/定指","比较级","最高级"],note:"可作形容词“真实的、确实存在的”，也常作副词“真的、确实、非常”。例：Er du virkelig sikker?（你真的确定吗？）官方词典明确列出形容词和副词用法。"},
-  begeistret:{forms:["begeistret / begeistra","begeistret","begeistret / begeistrede","mer begeistret","mest begeistret"],labels:["阳/阴性","中性","复数（变体）","比较级","最高级"],note:"兴奋、热情、非常喜欢某事；常用 begeistret for/over + 人或事。例：Barna er begeistret for den nye lekeplassen（孩子们对新游乐场很兴奋）。词典也收录 begeistra 形式。"},
+  begeistret:{forms:["begeistret","begeistret","begeistrede / begeistrete","mer begeistret","mest begeistret"],labels:["阳/阴性","中性","复数/定指（规范变体）","比较级","最高级"],note:"兴奋、热情、非常喜欢某事；常用 begeistret for/over + 人或事。Bokmål 复数可用 begeistrede 或 begeistrete；begeistra 是 Nynorsk 形式，不列作此 Bokmål 词条的变格。"},
   bitte:{forms:["bitte"],labels:["固定副词"],note:"程度副词，表示“非常小/一点点”，多用于 bitte liten、bitte små、bitte litt；不是一般意义的“请”。例：Kan du vente bitte litt?（你能稍微等一下吗？）官方词典将其标为副词。"},
   bratt:{forms:["bratt","bratt","bratte","brattere","brattest"],labels:["阳/阴性","中性","复数/定指","比较级","最高级"],note:"陡峭的；也可形容图表曲线急剧变化或学习曲线陡峭。例：Veien opp til hytta er bratt（通往小木屋的路很陡）。官方词典也列出“急剧”的引申义。"},
   dikt:{forms:["et dikt","diktet","dikt","diktene"],labels:["不定单数","定指单数","不定复数","定指复数"],note:"诗、诗歌；也可指编造出来的话/虚构内容。例：Elevene skrev et dikt om høsten（学生们写了一首关于秋天的诗）。复数不定式与原形相同。"},
@@ -2974,6 +2974,7 @@ Object.assign(V2_REVIEW_CORRECTIONS, {
   hun:{forms:["hun","henne"],labels:["主格/主语","宾格/介词后形式"],note:"hun 是主格，henne 是宾格形式；hennes 表示‘她的’，属于所有格限定词，不是 hun 的词形。"},
   bedre:{forms:["bedre"],labels:["比较词形（good → better）"],note:"bedre 是 god/bra 的不规则比较级；best 是非定指最高级，定指名词短语常用 beste：en bedre plan / den beste planen。该卡专练比较形式；原级 god、bra 已各有词条。"},
   "mest-adj":{note:"mest 是 mye 的最高级，表示最多/最……；mer（比较级）和 mest（最高级）都在 mer 词条的词形范式中。这里保留独立练习卡，用来学习它在不可数名词和副词语境中的用法。"},
+  mer:{forms:["mer"],labels:["固定形式；mye 的比较级形式"],note:"mer 表示更多/再一些，也可表示更……；它本身是固定形式，同时也是 mye 的比较级。mye → mer → mest 的完整数量范式见 mye 词条。"},
   veldig:{forms:["veldig","veldig","veldige"],labels:["阳/阴性","中性","复数/定指"],note:"veldig 作形容词时可有性数变化；最常见的程度副词用法不变：veldig god、veldig fort。副词用法不是第四个屈折词形。"},
   fan:{forms:["en fan","fanen","fans","fanene"],labels:["不定单数","定指单数","不定复数","定指复数"]}
 });

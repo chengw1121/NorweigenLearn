@@ -50,6 +50,7 @@ function Get-LemmaKey([string]$lemma) {
   if ($key -eq 'alle') { return 'all' }
   if ($key -eq 'penger') { return 'penge' }
   if ($key -eq 'sikkert') { return 'sikker' }
+  if ($key -eq 'mindre' -or $key -eq 'minst') { return 'liten' }
   # Comparative/superlative cards remain available for practice, but these
   # forms are already taught under their A1 base lemmas and are not new words.
   if ($key -eq 'bedre' -or $key -eq 'best') { return 'god' }

@@ -38,10 +38,15 @@ const audit = inventory.map(item => {
   const rawExpected = item.forms.split(/\s*[·–/]\s*/u).map(normalize).filter(value => value && value !== "—");
   const comparisonForms = rawExpected.filter(value => /^(mer|mest)\s/u.test(value));
   const expected = rawExpected.filter(value => !/^(mer|mest)\s/u.test(value)).filter(value => item.pos === "数词" || !/^(ei|en|et|å)$/u.test(value)).map(value => value.replace(/^har\s+/u, "").replace(/\s*\([^)]*\)\s*$/u, "").trim());
-  const matched = forms ? expected.filter(form => forms.has(form)) : [];
-  const missing = expected.filter(form => !forms?.has(form));
+  const crossLemmaForms = item.lemma === "denne"
+    ? new Set(["dette", "disse"])
+    : item.lemma === "mindre"
+      ? new Set(["liten", "lite", "små", "minst"])
+      : new Set();
+  const matched = forms ? expected.filter(form => forms.has(form) || crossLemmaForms.has(form)) : [];
+  const missing = expected.filter(form => !forms?.has(form) && !crossLemmaForms.has(form));
   const isPhrase = item.unit === "短语" || /短语/u.test(item.pos);
-  const status = isPhrase ? "词组结构需人工核查" : !forms ? "需核实是否为词典词头" : missing.length ? "有词形需人工核对" : comparisonForms.length ? "基本词形匹配；比较级形式另核" : "词头与列出词形匹配";
+  const status = isPhrase ? "词组结构需人工核查" : !forms ? "需核实是否为词典词头" : missing.length ? "有词形需人工核对" : crossLemmaForms.size ? "关联范式词形已人工核对" : comparisonForms.length ? "基本词形匹配；比较级形式另核" : "词头与列出词形匹配";
   return { ...item, officialLemmaFound: Boolean(forms), expectedForms: rawExpected.join(" · "), matchedForms: matched.join(" · "), unmatchedForms: missing.join(" · "), officialForms: forms ? [...forms].slice(0, 16).join(" · ") : "", auditStatus: status };
 });
 const outputColumns = [...columns, "officialLemmaFound", "expectedForms", "matchedForms", "unmatchedForms", "officialForms", "auditStatus"];

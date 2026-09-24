@@ -87,14 +87,14 @@ window.FREMTID_TOPIC = {
     ["tålmodig", "有耐心的", "形容词", "mer tålmodig – mest tålmodig", "Jeg skal være tålmodig og øve litt hver dag.", "我会耐心一些，每天练习一点。", "🧘"],
     ["kanskje", "也许；可能", "副词", "不变形", "Kanskje flytter jeg neste år.", "也许我明年会搬家。", "❔"],
     ["ofte", "经常", "副词", "比较级 oftere（更经常）", "Jeg skal besøke familien oftere.", "我会更经常去看家人。", "🔁"],
-    ["mer", "更多；更加", "副词", "比较级形式常用 mer", "Jeg vil lese mer.", "我想多读一些。", "➕"],
-    ["neste", "下一个；接下来的", "限定词/形容词", "neste uke / neste år", "Vi reiser neste sommer.", "我们明年夏天旅行。", "⏭️"],
+    ["mer", "更多；更加", "副词", "mer", "Jeg vil lese mer.", "我想多读一些。", "➕"],
+    ["neste", "下一个；接下来的", "限定词/形容词", "neste", "Vi reiser neste sommer.", "我们明年夏天旅行。", "⏭️"],
     ["om fem år", "五年后", "时间短语", "om + 时间段 = ……之后", "Hvor bor du om fem år?", "五年后你住在哪里？", "⏳"],
-    ["nær", "靠近", "介词", "nær + 名词；nærmere – nærmest", "Marta vil bo nær fjell og natur.", "Marta 想住在靠近山和自然的地方。", "📍"],
+    ["nær", "靠近", "介词", "nær", "Marta vil bo nær fjell og natur.", "Marta 想住在靠近山和自然的地方。", "📍"],
     ["på", "在；到；关于（依搭配）", "介词", "固定搭配中学习", "Hun søker på en ny jobb.", "她在申请一份新工作。", "🧷"],
     ["til", "到；去；为了", "介词", "komme til å + V1", "Det kommer til å regne.", "这将会下雨。", "➡️"],
     ["med", "和；用；带着", "介词", "搭配决定具体意思", "Jeg skal reise med familien.", "我会和家人一起旅行。", "🤝"],
-    ["om", "关于；在……后", "介词", "snakke om / om fem år", "Vi snakker om framtida.", "我们在谈论未来。", "🕰️"]
+    ["om", "关于；在……后", "介词", "om", "Vi snakker om framtida.", "我们在谈论未来。", "🕰️"]
   ].map(([word, zh, pos, forms, sentence, translation, scene]) => ({ word, zh, pos, forms, sentence, translation, scene })),
   dialogue: [
     ["Ingrid og Marta sitter på en kafé. De snakker om framtiden.", "Ingrid 和 Marta 坐在咖啡馆里。她们在谈论未来。"],
