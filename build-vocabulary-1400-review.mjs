@@ -42,7 +42,7 @@ const exampleTranslationReviewed = new Set([
   "på", "være", "adresse", "betale", "billett", "bruke", "buss", "bussjåfør", "bytte", "dra", "vondt", "penge", "all", "tohundrelapp",
   "du", "han", "hun", "denne", "bra", "bedre", "bestemor", "mobilnummer", "veldig", "plaster",
   "ikke", "med", "de", "dere", "hva", "hvor", "jeg", "men", "og", "fordi", "når",
-  "få", "gå", "kunne", "se", "ta", "måtte", "skulle", "ville",
+  "få", "gå", "kunne", "se", "ta", "måtte", "skulle", "ville", "lærer",
 ]);
 const records = candidates.map(candidate => {
   const app = inventoryByKey.get(key(candidate.lemma, candidate.pos));

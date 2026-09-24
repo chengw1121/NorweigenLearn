@@ -49,6 +49,7 @@ function Get-LemmaKey([string]$lemma) {
   $key = (($lemma.Trim() -replace '\s+', ' ').ToLowerInvariant())
   if ($key -eq 'alle') { return 'all' }
   if ($key -eq 'penger') { return 'penge' }
+  if ($key -eq 'sikkert') { return 'sikker' }
   return $key
 }
 
@@ -143,6 +144,7 @@ if ($candidates.ContainsKey('名词|t-skjorte')) {
 
 $sortProperties = @(
   @{Expression={ if ($_.currentLevel -eq 'A1') { 0 } elseif ($_.currentLevel -eq 'A2') { 1 } else { 2 } }}
+  @{Expression={ if ((Get-LemmaKey $_.lemma) -eq $_.lemma.ToLowerInvariant()) { 0 } else { 1 } }}
   @{Expression={ $chapters = @($_.lessons | ForEach-Object { if ($_ -match '^(\d{1,2})') { [int]$Matches[1] } }); if ($chapters.Count) { ($chapters | Measure-Object -Minimum).Minimum } else { 99 } }}
   @{Expression={ -$_.sources.Count }}
   @{Expression={ $_.lemma }}

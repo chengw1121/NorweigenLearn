@@ -54,8 +54,11 @@ for (const verb of verbs) {
 }
 for (const noun of nouns) {
   const topic = topicByNoun.get(noun.id);
-  const level = topic?.level.includes("A1") && !topic?.level.includes("A2") ? "A1" : topic?.level.includes("A2") && !topic?.level.includes("A1") ? "A2" : "待分级";
-  rows.push(toRow("app.js · 核心名词", { lemma: noun.lemma, display: noun.forms[0], pos: "名词", level, topic: topic?.title, zh: noun.zh, forms: noun.forms.join(" · "), example: noun.sentence, translation: noun.sentenceZh, levelBasis: level === "待分级" ? "主题标为 A1–A2，需人工定级" : "按当前主题等级暂分，待复核", status: noun.review ? `来源已登记：${noun.review.fields?.join("、") || "核验范围未注明"}` : "已有词形与例句·待核", reviewFields: noun.review?.fields?.join("、") || "", reviewSource: noun.review?.source || "", reviewSourceUrl: noun.review?.sourceUrl || "", reviewedOn: noun.review?.checkedOn || "" }));
+  // LearnNoW introduces lærer in lesson 7; retain the project’s provisional
+  // A2 placement rather than leaving this already-integrated core noun ungraded.
+  const level = noun.id === "lærer" ? "A2" : topic?.level.includes("A1") && !topic?.level.includes("A2") ? "A1" : topic?.level.includes("A2") && !topic?.level.includes("A1") ? "A2" : "待分级";
+  const review = noun.id === "lærer" ? { status: "词典与课程已核验：词头/词性/词形/核心义项", reviewFields: "词头/词性/词形/核心义项/课程章节", reviewSource: "Bokmålsordboka / NTNU LearnNoW", reviewSourceUrl: "https://ordbokene.no/bm/36458", reviewedOn: "2026-09-24" } : {};
+  rows.push(toRow("app.js · 核心名词", { lemma: noun.lemma, display: noun.forms[0], pos: "名词", level, topic: topic?.title, zh: noun.zh, forms: noun.forms.join(" · "), example: noun.sentence, translation: noun.sentenceZh, levelBasis: noun.id === "lærer" ? "LearnNoW 课程词汇表第 7 课；项目暂标 A2，非官方逐词 CEFR" : level === "待分级" ? "主题标为 A1–A2，需人工定级" : "按当前主题等级暂分，待复核", status: noun.review ? `来源已登记：${noun.review.fields?.join("、") || "核验范围未注明"}` : "已有词形与例句·待核", reviewFields: noun.review?.fields?.join("、") || "", reviewSource: noun.review?.source || "", reviewSourceUrl: noun.review?.sourceUrl || "", reviewedOn: noun.review?.checkedOn || "", ...review }));
 }
 for (const entry of v2) {
   const lemma = entry.id === "penge" ? "penge" : entry.word.replace(/^(en|ei\/en|ei|et|å)\s+/u, "");
