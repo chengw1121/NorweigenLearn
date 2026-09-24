@@ -85,8 +85,17 @@ function Add-Candidate($table, $word, $pos, $course, $lesson, $article, $forms, 
   if ($current) {
     if ($current.level -in @('A1','A2') -and -not $item.currentLevel) { $item.currentLevel = $current.level }
     if ($current.zh -and -not $item.zh) { $item.zh = $current.zh }
-    if ($current.example) { foreach ($sentence in ($current.example -split '\s*/\s*')) { if ($sentence -and -not $item.examples.Contains($sentence)) { $item.examples.Add($sentence) } } }
-    if ($current.translation) { foreach ($translation in ($current.translation -split '\s*/\s*')) { if ($translation -and -not $item.translations.Contains($translation)) { $item.translations.Add($translation) } } }
+    if ($current.example) {
+      $sentences = @($current.example -split '\s*/\s*')
+      $translations = @($current.translation -split '\s*/\s*')
+      for ($i = 0; $i -lt $sentences.Count; $i++) {
+        $sentence = $sentences[$i]
+        if ($sentence -and -not $item.examples.Contains($sentence)) {
+          $item.examples.Add($sentence)
+          if ($i -lt $translations.Count -and $translations[$i]) { $item.translations.Add($translations[$i]) }
+        }
+      }
+    }
   }
 }
 
@@ -141,10 +150,28 @@ if ($candidates.ContainsKey('名词|t-skjorte')) {
   $tshirt.zh = 'T恤；短袖圆领衫'
   $tshirt.forms = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
   foreach ($form in @('ei T-skjorte · T-skjorta · T-skjorter · T-skjortene','en T-skjorte · T-skjorten · T-skjorter · T-skjortene')) { [void]$tshirt.forms.Add($form) }
-  $tshirt.examples.Add('Jeg kjøpte ei blå T-skjorte på salg.')
-  $tshirt.examples.Add('Han har på seg en hvit T-skjorte.')
-  $tshirt.translations.Add('我打折买了一件蓝色T恤。')
-  $tshirt.translations.Add('他穿着一件白色T恤。')
+  $examplePairs = @(
+    @{ sentence='Jeg kjøpte en blå T-skjorte på salg.'; translation='我打折买了一件蓝色T恤。' },
+    @{ sentence='Jeg kjøpte ei blå T-skjorte på salg.'; translation='我打折买了一件蓝色T恤。' },
+    @{ sentence='Han har på seg en hvit T-skjorte.'; translation='他穿着一件白色T恤。' }
+  )
+  $uniqueExamples = [System.Collections.Generic.List[string]]::new()
+  $uniqueTranslations = [System.Collections.Generic.List[string]]::new()
+  for ($i = 0; $i -lt [Math]::Min($tshirt.examples.Count, $tshirt.translations.Count); $i++) {
+    $sentence = $tshirt.examples[$i]
+    if (-not $uniqueExamples.Contains($sentence)) {
+      $uniqueExamples.Add($sentence)
+      $uniqueTranslations.Add($tshirt.translations[$i])
+    }
+  }
+  $tshirt.examples = $uniqueExamples
+  $tshirt.translations = $uniqueTranslations
+  foreach ($pair in $examplePairs) {
+    if (-not $tshirt.examples.Contains($pair.sentence)) {
+      $tshirt.examples.Add($pair.sentence)
+      $tshirt.translations.Add($pair.translation)
+    }
+  }
 }
 
 $sortProperties = @(

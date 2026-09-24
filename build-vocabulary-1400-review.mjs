@@ -66,6 +66,119 @@ const exampleTranslationReviewed = new Set([
   "hybel", "hylle", "inn", "instrument", "inventarliste", "italiener", "jus", "kalle",
   "kamera", "kjøkkenbenk", "klesskap", "komfyr", "kommode", "kvarter", "kveld", "lastebil",
   "le", "leilighet", "lenestol", "ligge", "like", "løpe", "madrass", "mandag",
+  // Seventh A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "mellom", "møbel", "morfar", "morgen", "mormor", "morsom", "møte", "musikk",
+  "nabo", "nabohus", "oppvaskmaskin", "ordne", "plass", "riktig", "ringe", "rom",
+  "rundt", "salongbord", "seng", "si", "sjåfør", "skap", "skjørt", "sko",
+  // Eighth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "skole", "skrivebord", "smile", "sminke", "snart", "sofa", "soverom", "speil",
+  "spise", "spisebord", "spørre", "stol", "stoppe", "stor", "stue", "synge",
+  "telefon", "tenke", "tirsdag", "trapp", "undertøy", "ut", "utenfor", "våken",
+  // Ninth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "våkne", "vaske", "vaskemaskin", "ved", "vegg", "venn", "vindu", "banan",
+  "barn", "begynne", "bestemme", "bok", "butikk", "dusje", "eple", "forelder",
+  "fortelle", "fotball", "gave", "genser", "gi", "handle", "invitere", "kake",
+  // Eleventh A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "fram", "frimerke", "fruktdisk", "gebyr", "gjerne", "gøy", "halv", "handlekurv",
+  "handlevogn", "helseforsikring", "hos", "høyre", "humør", "interiørbutikk", "is", "jernbanestasjon",
+  "jobb", "kjær", "kjøledisk", "koselig", "kryss", "lære", "lage", "legge",
+  // Twelfth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "lese", "løfte", "lomme", "lyskryss", "matbu", "mene", "meter", "minutt",
+  "mor", "nabolag", "nær", "nærhet", "onsdag", "opp", "over", "pakke",
+  "postkontor", "retning", "rett", "sann", "sein", "sende", "siden", "sist",
+  // Thirteenth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "spille", "straks", "sykehus", "takke", "tegne", "treffe", "tur", "ungdomsskole",
+  "vei", "veikryss", "vekke", "vel", "vise", "appelsin", "bestille", "bygge",
+  "diskutere", "gågate", "gate", "glemme", "greie", "historie", "holde", "kantine",
+  // Fourteenth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "kirke", "kollega", "konge", "administrasjon", "alltid", "ansikt", "arbeide", "bestefar",
+  "blå", "brenne", "brosjyre", "bytur", "dessverre", "dø", "dyr", "elske",
+  "farge", "ferdig", "fersk", "fisk", "fiskemarked", "flink", "fortsette", "fotballspiller",
+  // Fifteenth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "frukt", "gjennom", "glass", "grav", "grønnsak", "grov", "guide", "gul",
+  "gulrot", "himmel", "kanskje", "katedral", "katt", "kilo", "kjøtt", "klappe",
+  "klar", "kylling", "lag", "laks", "liter", "loff", "lunsj", "lyst",
+  // Sixteenth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "mål", "mat", "melk", "mett", "middag", "mot", "nummer", "ny",
+  "nysgjerrig", "ost", "pålegg", "paprika", "pose", "potet", "prøve", "sette",
+  "sol", "ute", "vær", "huske", "billig", "brun", "dit", "etterpå",
+  // Seventeenth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "forskjellig", "glad", "grønn", "inne", "interessant", "kjempegod", "kniv", "liten",
+  "pris", "sentrum", "sulten", "tallerken", "tørst", "vann", "datter", "dessuten",
+  "flott", "fornøyd", "ganske", "heldigvis", "uke", "feber", "helg", "høst",
+  // Eighteenth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "derfor", "hånd", "oppgave", "pause", "regn", "skog", "vind", "ennå",
+  "hel", "navn", "ofte", "tid", "vanligvis", "aldri", "forresten", "hjerte",
+  "kald", "kjempeflink", "kropp", "natt", "varm", "vinter", "kjempebra", "nese",
+  // Nineteenth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "annen", "at", "åtte", "atten", "blod", "blomst", "ca.", "den",
+  "det", "dette", "din", "disse", "dytte", "egg", "ei", "eller",
+  "elv", "en", "én", "endelig", "engelsk", "fæl", "faktisk", "falle",
+  // Twentieth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "fattig", "fem", "fire", "fjorten", "forbi", "forrige", "første", "førti",
+  "fugl", "gaffel", "grå", "gress", "hallo", "handleliste", "hans", "hav",
+  "hei", "hemmelig", "hm", "holdeplass", "høy", "hundre", "hver", "hverandre",
+  // Twenty-first A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "hvilken", "hvordan", "ingen", "ingenting", "innsjø", "italiensk", "ja", "kjempefin",
+  "kjempesulten", "klær", "kne", "kø", "kvart", "kvinne", "lår", "lås",
+  "låse", "leve", "litt", "lommebok", "lukke", "måne", "mange", "mens",
+  // Twenty-second A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "mer", "min", "museum", "nakke", "nei", "ni", "niende", "noen",
+  "nøkkel", "notatbok", "oi", "om", "oppskrift", "ordbok", "øre", "ovn",
+  "øye", "pære", "park", "penn", "pølse", "postkort", "pute", "samme",
+  // Twenty-third A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "saus", "seks", "selge", "sju", "sky", "slå", "slutte", "småkake",
+  "snø", "sommer", "sønn", "stasjon", "stein", "stjerne", "telle", "ti",
+  // Twenty-fourth A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "t-skjorte", "prate", "rød", "rundstykke", "sakte", "salami", "selvfølgelig", "skinke",
+  "skinne", "skive", "søt", "spansk", "spesiell", "spiller", "svensk", "sykepleier",
+  // Twenty-fifth A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "syltetøy", "te", "terrasse", "trenge", "venninne", "verden", "vinne", "anbefale",
+  "bibliotek", "bygg", "e-post", "håpe", "kino", "konsert", "kurs", "akkurat",
+  // Twenty-sixth A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "apotek", "arkitektstudent", "arrangement", "arrangere", "auditorium", "avgift", "bank", "barne-tv",
+  "bokstav", "campus", "cola", "dagsbillett", "danse", "dekke", "disk", "eksempel",
+  "elegant", "eplekake", "femhundrelapp", "festival", "flaske", "foreleser", "forelesning", "gjette",
+  // Tenth A1 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "kakestykke", "kasse", "klasse", "klem", "klesbutikk", "kontor", "allerede", "åpne",
+  "august", "bagett", "bakeri", "banke", "bekreftelse", "bokhandel", "bolle", "brev",
+  "brødhylle", "da", "dyne", "fin", "fødselsdag", "forklare", "først", "fotoautomat",
+  // A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "grovbrød", "helårskort", "helt", "hud", "hvit", "id-kort", "idé", "idrettssenter",
+  "inngang", "institutt", "kåpe", "kjole", "kode", "kompendium", "konsulent", "kvittering",
+  "lav", "lekebutikk", "lenge", "lenger", "lørdag", "lue", "lys", "lysebrun",
+  // Next A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "moderne", "møtes", "naturligvis", "ned", "nok", "nydelig", "øyeblikk", "par",
+  "parkere", "parkeringsplass", "passe", "plutselig", "pusse", "rabatt", "salg", "sjiraff",
+  "sjokoladekake", "skjære", "skobutikk", "smil", "smør", "snill", "sove", "sted",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "stykke", "svart", "synes", "tast", "tilbake", "tilbud", "tomat", "torg",
+  "tørke", "vanlig", "vinterjakke", "vite", "ingeniør", "kontakt", "album", "alvorlig",
+  "arbeidsdag", "bak", "ballett", "ballspill", "begynnelse", "begynnerkurs", "bestevenn", "bort",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "bråk", "byggfirma", "dårlig", "deretter", "dimensjon", "dum", "elev", "enebarn",
+  "essay", "farfar", "farmor", "firma", "fjernkontroll", "fornavn", "fort", "fritidsaktivitet",
+  "grammatikk", "gruppe", "hjemland", "hobby", "informasjon", "kamerat", "kjekk", "klatre",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "klatregruppe", "knapp", "leke", "lekse", "løse", "lykkelig", "modell", "nervøs",
+  "nesten", "nokså", "nyhet", "oppe", "perm", "personale", "problem", "prosjekt",
+  "rapport", "rar", "sint", "sjef", "sjenert", "skremme", "skrive", "søndag",
+  // Next A2 batch: manually read Norwegian examples and Chinese translations on 2026-09-24.
+  "it-firma", "mye", "spennende", "stille", "sur", "ting", "trykke", "under",
+  "viktig", "virke", "bedring", "beskjed", "fest", "føle", "fryse", "gulv",
+  "hals", "hytte", "hyttetur", "influensa", "arm", "bål", "bestemt", "bla",
+  // Next A2 batch: manually read Norwegian examples and Chinese translations on 2026-09-24.
+  "blåse", "blyant", "deltaker", "disiplin", "ekstra", "enda", "engelskprøve", "fag",
+  "fastlege", "favorittfag", "flau", "følge", "før", "fri", "friminutt", "fyre",
+  "grille", "gryterett", "gubbe", "halstablett", "halvtime", "heldig", "hit", "høres",
+  // Next A2 batch: manually read Norwegian examples and Chinese translations on 2026-09-24.
+  "høstdag", "høstsalg", "hotell", "karakter", "kaste", "keeper", "kikke", "kjedelig",
+  "kjeks", "klasseliste", "klasserom", "kunstutstilling", "land", "låne", "lillebror", "male",
+  "måned", "matematikk", "menneske", "naturfag", "neste", "nettopp", "norskkurs", "opptatt",
+  // Next A2 batch: manually read Norwegian examples and Chinese translations on 2026-09-24.
+  "øve", "overskyet", "pannekake", "pen", "perfekt", "rødme", "rute", "samfunnsfag",
+  "ses", "sjokolade", "skogsvei", "skrivebok", "søster", "språk", "stenge", "storesøster",
+  "studere", "supermarked", "sykkel", "sykkeltur", "sykle", "sykling", "tavle", "tekst",
 ]);
 const records = candidates.map(candidate => {
   const app = inventoryByKey.get(key(candidate.lemma, candidate.pos));
