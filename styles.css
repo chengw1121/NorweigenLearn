@@ -68,6 +68,15 @@ button { cursor: pointer; }
 .count-pill { min-height: 42px; padding: 8px 15px; border: 1px solid var(--line); border-radius: 999px; background: white; color: var(--ink); font: inherit; font-weight: 750; }
 .count-pill.selected { border-color: var(--green); background: var(--green); color: white; }
 .daily-count-adjust { display: block; margin: 11px 0 0; }
+.daily-plan-title { margin:18px 0 2px; font-size:17px; }
+.daily-plan-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.daily-plan-option { min-height:48px; padding:9px 12px; border:1px solid var(--line); border-radius:12px; color:var(--ink); background:#fff; font:inherit; font-size:13px; font-weight:750; }
+.daily-plan-option.selected { border-color:var(--green); color:white; background:var(--green); box-shadow:0 3px 10px rgba(29,96,78,.15); }
+.sound-preference { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:14px; padding-top:13px; border-top:1px solid var(--line); }
+.sound-preference strong, .sound-preference small { display:block; }
+.sound-preference small { margin-top:3px; color:var(--muted); font-size:12px; }
+.sound-toggle { min-width:76px; min-height:40px; padding:8px 14px; border:1px solid var(--line); border-radius:999px; color:var(--muted); background:white; font:inherit; font-weight:800; }
+.sound-toggle.selected { border-color:var(--green); color:white; background:var(--green); }
 .medal-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(175px,1fr)); gap: 13px; margin: 14px 0 30px; }
 .account-stats { grid-template-columns: repeat(4,minmax(0,1fr)); }
 .medal-intro { margin: 18px 0 26px; padding: 17px 19px; border: 1px solid #d5e5dd; border-radius: 16px; background: linear-gradient(135deg,#f1f8f3,#fff9ef); }
@@ -227,6 +236,7 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .topic-meta { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 7px; color: var(--muted); font-size: 10px; }
 .topic-actions { display: flex; gap: 7px; margin-top: 11px; }
 .topic-actions .button { flex: 1; padding: 9px 7px; font-size: 12px; }
+.topic-course-link { display:block; margin-top:8px; padding:9px 10px; border:1px solid var(--line); border-radius:11px; background:#f5f8f5; color:var(--green); text-align:center; text-decoration:none; font-size:12px; font-weight:750; }
 .resume-study { width: 100%; margin: 2px 0 14px; padding: 13px 16px; border: 0; border-radius: 14px; background: var(--green); color: white; font: inherit; font-weight: 750; text-align: left; }
 .learn-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 22px 0; }
 .learn-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; }
@@ -338,6 +348,10 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
 .reading-translation small { display: block; color: var(--muted); line-height: 1.6; margin-bottom: 9px; }
 .reading-lookup { margin: 18px 0; padding: 20px; border: 1px solid #e8c7a6; border-radius: 18px; background: #fff8ef; scroll-margin: 20px; }
 .reading-lookup h2 { margin: 8px 0; }
+.reading-word-entry { min-width: 0; }
+.reading-word-entry > .learn-card { width: 100%; }
+.reading-line .reading-lookup { margin: 12px 0 0 40px; }
+.reading-lookup-close { margin-top: 10px; }
 .article-choice { width: 100%; text-align: left; color: var(--ink); cursor: pointer; font: inherit; }
 .daily-task h2 { margin-top: 14px; }
 .saved-words { margin: 18px 0; box-shadow: none; background: #f3f7f4; }
@@ -467,6 +481,7 @@ textarea:focus, input.answer:focus { border-color: #6a9d8c; box-shadow: 0 0 0 4p
   .medal-card { min-height: 225px; padding: 12px 9px; }
   .medal-art-wrap { width: 68px; height: 78px; }
   .medal-intro { padding: 14px; }
+  .daily-plan-options { grid-template-columns:1fr; }
 }
 .topic-clusters { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
 .topic-clusters span { border-radius:999px; background:var(--soft-green,#e2eee8); color:var(--forest,#173f35); padding:5px 9px; font-size:12px; }
