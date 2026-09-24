@@ -179,6 +179,94 @@ const exampleTranslationReviewed = new Set([
   "øve", "overskyet", "pannekake", "pen", "perfekt", "rødme", "rute", "samfunnsfag",
   "ses", "sjokolade", "skogsvei", "skrivebok", "søster", "språk", "stenge", "storesøster",
   "studere", "supermarked", "sykkel", "sykkeltur", "sykle", "sykling", "tavle", "tekst",
+  // Following A2 batch: manually read Norwegian examples and Chinese translations on 2026-09-24.
+  "torsdag", "trinn", "tung", "tursekk", "undervise", "urettferdig", "uten", "uttale",
+  "værvarsel", "vanskelig", "via", "viskelær", "dokument", "gjelde", "absolutt", "akutt",
+  "analyse", "ansvar", "arbeid", "arbeidsliv", "artikkel", "avdelingsleder", "avtale", "bagasjerom",
+  // Following A2 batch: manually read Norwegian examples and Chinese translations on 2026-09-24.
+  "baker", "barnehagelærer", "behandle", "blodåre", "blodprøve", "bløtkake", "bomull", "bonde",
+  "brukernavn", "budsjett", "burde", "bursdag", "byggeprosjekt", "bygging", "colaboks", "datamaskin",
+  "del", "direkte", "engasjert", "fikse", "fisker", "fjelltur", "flybillett", "forslag",
+  // Following A2 batch: manually read Norwegian examples and Chinese translations on 2026-09-24.
+  "frisør", "gjennomføring", "hate", "heller", "hensyn", "hotellrom", "hovedpunkt", "imens",
+  "innen", "innlegg", "instituttleder", "interessert", "intervjue", "joggesko", "journal", "journalist",
+  "kakao", "klare", "klasseavis", "kommunikasjon", "konferanse", "kontakte", "kontroll", "korrektur",
+  // Following A2 batch: manually read Norwegian examples and Chinese translations on 2026-09-24.
+  "kritisk", "kronisk", "kunnskap", "laboratorium", "læreryrke", "lege", "likevel", "lønn",
+  "matpakke", "merke", "møterom", "nikke", "nyttig", "ord", "organisere", "overvåke",
+  "øyeblikkelig", "pasient", "pilot", "planlegge", "planlegging", "planleggingsperiode", "pleie", "popstjerne",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "presentasjon", "presentere", "profesjonell", "prosjektdokument", "prosjektleder", "redd", "regntøy", "samarbeide",
+  "samfunn", "sånn", "sekk", "selger", "selvsagt", "senter", "servitør", "sete",
+  "sikker", "skjema", "slik", "snu", "spent", "spørsmål", "starte", "stikke",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "stolt", "støvel", "stress", "stressende", "stund", "svimmel", "syk", "sykdom",
+  "tall", "telefonnummer", "termos", "tidsfrist", "undersøkelse", "utdanning", "utfordring", "veileder",
+  "velge", "vikar", "vikarbyrå", "yrke", "dessert", "feire", "flagg", "fredag",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "hovedstad", "jul", "julaften", "julegave", "julekule", "julemiddag", "juletre", "aktiv",
+  "altså", "avansert", "bærbar", "bake", "ball", "bein", "drøm", "drømme",
+  "dronning", "egenmelding", "ekspert", "ende", "fall", "feile", "festning", "finger",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "form", "fredspris", "frisk", "grad", "gråte", "grøt", "gudstjeneste", "håndball",
+  "håndballspiller", "helse", "hevelse", "hjemmefra", "hode", "hoste", "høstferie", "hovedgate",
+  "idrett", "innom", "insistere", "jentelag", "julebord", "julekveld", "julestemning", "juletradisjon",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "kamp", "klemme", "kondisjon", "kul", "kvalm", "landslag", "legeattest", "legeerklæring",
+  "leppe", "lett", "levere", "lunge", "mage", "medisinskap", "mester", "munn",
+  "muskel", "normal", "oktober", "olympisk", "ordning", "overtid", "panne", "peke",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "periode", "puste", "pyjamasjakke", "rask", "regne", "representere", "resept", "rest",
+  "risikere", "rygg", "sesong", "side", "skadet", "skjønne", "skogstur", "skranke",
+  "skummel", "slapp", "smake", "smertestillende", "smitte", "sovne", "sport", "stakkars",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "stanse", "sterk", "stryke", "super", "svare", "svikte", "tablett", "tåke",
+  "taktikk", "tann", "tannlege", "tannlegetime", "tegnefilm", "temperatur", "termometer", "tøff",
+  "tran", "trankapsel", "travel", "trekke", "trener", "trening", "tro", "tydelig",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "urolig", "utslett", "vare", "varmegrad", "videre", "virkelig", "alder", "årstid",
+  "begeistret", "bitte", "bratt", "bryllup", "dikt", "dokke", "dokketeater", "ekte",
+  "ektepar", "eventyr", "fan", "fantastisk", "fiskelykke", "fiskestang", "fjell", "flyplass",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "folk", "forestilling", "galleri", "gammeldags", "gratis", "hjelpsom", "hjemover", "hull",
+  "hyle", "hyling", "innover", "invitasjon", "kaos", "kjølig", "kor", "kultur",
+  "kunst", "larm", "ligne", "liv", "love", "lukte", "lykke", "maleri",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "melding", "miste", "nasjonalgalleri", "natur", "nede", "nordmann", "opera", "oppleve",
+  "ordentlig", "ørret", "overnatte", "politi", "ramme", "ring", "romantiker", "rotete",
+  "rusle", "rydde", "ryddig", "ryggsekk", "rykte", "sang", "scene", "show",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "sjekke", "skitten", "skje", "skjønnhet", "skomaker", "skulke", "sliten", "slutt",
+  "sti", "storby", "strøm", "synd", "tak", "tankefull", "tåre", "teater",
+  "teaterforestilling", "tenåring", "tenåringsjente", "toalett", "usikker", "utedo", "utsikt", "utstilling",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "vakker", "akevitt", "altfor", "barnebarn", "be", "besteforelder", "beundre", "bortskjemt",
+  "byggesett", "dekorasjon", "desember", "do", "dufte", "dunk", "egen", "enig",
+  "eske", "forsyne", "fotografere", "glitter", "hage", "herlig", "juleblomst", "julepynt",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "karamellpudding", "kinn", "kle", "lov", "lutefisk", "matrett", "merkelig", "nisse",
+  "nysnø", "øl", "onkel", "ønske", "oppå", "overalt", "overraskelse", "papir",
+  "pinnekjøtt", "presang", "pudding", "ribbe", "rive", "servere", "skåle", "skeptisk",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "skifte", "skjerf", "snøball", "snøballkrig", "snømann", "speilreflekskamera", "svigerforelder", "svigermor",
+  "svineribbe", "tante", "torsk", "tradisjon", "tulle", "tykk", "typisk", "uskarp",
+  "våt", "vinterbilde", "vott", "aha", "begge", "bekymret", "berømt", "binde",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "bordtennis", "cricket", "deres", "dermed", "døgn", "dyp", "egentlig", "elektrisitet",
+  "elendig", "ellers", "elleve", "enkel", "enn", "ensom", "erfaring", "febernedsettende",
+  "flere", "forandring", "forkjølelse", "fritid", "hard", "hennes", "huff", "hvem",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "hvis", "hvorfor", "iblant", "inni", "internettilgang", "jippi", "kjemisk", "kjent",
+  "kølapp", "lån", "legevakt", "legevaktsentral", "maler", "man", "masse", "mastergradsstudent",
+  "masterstudent", "medisin", "minibank", "minibar", "minusgrad", "mulighet", "nam", "nasjonalforsamling",
+  // Following A2 batch reviewed for sentence naturalness and Chinese translation on 2026-09-24.
+  "nasjonalitet", "nett", "nevø", "oldemor", "omgangssyke", "område", "organisasjon", "parlament",
+  "passord", "pc", "pensjonist", "prest", "psykologi", "rådhus", "registrere", "reisebekreftelse",
+  "respons", "salsakurs", "seg", "semesteravgift", "semesterkort", "seminar", "sin", "smerte",
+  // Final A2 sentence/translation batch reviewed on 2026-09-24.
+  "som", "søsken", "søskenbarn", "stearinlys", "stefar", "stemning", "studieplan", "studium",
+  "telefonsamtale", "tema", "total", "trives", "utrolig", "utsette", "vedlegg", "vikingskip",
+  "volleyball",
 ]);
 const records = candidates.map(candidate => {
   const app = inventoryByKey.get(key(candidate.lemma, candidate.pos));
@@ -186,6 +274,8 @@ const records = candidates.map(candidate => {
   const forms = formsByKey.get(key(candidate.lemma, candidate.pos));
   const complete = Boolean(candidate.zh && candidate.sourceInflections && candidate.exampleNb && candidate.exampleZh);
   const exampleCount = candidate.exampleNb.split(/\s*\/\s*/u).filter(Boolean).length;
+  const translationCount = candidate.exampleZh.split(/\s*\/\s*/u).filter(Boolean).length;
+  const examplePairsComplete = exampleCount >= 2 && exampleCount === translationCount;
   return {
     candidateLevel: candidate.candidateLevel,
     lemma: candidate.lemma,
@@ -197,6 +287,8 @@ const records = candidates.map(candidate => {
     exampleNb: candidate.exampleNb,
     exampleZh: candidate.exampleZh,
     exampleCount,
+    translationCount,
+    examplePairsComplete,
     appLevel: app?.level || "",
     appIntegrated: Boolean(app),
     fieldsPresent: complete,
@@ -204,11 +296,11 @@ const records = candidates.map(candidate => {
     dictionarySource: reviewedApp?.reviewSource || "",
     dictionarySourceUrl: reviewedApp?.reviewSourceUrl || "",
     manuallyCheckedOn: reviewedApp?.reviewedOn || "",
-    examplesManuallyCheckedOn: exampleTranslationReviewed.has(normalize(candidate.lemma)) ? "2026-09-24" : "",
+    examplesManuallyCheckedOn: exampleTranslationReviewed.has(normalize(candidate.lemma)) && examplePairsComplete ? "2026-09-24" : "",
     officialLemmaFound: forms?.officialLemmaFound || "未核",
     formAuditStatus: forms?.auditStatus || "无对应词形审计行",
     cefrReview: "课程候选等级；尚未逐词人工确认",
-    meaningAndExampleReview: exampleTranslationReviewed.has(normalize(candidate.lemma)) || (reviewedApp?.reviewedOn && reviewedApp.reviewFields.includes("例句")) ? "例句/译文已人工审校" : "例句/译文尚未人工逐词审校",
+    meaningAndExampleReview: exampleTranslationReviewed.has(normalize(candidate.lemma)) && examplePairsComplete || (reviewedApp?.reviewedOn && reviewedApp.reviewFields.includes("例句") && examplePairsComplete) ? "例句/译文已人工审校" : "例句/译文尚未人工逐词审校",
   };
 });
 const columns = Object.keys(records[0]);
@@ -220,6 +312,7 @@ const appMatches = records.filter(row => row.appIntegrated && row.appLevel === r
 const fullFields = records.filter(row => row.fieldsPresent).length;
 const manuallyReviewed = records.filter(row => row.manuallyCheckedOn).length;
 const examplesReviewed = records.filter(row => row.meaningAndExampleReview === "例句/译文已人工审校").length;
+const pairedExamplesComplete = records.filter(row => row.examplePairsComplete).length;
 const dictionary = counts("officialLemmaFound");
 const forms = counts("formAuditStatus");
 const report = [
@@ -229,7 +322,8 @@ const report = [
   `- 与应用词头、词性和暂定等级匹配：${appMatches}/${records.length}。`,
   `- 中文义项、词形、至少一条挪威语例句及译文均有填写：${fullFields}/${records.length}；字段齐全不等同于人工校对通过。`,
   `- 已逐词登记并核验词典或课程词表所支持的词头、词性、核心义项/课程信息：${manuallyReviewed}/${records.length}；逐条范围与来源见 CSV。`,
-  `- 例句及中文译文已人工逐条审校：${examplesReviewed}/${records.length}；其余条目的例句/译文仅有内容，仍待人工审校。`,
+  `- 至少两条例句与中文译文一一配对：${pairedExamplesComplete}/${records.length}。`,
+  `- 例句及中文译文已人工逐条审校：${examplesReviewed}/${records.length}${examplesReviewed === records.length ? "；此项已完成。" : "；其余条目仍待人工审校。"}`,
   `- Ordbank 词头自动查询结果：${[...dictionary].map(([name, count]) => `${name} ${count}`).join("；")}。`,
   "- 词典/课程来源核验只覆盖 CSV 中注明的字段；CEFR 等级及未标为人工审校的词义取舍、词形、例句自然度和中文翻译仍需逐项人工签核。在线词形自动匹配也不等于全部词形均已人工确认。",
   "- 每个词的明细、课程来源、应用主题和词形审计状态见 `vocabulary-1400-review.csv`。",
