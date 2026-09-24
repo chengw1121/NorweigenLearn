@@ -50,6 +50,10 @@ function Get-LemmaKey([string]$lemma) {
   if ($key -eq 'alle') { return 'all' }
   if ($key -eq 'penger') { return 'penge' }
   if ($key -eq 'sikkert') { return 'sikker' }
+  # Comparative/superlative cards remain available for practice, but these
+  # forms are already taught under their A1 base lemmas and are not new words.
+  if ($key -eq 'bedre' -or $key -eq 'best') { return 'god' }
+  if ($key -eq 'mest') { return 'mer' }
   return $key
 }
 
@@ -161,6 +165,11 @@ $reviewedInflectionOverrides = @{
   'oktober' = 'en oktober · oktoberen · oktoberer · oktoberene'
   'bygg' = 'et bygg · bygget · bygg · byggene'
   'plaster' = 'et plaster · plasteret · plaster / plastre · plastera / plastrene'
+  'fan' = 'en fan · fanen · fans · fanene'
+  'neste' = 'neste'
+  'nær' = 'nær · nært · nære · nærmere · nærmest'
+  'om' = 'om'
+  'mer' = 'mer'
 }
 function Get-CandidateForms($item) {
   if ($reviewedInflectionOverrides.ContainsKey($item.lemma.ToLowerInvariant())) {
@@ -201,6 +210,7 @@ $excludedA2Keys = [System.Collections.Generic.HashSet[string]]::new([System.Stri
 [void]$excludedA2Keys.Add('hyttetradisjon') # unsupported low-frequency compound; replace with a dictionary-listed lexical headword
 [void]$excludedA2Keys.Add('nr') # abbreviation, not a learner-facing lexical headword
 [void]$excludedA2Keys.Add('ung') # candidate is only an inflection with no complete standalone teaching record
+[void]$excludedA2Keys.Add('god') # comparative/superlative cards bedre/best belong to the A1 base-adjective paradigm
 foreach ($item in $ordered | Where-Object currentLevel -eq 'A1') { [void]$knownA1Keys.Add((Get-LemmaKey $item.lemma)) }
 foreach ($item in $ordered | Where-Object currentLevel -eq 'A1') { if ($selectedA1.Count -ge $A1Target) { break }; if ($selectedKeys.Add((Get-LemmaKey $item.lemma))) { $selectedA1.Add($item) } }
 foreach ($item in $ordered) { if ($selectedA1.Count -ge $A1Target) { break }; if ($selectedKeys.Add((Get-LemmaKey $item.lemma))) { $selectedA1.Add($item) } }

@@ -2366,7 +2366,7 @@ const V2_REVIEW_CORRECTIONS = {
   nei:{ note:"用于否定回答，也可组成礼貌拒绝 nei takk（不，谢谢）。本句 Nei takk, jeg vil bare ha vann 表示礼貌拒绝其他饮品，不是生硬的‘不’。" },
   så:{ note:"可表示然后/于是（og så）、程度‘如此/这么’（så stor），也可作‘那么’等语气词。本例与 først 构成先后顺序：Først …, og så …。" },
   samme:{ note:"表示同一个/同样的，通常放在名词前；可说 samme buss，也可用带指示词的 den samme bussen。常与 bestemt form 搭配，形式通常不变。" },
-  én:{ forms:["én / ei / ett"], labels:["强调数量‘一个’（依名词性别）"], note:"带重音的 én 用于强调‘一个/仅一个’，名词性别分别写 én（阳性）、ei（阴性）、ett（中性）；与不带重音的冠词 en/ei/et 区分。例句 én person 强调只剩一个人。" }
+  én:{ forms:["én / éi / ett"], labels:["强调数量‘一个’（依名词性别）"], note:"带重音的 én 用于强调‘一个/仅一个’，名词性别分别写 én（阳性）、éi（阴性）、ett（中性）；与不带重音的冠词 en/ei/et 区分。例句 én person 强调只剩一个人。" }
 };
 Object.assign(V2_MANUAL_REVIEW, {
   "rød-adj":"https://ordbokene.no/bm/r%C3%B8d", selvfolgelig:"https://ordbokene.no/bm/selvfølgelig", "skinne-verb":"https://ordbokene.no/bm/skinne", "barne-tv":"https://ordbokene.no/bm/barne-TV",
@@ -2967,10 +2967,28 @@ Object.assign(V2_MANUAL_REVIEW_SOURCES, { uskarp:"NTNU LearnNoW 词汇表", vint
 Object.assign(V2_MANUAL_REVIEW, { tohundrelapp:"https://ordbokene.no/bm/tohundrelapp" });
 V2_MANUAL_REVIEW_FIELDS.tohundrelapp = ["Bokmålsordboka词头/词性/词形/核心义项"];
 V2_MANUAL_REVIEW_SOURCES.tohundrelapp = "Bokmålsordboka / NTNU LearnNoW";
+Object.assign(V2_REVIEW_CORRECTIONS, {
+  vi:{forms:["vi","oss"],labels:["主格/主语","宾格/宾语或介词后"],note:"vi 是主格，oss 是宾格；vår/vårt/våre 是‘我们的’这一所有格形式，不属于代词 vi 的屈折范式。"},
+  du:{forms:["du","deg"],labels:["主格/主语","宾格/宾语或介词后"],note:"du 是主格，deg 是宾格；din/ditt/dine 是‘你的’这一所有格形式，不属于代词 du 的屈折范式。"},
+  han:{forms:["han","ham"],labels:["主格/主语","宾格/介词后形式"],note:"han 是主格，ham 是宾格形式；hans 表示‘他的’，属于所有格限定词，不是 han 的词形。口语里 ham 常弱读。"},
+  hun:{forms:["hun","henne"],labels:["主格/主语","宾格/介词后形式"],note:"hun 是主格，henne 是宾格形式；hennes 表示‘她的’，属于所有格限定词，不是 hun 的词形。"},
+  bedre:{forms:["bedre"],labels:["比较词形（good → better）"],note:"bedre 是 god/bra 的不规则比较级；best 是非定指最高级，定指名词短语常用 beste：en bedre plan / den beste planen。该卡专练比较形式；原级 god、bra 已各有词条。"},
+  "mest-adj":{note:"mest 是 mye 的最高级，表示最多/最……；mer（比较级）和 mest（最高级）都在 mer 词条的词形范式中。这里保留独立练习卡，用来学习它在不可数名词和副词语境中的用法。"},
+  veldig:{forms:["veldig","veldig","veldige"],labels:["阳/阴性","中性","复数/定指"],note:"veldig 作形容词时可有性数变化；最常见的程度副词用法不变：veldig god、veldig fort。副词用法不是第四个屈折词形。"},
+  fan:{forms:["en fan","fanen","fans","fanene"],labels:["不定单数","定指单数","不定复数","定指复数"]}
+});
 for (const id of ["uskarp","vinterbilde"]) V2_MANUAL_REVIEW_FIELDS[id] = ["课程词头/词性/英文核心义项/课文单元"];
 for (const id of ["febernedsettende","legevaktsentral","mastergradsstudent","minibar","minusgrad","salsakurs","semesteravgift","semesterkort","stefar","telefonsamtale"]) V2_MANUAL_REVIEW_FIELDS[id] = ["课程词头/名词性别或词类/英文义项/词形/章节"];
 for (const id of ["seminar","søskenbarn","stearinlys","stemning","studieplan","studium","tema","total","trives","utrolig","utsette","vedlegg","som","seg","sin"]) V2_MANUAL_REVIEW_FIELDS[id] = ["Bokmål词头/词性/核心义项"];
 for (const id of ["akevitt","altfor","be","beundre","bortskjemt","dekorasjon","do","dufte","dunk","egen-adj","forsyne","glitter","herlig","kinn","kle","lov","merkelig","nisse","nysnø","oppå","øl-noun","pinnekjøtt","vakker","vinne","smør","opera","matrett","presang","pudding","ribbe","rive","servere","skåle","skeptisk","skifte","skjerf","snømann","svigermor","torsk","fotografere","lutefisk","tulle","tykk","vott","aha","all","begge","bekymret","berømt","binde","bordtennis","cricket","deres","dermed","døgn","dyp","egentlig","elektrisitet","elendig","ellers","elleve","enkel","enn","ensom","erfaring","flere","forandring","fordi","fritid","hard","hennes","huff","hvem","hvis","hvorfor","iblant","inni","jippi","kjemisk","kjent","kølapp","lån","legevakt","maler","man","masse","minibank","mulighet","nam","når","nasjonalforsamling","nasjonalitet","nett","nevø","oldemor","omgangssyke","område","parlament","organisasjon","passord","PC","prest","psykologi","rådhus","registrere"]) V2_MANUAL_REVIEW_FIELDS[id] = ["Bokmål词头/词性/核心义项"];
+window.VOCAB_V2.additions.push(
+  {id:"it-firma",topic:"work",cluster:"工作与组织",level:"A2",word:"et IT-firma",pos:"名词",zh:"信息技术公司；IT企业",forms:["et IT-firma","IT-firmaet","IT-firmaer","IT-firmaene"],labels:["不定单数","定指单数","不定复数","定指复数"],note:"复合词的中心词是 firma，所以按中性名词变格。IT 是 informasjonsteknologi（信息技术）的缩写；连字符保留缩写与普通词的边界。",frequency:2,collocations:["jobbe i et IT-firma","starte et IT-firma"],contexts:[["Hun jobber i et IT-firma i Oslo.","她在奥斯陆一家IT公司工作。","i et IT-firma 表示在一家信息技术公司任职。"],["IT-firmaet utvikler en ny app.","这家IT公司正在开发一款新应用。","IT-firmaet 是定指单数。"]]},
+  {id:"lego",topic:"family",cluster:"家庭与休闲",level:"A2",source:"NTNU LearnNoW 课程词汇候选；形式按课程清单",levelBasis:"课程候选等级，非官方逐词CEFR标注",word:"en lego",pos:"名词",zh:"一块乐高积木；乐高玩具（口语/课程用法）",forms:["en lego","legoen","legoer","legoene"],labels:["不定单数","定指单数","不定复数","定指复数"],note:"Lego 是品牌名；日常也常把 lego 当作积木玩具的泛称，常说 bygge med Lego/lego（用乐高积木搭建）。课程清单提供 en lego 的可数用法，学习时可将单块更明确地说成 en legokloss。",frequency:2,collocations:["bygge med Lego","en legokloss"],contexts:[["Barna bygger et hus av lego.","孩子们用乐高积木搭一座房子。","lego 在这里泛指积木材料。"],["Jeg fant en legokloss under sofaen.","我在沙发下面找到一块乐高积木。","更明确地说单块积木时用 en legokloss。"]]},
+  {id:"mye",topic:"basics",cluster:"数量与程度",level:"A2",source:"Bokmålsordboka；NTNU LearnNoW 课程候选",levelBasis:"初级数量表达；项目暂标A2",word:"mye",pos:"形容词",zh:"很多；大量；程度很高（修饰不可数名词，也可作代词/副词）",forms:["mye","mer","mest","meste"],labels:["原级","比较级","最高级","定指最高级"],note:"mye 常修饰不可数名词：mye vann（很多水）；比较级 mer，最高级 mest。也可独立作代词（Jeg har mye å gjøre）或作副词（Det regner mye）。可数名词通常用 mange。",frequency:5,collocations:["mye tid","mye å gjøre","så mye som mulig"],contexts:[["Vi har mye tid før toget går.","离火车出发还有很多时间。","tid 是不可数概念，因此用 mye。"],["Det er mye kaldere i dag.","今天冷得多。","mye 修饰比较级 kaldere，表示程度大得多。"]]}
+);
+Object.assign(V2_MANUAL_REVIEW, {"it-firma":"https://www.ntnu.edu/now/vocabulary/list",lego:"https://www.ntnu.edu/learnnow/vocabulary/list",mye:"https://ordbokene.no/bm/MYE"});
+Object.assign(V2_MANUAL_REVIEW_SOURCES, {"it-firma":"NTNU NoW 课程词汇表（透明复合词）",lego:"NTNU LearnNoW 课程词汇表",mye:"Bokmålsordboka / NTNU LearnNoW"});
+for (const id of ["it-firma","lego","mye"]) V2_MANUAL_REVIEW_FIELDS[id] = ["词头/词性/词义/词形/例句与译文"];
 for (const entry of window.VOCAB_V2.additions) {
   const lemmaKey = entry.word.replace(/^(?:å|en|ei|et)\s+/u, "").trim();
   const correction = V2_REVIEW_CORRECTIONS[entry.id] || V2_REVIEW_CORRECTIONS[lemmaKey];

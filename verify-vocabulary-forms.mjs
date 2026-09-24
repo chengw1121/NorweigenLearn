@@ -37,7 +37,7 @@ const audit = inventory.map(item => {
   const forms = fullForms.get(key);
   const rawExpected = item.forms.split(/\s*[·–/]\s*/u).map(normalize).filter(value => value && value !== "—");
   const comparisonForms = rawExpected.filter(value => /^(mer|mest)\s/u.test(value));
-  const expected = rawExpected.filter(value => !/^(mer|mest)\s/u.test(value)).map(value => value.replace(/^har\s+/u, "").replace(/\s*\([^)]*\)\s*$/u, "").trim());
+  const expected = rawExpected.filter(value => !/^(mer|mest)\s/u.test(value)).filter(value => item.pos === "数词" || !/^(ei|en|et|å)$/u.test(value)).map(value => value.replace(/^har\s+/u, "").replace(/\s*\([^)]*\)\s*$/u, "").trim());
   const matched = forms ? expected.filter(form => forms.has(form)) : [];
   const missing = expected.filter(form => !forms?.has(form));
   const isPhrase = item.unit === "短语" || /短语/u.test(item.pos);
