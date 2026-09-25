@@ -13,6 +13,10 @@ const app = read("./app.js");
 const verbs = evaluateDeclaration(app, "const VERBS = [", "const VERB_USAGE_ZH", "VERBS");
 const nouns = evaluateDeclaration(app, "const NOUNS = [", "const NOUN_GUIDES", "NOUNS");
 const topics = evaluateDeclaration(app, "const VOCAB_TOPICS = [", "const NOUN_BY_ID", "VOCAB_TOPICS");
+const curatedVerbExamples = evaluateDeclaration(app, "const CURATED_VERB_EXAMPLES = {", "\nfunction sentenceContextFor", "CURATED_VERB_EXAMPLES");
+const curatedNounExamples = {
+  mat: { no: "Han liker å lage mat.", zh: "他喜欢做饭。", source: "https://ordbokene.no/nob/bm/MAT" }
+};
 const v2Context = { window: {} };
 vm.runInNewContext(read("./vocab-v2-library.js"), v2Context);
 const v2 = v2Context.window.VOCAB_V2.additions;
@@ -38,6 +42,7 @@ const toRow = (source, values) => ({
   forms: values.forms || "",
   example: values.example || "",
   translation: values.translation || "",
+  exampleSources: values.exampleSources || "",
   levelBasis: values.levelBasis || "待复核",
   status: values.status || "已有内容·待审核",
   reviewFields: values.reviewFields || "",
@@ -56,22 +61,31 @@ for (const verb of verbs) {
   const level = topic?.level.includes("A1") && !topic?.level.includes("A2") ? "A1" : topic?.level.includes("A2") && !topic?.level.includes("A1") ? "A2" : "待分级";
   rows.push(toRow("app.js · 核心动词", { lemma: verb.v1, display: `å ${verb.v1}`, pos: "动词", level, topic: topic?.title, zh: verb.zh, forms: `${verb.v1} – ${verb.pres} – ${verb.past} – ${verb.pp}`, example: `Jeg ${verb.pres} ${verb.tail}.`, translation: coreVerbTranslations[verb.v1] || "", levelBasis: level === "待分级" ? "主题标为 A1–A2，需人工定级" : "按当前主题等级暂分，待复核", status: "已有词形与基础例句·待核" }));
 }
+for (const [lemma, examples] of Object.entries(curatedVerbExamples)) {
+  const row = rows.find(item => item.pos === "动词" && item.lemma === lemma);
+  if (!row) continue;
+  row.example = [...new Set([row.example, ...examples.map(example => example.no)].filter(Boolean))].join(" / ");
+  row.translation = [...new Set([row.translation, ...examples.map(example => example.zh)].filter(Boolean))].join(" / ");
+  row.exampleSources = [...new Set(examples.map(example => example.source).filter(Boolean))].join(" / ");
+}
 for (const noun of nouns) {
   const topic = topicByNoun.get(noun.id);
   // LearnNoW introduces lærer in lesson 7; retain the project’s provisional
   // A2 placement rather than leaving this already-integrated core noun ungraded.
   const level = noun.id === "lærer" ? "A2" : topic?.level.includes("A1") && !topic?.level.includes("A2") ? "A1" : topic?.level.includes("A2") && !topic?.level.includes("A1") ? "A2" : "待分级";
   const review = noun.id === "lærer" ? { status: "词典与课程已核验：词头/词性/词形/核心义项", reviewFields: "词头/词性/词形/核心义项/课程章节", reviewSource: "Bokmålsordboka / NTNU LearnNoW", reviewSourceUrl: "https://ordbokene.no/bm/36458", reviewedOn: "2026-09-24" } : {};
-  rows.push(toRow("app.js · 核心名词", { lemma: noun.lemma, display: noun.forms[0], pos: "名词", level, topic: topic?.title, zh: noun.zh, forms: noun.forms.join(" · "), example: noun.sentence, translation: noun.sentenceZh, levelBasis: noun.id === "lærer" ? "LearnNoW 课程词汇表第 7 课；项目暂标 A2，非官方逐词 CEFR" : level === "待分级" ? "主题标为 A1–A2，需人工定级" : "按当前主题等级暂分，待复核", status: noun.review ? `来源已登记：${noun.review.fields?.join("、") || "核验范围未注明"}` : "已有词形与例句·待核", reviewFields: noun.review?.fields?.join("、") || "", reviewSource: noun.review?.source || "", reviewSourceUrl: noun.review?.sourceUrl || "", reviewedOn: noun.review?.checkedOn || "", ...review }));
+  const curatedExample = curatedNounExamples[noun.id];
+  rows.push(toRow("app.js · 核心名词", { lemma: noun.lemma, display: noun.forms[0], pos: "名词", level, topic: topic?.title, zh: noun.zh, forms: noun.forms.join(" · "), example: curatedExample?.no || noun.sentence, translation: curatedExample?.zh || noun.sentenceZh, exampleSources: curatedExample?.source || "", levelBasis: noun.id === "lærer" ? "LearnNoW 课程词汇表第 7 课；项目暂标 A2，非官方逐词 CEFR" : level === "待分级" ? "主题标为 A1–A2，需人工定级" : "按当前主题等级暂分，待复核", status: noun.review ? `来源已登记：${noun.review.fields?.join("、") || "核验范围未注明"}` : "已有词形与例句·待核", reviewFields: noun.review?.fields?.join("、") || "", reviewSource: noun.review?.source || "", reviewSourceUrl: noun.review?.sourceUrl || "", reviewedOn: noun.review?.checkedOn || "", ...review }));
 }
 for (const entry of v2) {
   const lemma = entry.id === "penge" ? "penge" : entry.word.replace(/^(en|ei\/en|ei|et|å)\s+/u, "");
-  rows.push(toRow(entry.source || "vocab-v2-library.js · V2 词条", { lemma, display: entry.word, unit: /\s/u.test(lemma) ? "短语" : "单词", pos: entry.pos, level: entry.level, topic: entry.cluster, zh: entry.zh, forms: entry.forms.join(" · "), example: entry.contexts.map(context => context[0]).join(" / "), translation: entry.contexts.map(context => context[1]).join(" / "), levelBasis: entry.levelBasis || "项目内部等级标签，需抽查", status: entry.review ? `来源已登记：${entry.review.fields?.join("、") || "核验范围未注明"}` : "已有完整语境·待审定", reviewFields: entry.review?.fields?.join("、") || "", reviewSource: entry.review?.source || "", reviewSourceUrl: entry.review?.sourceUrl || "", reviewedOn: entry.review?.checkedOn || "" }));
+  rows.push(toRow(entry.source || "vocab-v2-library.js · V2 词条", { lemma, display: entry.word, unit: /\s/u.test(lemma) ? "短语" : "单词", pos: entry.pos, level: entry.level, topic: entry.cluster, zh: entry.zh, forms: entry.forms.join(" · "), example: entry.contexts.map(context => context[0]).join(" / "), translation: entry.contexts.map(context => context[1]).join(" / "), exampleSources: [...new Set(entry.contexts.map(context => context[3]).filter(Boolean))].join(" / "), levelBasis: entry.levelBasis || "项目内部等级标签，需抽查", status: entry.review ? `来源已登记：${entry.review.fields?.join("、") || "核验范围未注明"}` : "已有完整语境·待审定", reviewFields: entry.review?.fields?.join("、") || "", reviewSource: entry.review?.source || "", reviewSourceUrl: entry.review?.sourceUrl || "", reviewedOn: entry.review?.checkedOn || "" }));
 }
 for (const entry of future.vocabulary) {
   const { word: display, zh, pos, forms, sentence: example, translation } = entry;
   const lemma = display.replace(/^(en|ei|et|å)\s+/u, "");
-  rows.push(toRow("Tema: fremtid · 课本专题", { lemma, display, unit: /\s/u.test(lemma) ? "短语" : "单词", pos, level: "待拆级", topic: "未来计划与目标", zh, forms, example, translation, levelBasis: "专题整体标 A2–B1，单条尚未分级", status: "专题词条·待拆级复核" }));
+  const examples = entry.onlineExamples || future.onlineExamples?.[lemma.toLocaleLowerCase("nb-NO")] || [];
+  rows.push(toRow("Tema: fremtid · 课本专题", { lemma, display, unit: /\s/u.test(lemma) ? "短语" : "单词", pos, level: "待拆级", topic: "未来计划与目标", zh, forms, example: [example, ...examples.map(context => context.no)].join(" / "), translation: [translation, ...examples.map(context => context.zh)].join(" / "), exampleSources: [...new Set(examples.map(context => context.source).filter(Boolean))].join(" / "), levelBasis: "专题整体标 A2–B1，单条尚未分级", status: "专题词条·待拆级复核" }));
 }
 
 const canonical = value => value.trim().toLocaleLowerCase("nb-NO").replace(/^(en|ei|et|å)\s+/u, "").replace(/\s+/gu, " ");
@@ -84,14 +98,14 @@ for (const row of rows) {
   const preferNew = Boolean(row.reviewedOn) && !old.reviewedOn || row.level !== "待拆级" && old.level === "待拆级" || Boolean(row.translation) && !old.translation || row.status.includes("完整语境") && !old.status.includes("完整语境");
   const preferred = preferNew ? row : old;
   const alternate = preferNew ? old : row;
-  unique.set(key, { ...preferred, source: [...sources].join("; "), topic: [...new Set([preferred.topic, alternate.topic].filter(Boolean))].join(" / "), zh: preferred.zh || alternate.zh, forms: preferred.forms || alternate.forms, example: preferred.example || alternate.example, translation: preferred.translation || alternate.translation, reviewFields: preferred.reviewFields || alternate.reviewFields, reviewSource: preferred.reviewSource || alternate.reviewSource, reviewSourceUrl: preferred.reviewSourceUrl || alternate.reviewSourceUrl, reviewedOn: preferred.reviewedOn || alternate.reviewedOn, status: preferred.reviewedOn ? preferred.status : alternate.reviewedOn ? alternate.status : preferred.status });
+  unique.set(key, { ...preferred, source: [...sources].join("; "), topic: [...new Set([preferred.topic, alternate.topic].filter(Boolean))].join(" / "), zh: preferred.zh || alternate.zh, forms: preferred.forms || alternate.forms, example: [...new Set([...(preferred.example || "").split(" / "), ...(alternate.example || "").split(" / ")].filter(Boolean))].join(" / "), translation: [...new Set([...(preferred.translation || "").split(" / "), ...(alternate.translation || "").split(" / ")].filter(Boolean))].join(" / "), exampleSources: [...new Set([...(preferred.exampleSources || "").split(" / "), ...(alternate.exampleSources || "").split(" / ")].filter(Boolean))].join(" / "), reviewFields: preferred.reviewFields || alternate.reviewFields, reviewSource: preferred.reviewSource || alternate.reviewSource, reviewSourceUrl: preferred.reviewSourceUrl || alternate.reviewSourceUrl, reviewedOn: preferred.reviewedOn || alternate.reviewedOn, status: preferred.reviewedOn ? preferred.status : alternate.reviewedOn ? alternate.status : preferred.status });
 }
 
 const inventory = [...unique.values()].sort((a, b) => {
   const levelOrder = { A1: 0, A2: 1, "待分级": 2, "待拆级": 3 };
   return levelOrder[a.level] - levelOrder[b.level] || a.topic.localeCompare(b.topic, "zh-CN") || a.lemma.localeCompare(b.lemma, "nb-NO");
 });
-const columns = ["source", "lemma", "display", "unit", "pos", "level", "topic", "zh", "forms", "example", "translation", "levelBasis", "status", "reviewFields", "reviewSource", "reviewSourceUrl", "reviewedOn"];
+const columns = ["source", "lemma", "display", "unit", "pos", "level", "topic", "zh", "forms", "example", "translation", "exampleSources", "levelBasis", "status", "reviewFields", "reviewSource", "reviewSourceUrl", "reviewedOn"];
 const csvCell = value => `"${String(value ?? "").replaceAll('"', '""')}"`;
 fs.writeFileSync(new URL("./vocabulary-inventory.csv", import.meta.url), [columns.join(","), ...inventory.map(row => columns.map(column => csvCell(row[column])).join(","))].join("\n") + "\n", "utf8");
 

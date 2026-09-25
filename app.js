@@ -3,36 +3,36 @@ const VERBS = [
   ["være","er","var","vært","是、处于","hjemme"], ["ha","har","hadde","hatt","有","tid"],
   ["gjøre","gjør","gjorde","gjort","做","en innsats"], ["gå","går","gikk","gått","走、去","til jobben"],
   ["komme","kommer","kom","kommet","来","snart"], ["ta","tar","tok","tatt","拿；乘坐","bussen"],
-  ["se","ser","så","sett","看、看见","filmen"], ["si","sier","sa","sagt","说（内容）","det"],
+  ["se","ser","så","sett","看、看见","filmen"], ["si","sier","sa","sagt","说出；告诉；表示/意味着；告知（依搭配）","det"],
   ["vite","vet","visste","visst","知道","det"], ["finne","finner","fant","funnet","找到","en løsning"],
   ["få","får","fikk","fått","得到；获得","hjelp"], ["bli","blir","ble","blitt","变成、成为","bedre"],
   ["stå","står","sto","stått","站；放置","utenfor"], ["sitte","sitter","satt","sittet","坐","på en kafé"],
   ["ligge","ligger","lå","ligget","躺；位于","i Norge"], ["gi","gir","ga","gitt","给","ham boka"],
   ["drikke","drikker","drakk","drukket","喝","kaffe"], ["sove","sover","sov","sovet","睡","godt"],
-  ["forstå","forstår","forsto","forstått","理解","litt norsk"], ["spørre","spør","spurte","spurt","问","læreren"],
-  ["fortelle","forteller","fortalte","fortalt","告诉、讲述","meg det"], ["holde","holder","holdt","holdt","拿住；保持","døra"],
+  ["forstå","forstår","forsto","forstått","理解；听懂；体谅（依搭配）","litt norsk"], ["spørre","spør","spurte","spurt","问；询问；请教；征求","læreren"],
+  ["fortelle","forteller","fortalte","fortalt","告诉；讲述；叙述","meg det"], ["holde","holder","holdt","holdt","拿住；保持","døra"],
   ["velge","velger","valgte","valgt","选择","denne"], ["selge","selger","solgte","solgt","卖","bilen"],
-  ["kunne","kan","kunne","kunnet","能、会","snakke norsk"], ["ville","vil","ville","villet","想、愿意","lære norsk"],
-  ["skulle","skal","skulle","skullet","将要、计划","jobbe"], ["måtte","må","måtte","måttet","必须","øve"],
+  ["kunne","kan","kunne","kunnet","能、会","snakke norsk"], ["ville","vil","ville","villet","想要；愿意；（将来/假设）会","lære norsk"],
+  ["skulle","skal","skulle","skullet","将要/计划；应该/需要；（间接引语）原计划/将会","jobbe"], ["måtte","må","måtte","måttet","必须","øve"],
   ["burde","bør","burde","burdet","应该","hvile"], ["jobbe","jobber","jobbet","jobbet","工作","i Oslo"],
   ["lære","lærer","lærte","lært","学习","norsk"], ["øve","øver","øvde","øvd","练习","hver dag"],
   ["lese","leser","leste","lest","读","ei bok"], ["skrive","skriver","skrev","skrevet","写","en melding"],
-  ["søke","søker","søkte","søkt","申请、搜索","på en jobb"], ["bo","bor","bodde","bodd","居住","i Norge"],
+  ["søke","søker","søkte","søkt","寻找；寻求；申请；前往（依结构）","på en jobb"], ["bo","bor","bodde","bodd","居住","i Norge"],
   ["møte","møter","møtte","møtt","遇见、会见","læreren"], ["hjelpe","hjelper","hjalp","hjulpet","帮助","meg"],
   ["bruke","bruker","brukte","brukt","使用、花费","mobilen"], ["trenge","trenger","trengte","trengt","需要","hjelp"],
   ["prøve","prøver","prøvde","prøvd","尝试","å snakke norsk"], ["spise","spiser","spiste","spist","吃","frokost"],
   ["lage","lager","laget","laget","做、制作","middag"], ["kjøpe","kjøper","kjøpte","kjøpt","买","mat"],
   ["betale","betaler","betalte","betalt","支付","regningen"], ["kjøre","kjører","kjørte","kjørt","开车","til Oslo"],
   ["reise","reiser","reiste","reist","旅行、出行","til Sverige"], ["vaske","vasker","vasket","vasket","洗、清洁","klær"],
-  ["snakke","snakker","snakket","snakket","说话、交谈","med naboen"], ["like","liker","likte","likt","喜欢","å lære norsk"],
-  ["tenke","tenker","tenkte","tenkt","想、思考","på framtida"], ["mene","mener","mente","ment","认为；意思是","det"],
+  ["snakke","snakker","snakket","snakket","说话；交谈；谈论；说（某种语言）","med naboen"], ["like","liker","likte","likt","喜欢","å lære norsk"],
+  ["tenke","tenker","tenkte","tenkt","想、思考","på framtida"], ["mene","mener","mente","ment","认为；觉得；意思是；指的是","det"],
   ["synes","synes","syntes","syntes","觉得、认为","det"], ["huske","husker","husket","husket","记得","det"],
   ["glemme","glemmer","glemte","glemt","忘记","nøklene"], ["begynne","begynner","begynte","begynt","开始","å jobbe"],
   ["slutte","slutter","sluttet","sluttet","停止、结束","klokka fire"], ["vente","venter","ventet","ventet","等待","på bussen"],
-  ["høre","hører","hørte","hørt","听见","deg"], ["sette","setter","satte","satt","放置；使坐下","seg ned"],
+  ["høre","hører","hørte","hørt","听见；听取；听说；属于（依搭配）","deg"], ["sette","setter","satte","satt","放置；使坐下","seg ned"],
   ["legge","legger","la","lagt","放下；躺下","seg ned"], ["løpe","løper","løp","løpt","跑","hjem"],
   ["bære","bærer","bar","båret","搬、拿、背","denne"], ["treffe","treffer","traff","truffet","见到、碰见","henne"],
-  ["bestå","består","besto","bestått","通过（考试）","B1"]
+  ["bestå","består","besto","bestått","通过考试；持续存在；由……组成（bestå av）","B1-eksamen"]
 ].map(([v1,pres,past,pp,zh,tail], index) => ({ id: `${v1}-${index}`, v1, pres, past, pp, zh, tail, phrase: `${v1} ${tail}` }));
 
 const VERB_USAGE_ZH = {
@@ -57,6 +57,21 @@ const VERB_SENTENCE_CONTEXTS = {
   "se":[["en film hjemme","在家看电影"],["på nyhetene","看新闻"],["etter barna","照看孩子"]],
   "søke":[["på en ny jobb","申请一份新工作"],["på en stilling i Oslo","申请奥斯陆的一个职位"],["om praksisplass","申请实习岗位"]]
 };
+// Short dictionary-attested examples selected during manual vocabulary review.
+// Keep the original Bokmål sentence, human Chinese translation, usage cue and URL together.
+const CURATED_VERB_EXAMPLES = {
+  "bestå":[{label:"词典例句 · 由……组成",no:"Vann består av hydrogen og oksygen.",zh:"水由氢和氧组成。",note:"bestå av 表示“由……组成”，不要和 bestå en eksamen（通过考试）混为一谈。",source:"https://ordbokene.no/bm/best%C3%A5"}],
+  "søke":[{label:"词典例句 · 搜寻",no:"Hjelpemannskaper har søkt i hele natt.",zh:"救援人员整夜都在搜寻。",note:"søke 在此表示搜寻；申请工作通常用 søke jobb / søke på en stilling。",source:"https://ordbokene.no/bm/s%C3%B8ke"}],
+  "høre":[{label:"词典例句 · 听过",no:"Har du hørt denne sangen før?",zh:"你以前听过这首歌吗？",note:"høre 在此表示听过/听到；høre på musikk 则强调主动听音乐。",source:"https://ordbokene.no/nob/bm/h%C3%B8re"}],
+  "mene":[{label:"词典例句 · 理解某人的意思",no:"Jeg skjønner ikke hva du mener.",zh:"我不明白你的意思。",note:"hva du mener 是“你的意思/你所说的内容”；mene at 则常用来表达“认为……”。",source:"https://ordbokene.no/bm/mene"}],
+  "skulle":[{label:"词典例句 · 计划",no:"Vi skal reise i morgen.",zh:"我们明天要出发。",note:"skal 在这里表达已安排或计划的未来行动；情态动词后接动词原形 reise。",source:"https://ordbokene.no/nob/bm/skulle"}],
+  "ville":[{label:"词典例句 · 意愿",no:"Vil dere ha litt kaffe?",zh:"你们想来点咖啡吗？",note:"礼貌询问意愿；ville 不总是“想”，在其他句型中也可表示将来或假设。",source:"https://ordbokene.no/bm/ville"}],
+  "fortelle":[{label:"词典例句 · 邀请对方继续讲",no:"Fortell mer!",zh:"再多讲一些！",note:"祈使句，fortelle 表示讲述；mer 表示更多。原句是词典中的完整祈使句。",source:"https://ordbokene.no/bm/fortelle"}],
+  "snakke":[{label:"词典例句 · 谈论某事",no:"Vi har aldri snakket om det.",zh:"我们从来没有谈过这件事。",note:"snakke om noe 是“谈论某事”；不要和 snakke med noen（和某人交谈）混淆。",source:"https://ordbokene.no/bm/snakke"}],
+  "spørre":[{label:"词典例句 · 问路",no:"Hun spurte om veien.",zh:"她问了路。",note:"spørre om veien 是询问路线/问路；spørre noen om noe 中也可以明确写出被询问的人。",source:"https://ordbokene.no/nob/bm/sp%C3%B8rre"}],
+  "si":[{label:"词典例句 · 转述内容",no:"Hun sier at det regner.",zh:"她说正在下雨。",note:"si at 引出说话内容；挪威语从句中动词 regner 表示正在下雨/下雨这一事实。",source:"https://ordbokene.no/bm/si"}],
+  "forstå":[{label:"词典例句 · 理解对方",no:"Jeg forstår deg.",zh:"我理解你。",note:"宾语是人时可表示理解对方的处境或想法，不仅是听懂对方说的话。",source:"https://ordbokene.no/bm/forst%C3%A5"}]
+};
 function sentenceContextFor(verb) {
   const contexts = VERB_SENTENCE_CONTEXTS[verb.v1];
   if (!contexts?.length) return verb;
@@ -68,6 +83,38 @@ function modalActionZh(modal, verb) {
   return `${intent}${verbActionZh(verb)}`;
 }
 function translatedSentenceZh(time, subject, action) { return `${time ? `${time}，` : ""}${subject}${action}。`; }
+function pastActionZh(action) {
+  const completed = { "买食物":"买了食物", "购买食物":"买了食物", "买一件新外套":"买了一件新外套", "在商店买面包":"在商店买了面包", "吃早餐":"吃了早餐", "吃晚饭":"吃了晚饭", "吃午饭":"吃了午饭", "做晚饭":"做了晚饭", "泡一杯咖啡":"泡了一杯咖啡", "读一本书":"读了一本书", "看报纸":"看了报纸", "读挪威新闻":"读了挪威新闻", "写一条消息":"写了一条消息", "写一封信":"写了一封信", "喝咖啡":"喝了咖啡", "支付账单":"支付了账单", "乘坐公交车":"乘坐了公交车", "看这部电影":"看了这部电影", "说这件事":"说了这件事", "找到一个解决办法":"找到了一个解决办法", "得到帮助":"得到了帮助", "学习挪威语":"学习了挪威语", "学习新单词":"学习了新单词", "练习挪威语":"练习了挪威语", "练习发音":"练习了发音", "询问老师":"询问了老师", "选择这个":"选择了这个", "卖掉汽车":"卖掉了汽车", "在奥斯陆工作":"在奥斯陆工作了", "在家工作":"在家工作了", "在办公室工作":"在办公室工作了" };
+  return completed[action] || action;
+}
+function hasReviewedChineseTranslation(value) { return Boolean(value && !/正在校对|待校对|暂不提供|暂无译文|待翻译/.test(value) && /[\u3400-\u9fff]/.test(value)); }
+function repairQuestionTranslation(q = {}) {
+  const saved = [q.translation, q.answerTranslation].find(hasReviewedChineseTranslation);
+  if (saved) return saved;
+  if (q.collocation?.exampleZh) return q.collocation.exampleZh;
+  const sentence = String(q.correctSentence || q.sentence || "");
+  const verb = q.verbId ? getVerb(q.verbId) : null;
+  if (!verb || !sentence) return "";
+  const lower = sentence.toLocaleLowerCase("nb-NO");
+  const subjects = [["jeg","我"],["hun","她"],["han","他"],["vi","我们"],["de","他们/她们"]];
+  const subject = subjects.find(([no]) => new RegExp(`\\b${no}\\b`, "i").test(sentence))?.[1];
+  if (!subject) return "";
+  const timeCues = [["for to dager siden","两天前"],["forrige uke","上周"],["i går","昨天"],["i fjor","去年"],["neste uke","下周"],["i morgen","明天"],["på fredag","周五"],["etter kurset","课程后"],["til sommeren","到夏天"],["i kveld","今晚"],["hver dag","每天"],["vanligvis","通常"],["om kvelden","晚上"],["på mandager","每周一"],["etter jobb","下班后"],["flere ganger","好几次"],["nettopp","刚刚"],["allerede","已经"],["i dag","今天"]];
+  const [cueNo = "", cueZh = ""] = timeCues.find(([no]) => lower.includes(no)) || [];
+  const context = (VERB_SENTENCE_CONTEXTS[verb.v1] || []).find(([tail]) => tail && lower.includes(tail.toLocaleLowerCase("nb-NO")));
+  const action = context?.[1] || verbActionZh(verb);
+  const modal = ["skal","vil","kan","må","bør"].find(word => new RegExp(`\\b${word}\\b`, "i").test(sentence));
+  if (modal && ["modal","correction","v2"].includes(q.category)) return translatedSentenceZh(cueZh, subject, modalActionZh(modal, { ...verb, contextZh: action }));
+  if (q.category === "perfect") {
+    const aspect = cueNo === "nettopp" ? "刚刚" : cueNo === "allerede" ? "已经" : "";
+    const suffix = cueNo === "flere ganger" ? "好几次" : "";
+    return `${cueZh ? `${cueZh}，` : ""}${subject}${aspect}${action}${suffix}。`;
+  }
+  if (["past"].includes(q.category) || (q.category === "v2" && ["i går","forrige uke","for to dager siden","i fjor"].some(cue => lower.includes(cue)))) {
+    return translatedSentenceZh(cueZh, subject, pastActionZh(action));
+  }
+  return translatedSentenceZh(cueZh, subject, action);
+}
 
 const MODAL_EXAMPLES = {
   "kunne":[["现在","Jeg kan snakke norsk.","我会说挪威语。"],["原形","Det er nyttig å kunne snakke norsk.","会说挪威语很有用。"],["过去","Jeg kunne snakke litt norsk.","我以前会说一点挪威语。"],["完成","Jeg har kunnet snakke norsk på jobb.","我已经能够在工作中说挪威语了。"]],
@@ -78,14 +125,15 @@ const MODAL_EXAMPLES = {
 };
 
 function verbExamples(entry) {
-  if (MODAL_EXAMPLES[entry.v1]) return MODAL_EXAMPLES[entry.v1].map(([label, no, zh]) => ({ label, no, zh }));
+  const curated = CURATED_VERB_EXAMPLES[entry.v1] || [];
+  if (MODAL_EXAMPLES[entry.v1]) return [...MODAL_EXAMPLES[entry.v1].map(([label, no, zh]) => ({ label, no, zh })), ...curated];
   const action = VERB_USAGE_ZH[entry.v1] || entry.zh;
-  return [
+  return [...[
     { label: "现在", no: `Jeg ${entry.pres} ${entry.tail}.`, zh: `我现在${action}。` },
     { label: "计划", no: `Jeg skal ${entry.v1} ${entry.tail}.`, zh: `我打算${action}。` },
     { label: "过去", no: `Jeg ${entry.past} ${entry.tail}.`, zh: `我当时${action}。` },
     { label: "完成", no: `Jeg har ${entry.pp} ${entry.tail}.`, zh: `我已经${action}了。` }
-  ];
+  ], ...curated];
 }
 
 const NOUNS = [
@@ -93,7 +141,7 @@ const NOUNS = [
   ["tid","ei","tid","tida","tider","tidene","时间","Jeg har tid i dag.","我今天有时间。"],
   ["hjem","et","hjem","hjemmet","hjem","hjemmene","家","Jeg går hjem etter jobb.","下班后我回家。"],
   ["jobb","en","jobb","jobben","jobber","jobbene","工作","Jeg går på jobb om morgenen.","我早上去上班。"],
-  ["mat","—","mat","maten","—","—","食物","Vi lager mat hjemme.","我们在家做饭。"],
+  ["mat","—","mat","maten","—","—","食物；饭菜；一顿饭/用餐（依语境）；食物、营养（较少见）","Han liker å lage mat.","他喜欢做饭。"],
   ["vann","—","vann","vannet","—","—","水","Jeg drikker vann hver dag.","我每天喝水。"],
   ["familie","en","familie","familien","familier","familiene","家庭","Familien min bor i Norge.","我的家人住在挪威。"],
   ["barn","et","barn","barnet","barn","barna","孩子","Barnet leser en bok.","孩子在读一本书。"],
@@ -209,11 +257,11 @@ function studyPriority(word) {
 function topicEntries(topicId) {
   if (topicId === "saved") return (state.savedWords || []).map(word => ({ ...word, key: `saved:${word.id}`, kind: "future", priority: 1.5 }));
   if (topicId === "daily") return [...new Map([...VOCAB_TOPICS.flatMap(topic => topicEntries(topic.id)), ...topicEntries("fremtid"), ...topicEntries("saved")].map(entry => [entry.key, entry])).values()];
-  if (topicId === "fremtid") return window.FREMTID_TOPIC.vocabulary.map((entry, index) => ({ ...entry, id: `future-${index}`, key: `future:${index}`, kind: "future", priority: studyPriority(entry.word), contexts: [{ id: `future-${index}:sentence`, no: entry.sentence, zh: entry.translation, note: `专题例句；结合上下文理解“${entry.zh}”。` }] }));
+  if (topicId === "fremtid") return window.FREMTID_TOPIC.vocabulary.map((entry, index) => ({ ...entry, id: `future-${index}`, key: `future:${index}`, kind: "future", priority: studyPriority(entry.word), contexts: [{ id: `future-${index}:sentence`, no: entry.sentence, zh: entry.translation, note: `专题例句；结合上下文理解“${entry.zh}”。` }, ...(window.FREMTID_TOPIC.onlineExamples?.[entry.word.replace(/^(?:å|en|ei|et)\s+/u, "").toLocaleLowerCase("nb-NO")] || []).map((context, contextIndex) => ({ id: `future-${index}:online${contextIndex}`, no: context.no, zh: context.zh, note: context.note, source: context.source }))] }));
   const topic = VOCAB_TOPICS.find(item => item.id === topicId) || VOCAB_TOPICS[0];
   const verbs = topic.verbs.map(name => { const v = VERBS.find(item => item.v1 === name); return v ? { ...v, kind: "verb", key: v.id } : null; }).filter(Boolean);
   const nouns = topic.nouns.map(id => NOUN_BY_ID[id]).filter(Boolean).map(noun => ({ ...noun, key: `noun:${noun.id}`, priority: studyPriority(noun.lemma) }));
-  const additions = (window.VOCAB_V2?.additions || []).filter(item => item.topic === topicId).map(item => ({ ...item, kind: "lexeme", key: `lex:${item.id}`, lemma: item.word, priority: item.frequency || 1, contexts: item.contexts.map((row, i) => ({ id: `${item.id}:ctx${i}`, no: row[0], zh: row[1], note: row[2] })) }));
+  const additions = (window.VOCAB_V2?.additions || []).filter(item => item.topic === topicId).map(item => ({ ...item, kind: "lexeme", key: `lex:${item.id}`, lemma: item.word, priority: item.frequency || 1, contexts: item.contexts.map((row, i) => ({ id: `${item.id}:ctx${i}`, no: row[0], zh: row[1], note: row[2], source: row[3] || "" })) }));
   verbs.forEach(verb => { verb.priority = studyPriority(verb.v1); });
   const mixed = []; const base = [...verbs, ...nouns]; for (let i = 0; i < Math.max(base.length, additions.length); i++) { if (base[i]) mixed.push(base[i]); if (additions[i]) mixed.push(additions[i]); }
   return mixed;
@@ -356,7 +404,19 @@ function shuffle(list) { const out = [...list]; for (let i = out.length - 1; i >
 function route() { return (location.hash.slice(1) || "study").split("?")[0]; }
 function query() { return new URLSearchParams(location.hash.split("?")[1] || ""); }
 function getVerb(id) { return VERBS.find(v => v.id === id) || VERBS[0]; }
-function currentQuestion() { return state.session?.questions?.[state.session.index]; }
+function currentQuestion() {
+  const question = state.session?.questions?.[state.session.index];
+  if (!question) return question;
+  const translation = repairQuestionTranslation(question);
+  if (translation) { question.translation = translation; if (!hasReviewedChineseTranslation(question.answerTranslation)) question.answerTranslation = translation; return question; }
+  // Very old saved questions may have neither a translation nor enough source data to reconstruct one.
+  // Replace those locally instead of asking the learner to answer a question with no usable Chinese cue.
+  const replacement = makeQuestion("past", sentenceContextFor(VERBS[0]), Date.now());
+  replacement.rotationKey = `past:${VERBS[0].id}:${replacement.rotationVariant}`;
+  state.session.questions[state.session.index] = replacement;
+  saveState();
+  return replacement;
+}
 
 function countsFor(total) {
   const shift = (state.practiceSessions || 0) % DISTRIBUTION.length;
@@ -387,7 +447,7 @@ function makeQuestion(type, verb, serial, perfectTime = null) {
   const subject = SUBJECTS[serial % SUBJECTS.length]; const habit = HABIT_TIMES[Math.floor(serial / SUBJECTS.length) % HABIT_TIMES.length];
   if (type === "form") { const sentence = serial % 2 ? `${subject.no} ${verb.pres} ${verb.tail} ${habit.no.toLocaleLowerCase("nb-NO")}.` : `${habit.no} ${verb.pres} ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`; const prompt = serial % 2 ? `${subject.no} ___ ${verb.tail} ${habit.no.toLocaleLowerCase("nb-NO")}.` : `${habit.no} ___ ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`; const meaning = translatedSentenceZh(habit.zh, subject.zh, verbActionZh(verb)); return makeChoice(id, type, "动词四形", prompt, verb, verb.pres, `这是现在时 ${verb.pres}。${habit.zh} 是习惯/频率线索，动词用现在时。`, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `现在时可表达当前状态、一般事实或习惯；主语换成不同人称，挪威语动词现在时通常不随人称变化。`, rotationVariant: sentenceId(sentence) }); }
   if (type === "modal") { const modals = [{ no:"skal", zh:"计划" },{ no:"vil", zh:"想" },{ no:"kan", zh:"能够" },{ no:"må", zh:"必须" },{ no:"bør", zh:"应该" }]; const modal = modals[serial % modals.length]; const sentence = `${subject.no} ${modal.no} ${verb.v1} ${verb.tail}.`; const meaning = modalActionZh(modal.no, verb); return makeChoice(id, type, "情态 + V1", `${subject.no} ${modal.no} ___ ${verb.tail}.`, verb, verb.v1, `${modal.no}（${modal.zh}）已经承担了变位，后面的动作使用原形 ${verb.v1}，不加 -r，也不加 å。`, { translation: translatedSentenceZh("", subject.zh, meaning), correctSentence: sentence, answerTranslation: translatedSentenceZh("", subject.zh, meaning), rule: `情态动词 ${modal.no} 后直接接动词原形：${modal.no} + V1。挪威语情态动词本身变位，后面的主要动词不变位。`, rotationVariant: sentenceId(sentence) }); }
-  if (type === "past") { const time = PAST_TIMES[serial % PAST_TIMES.length]; const sentence = `${time.no} ${verb.past} ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`; const meaning = translatedSentenceZh(time.zh, subject.zh, verbActionZh(verb)); return makeChoice(id, type, "过去时", `${time.no} ___ ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`, verb, verb.past, `${time.no} 明确表示过去，使用过去时 ${verb.past}。`, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `明确过去时间词（如 i går、forrige uke）通常搭配过去时。主语和时间短语变化不会改变过去时词形。`, rotationVariant: sentenceId(sentence) }); }
+  if (type === "past") { const time = PAST_TIMES[serial % PAST_TIMES.length]; const sentence = `${time.no} ${verb.past} ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`; const meaning = translatedSentenceZh(time.zh, subject.zh, pastActionZh(verbActionZh(verb))); return makeChoice(id, type, "过去时", `${time.no} ___ ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`, verb, verb.past, `${time.no} 明确表示过去，使用过去时 ${verb.past}。`, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `明确过去时间词（如 i går、forrige uke）通常搭配过去时。主语和时间短语变化不会改变过去时词形。`, rotationVariant: sentenceId(sentence) }); }
   if (type === "perfect") { const time = perfectTime || ["allerede", "nettopp", "flere ganger", "i dag"][serial % 4]; const after = time === "flere ganger" || time === "i dag"; const sentence = after ? `${subject.no} har ${verb.pp} ${verb.tail} ${time}.` : `${subject.no} har ${time} ${verb.pp} ${verb.tail}.`; const action = verb.v1 === "kjøpe" ? "买了食物" : verbActionZh(verb); const meaning = time === "i dag" ? translatedSentenceZh("今天", subject.zh, action) : translatedSentenceZh("", subject.zh, `${time === "allerede" ? "已经" : time === "nettopp" ? "刚刚" : ""}${action}${time === "flere ganger" ? "好几次" : ""}`); return makeChoice(id, type, "har + 完成分词", after ? `${subject.no} har ___ ${verb.tail} ${time}.` : `${subject.no} har ${time} ___ ${verb.tail}.`, verb, verb.pp, `har 后使用完成分词 ${verb.pp}；主语变化时 har 仍保持不变。${time === "nettopp" ? " nettopp 表示“刚刚”，标准拼写为两个 p。" : ""}`, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `现在完成时结构是主语 + har + 完成分词。${time === "nettopp" ? "nettopp（刚刚）放在完成分词前。" : time === "allerede" ? "allerede（已经）放在完成分词前。" : time === "flere ganger" ? "flere ganger（好几次）放在句末。" : "i dag（今天）放在句末。"}填入完成分词后，题干应与完整正确句一致。`, rotationVariant: sentenceId(sentence) }); }
   if (type === "infinitive") { const starters = [{ no:"Jeg liker å", zh:"我喜欢" },{ no:"Hun prøver å", zh:"她试着" },{ no:"Vi ønsker å", zh:"我们希望" },{ no:"De trenger å", zh:"他们需要" }]; const starter = starters[serial % starters.length]; const sentence = `${starter.no} ${verb.v1} ${verb.tail}.`; const meaning = `${starter.zh}${verbActionZh(verb)}。`; return makeChoice(id, type, "å + V1", `${starter.no} ___ ${verb.tail}.`, verb, verb.v1, `${starter.no.split(" ").slice(-1)[0]} 是变位动词/结构，后面的动作使用 å + 原形 ${verb.v1}。`, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `两个动词连用时，liker / prøver / ønsker / trenger 后的第二个动词常用 å + V1；情态动词后则不加 å。`, rotationVariant: sentenceId(sentence) }); }
   if (type === "v2") return makeV2Question(serial);
@@ -402,6 +462,7 @@ function makeCollocationQuestion(c, id) {
 }
 function questionIntegrityIssues(q) {
   const issues = [];
+  if (!hasReviewedChineseTranslation(q.translation)) issues.push("缺少经过校对的中文句意");
   const options = q.options || q.choices || [];
   if (q.answer && options.length && !options.includes(q.answer)) issues.push("答案不在选项中");
   if (options.length !== new Set(options).size) issues.push("选项重复");
@@ -424,7 +485,7 @@ function questionIntegrityIssues(q) {
 }
 function makeV2Question(serial, verb = VERBS[0]) { const mode = serial % 3; const subject = SUBJECTS[Math.floor(serial / 3) % SUBJECTS.length];
   if (mode === 0) { const time = FUTURE_TIMES[Math.floor(serial / 5) % FUTURE_TIMES.length]; const modal = ["skal","vil","kan"][Math.floor(serial / 2) % 3]; const first = `${time.no} ${modal} ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.v1} ${verb.tail}`; const second = `${subject.no} ${modal} ${verb.v1} ${verb.tail} ${time.no.toLocaleLowerCase("nb-NO")}`; const meaning = translatedSentenceZh(time.zh, subject.zh, modalActionZh(modal, verb)); return { id:`v2-${verb.id}-${serial}`, type:"input", category:"v2", skill:"V2 语序", prompt:`把词语组成句子（注意 V2）：${time.no} / ${subject.no.toLocaleLowerCase("nb-NO")} / ${modal} / ${verb.v1} / ${verb.tail}`, answers:[first,second], answer:first, verbId:verb.id, explanation:`时间放句首时，${modal} 必须紧跟在时间成分后，主语 ${subject.no.toLocaleLowerCase("nb-NO")} 放在它后面。时间也可以放句末，形成另一种自然语序。`, translation:meaning, correctSentence:`${first}.`, answerTranslation:meaning, rule:`挪威语主句遵守 V2：句首时间成分算第一位，变位动词 ${modal} 位于第二位。`, rotationVariant:sentenceId(first) }; }
-  if (mode === 1) { const time = PAST_TIMES[Math.floor(serial / 3) % PAST_TIMES.length]; const first = `${time.no} ${verb.past} ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}`; const second = `${subject.no} ${verb.past} ${verb.tail} ${time.no.toLocaleLowerCase("nb-NO")}`; const meaning = translatedSentenceZh(time.zh, subject.zh, verbActionZh(verb)); return { id:`v2-${verb.id}-${serial}`, type:"input", category:"v2", skill:"V2 语序", prompt:`用过去时组成自然句：${time.no} / ${subject.no.toLocaleLowerCase("nb-NO")} / ${verb.past} / ${verb.tail}`, answers:[first,second], answer:first, verbId:verb.id, explanation:`时间放句首时，变位动词 ${verb.past} 仍占第二位；主语随之放在动词后。`, translation:meaning, correctSentence:`${first}.`, answerTranslation:meaning, rule:`V2 不等于“第二个单词”，而是主句第一个成分后接变位动词。`, rotationVariant:sentenceId(first) }; }
+  if (mode === 1) { const time = PAST_TIMES[Math.floor(serial / 3) % PAST_TIMES.length]; const first = `${time.no} ${verb.past} ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}`; const second = `${subject.no} ${verb.past} ${verb.tail} ${time.no.toLocaleLowerCase("nb-NO")}`; const meaning = translatedSentenceZh(time.zh, subject.zh, pastActionZh(verbActionZh(verb))); return { id:`v2-${verb.id}-${serial}`, type:"input", category:"v2", skill:"V2 语序", prompt:`用过去时组成自然句：${time.no} / ${subject.no.toLocaleLowerCase("nb-NO")} / ${verb.past} / ${verb.tail}`, answers:[first,second], answer:first, verbId:verb.id, explanation:`时间放句首时，变位动词 ${verb.past} 仍占第二位；主语随之放在动词后。`, translation:meaning, correctSentence:`${first}.`, answerTranslation:meaning, rule:`V2 不等于“第二个单词”，而是主句第一个成分后接变位动词。`, rotationVariant:sentenceId(first) }; }
   const time = HABIT_TIMES[Math.floor(serial / 4) % HABIT_TIMES.length]; const first = `${time.no} ${verb.pres} ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}`; const second = `${subject.no} ${verb.pres} ${verb.tail} ${time.no.toLocaleLowerCase("nb-NO")}`; const meaning = translatedSentenceZh(time.zh, subject.zh, verbActionZh(verb)); return { id:`v2-${verb.id}-${serial}`, type:"input", category:"v2", skill:"V2 语序", prompt:`用习惯表达组成自然句：${time.no} / ${subject.no.toLocaleLowerCase("nb-NO")} / ${verb.pres} / ${verb.tail}`, answers:[first,second], answer:first, verbId:verb.id, explanation:`${time.zh} 放在句首时，变位动词 ${verb.pres} 紧随其后；若主语放句首，则动词在主语后。`, translation:meaning, correctSentence:`${first}.`, answerTranslation:meaning, rule:"主句 V2 规则按成分数位置：句首时间状语是第一成分，变位动词必须是第二成分。", rotationVariant:sentenceId(first) };
 }
 function buildSession(total, onlyVerbId = null) {
@@ -445,7 +506,10 @@ function buildSession(total, onlyVerbId = null) {
     if (type === "v2") q = makeV2Question(questionSerial, contextualVerb);
     else if (type === "collocation") { const unseen = COLLOCATIONS.filter(x => !usedCollocations.has(x.no)); const freshPhrases = unseen.filter(x => !history.slice(-100).includes(`collocation:${sentenceId(x.no)}`)); const c = shuffle(freshPhrases.length ? freshPhrases : unseen)[0] || shuffle(COLLOCATIONS)[0]; usedCollocations.add(c.no); q = makeCollocationQuestion(c, `${type}-${serial++}`); }
     else { let perfectTime = null; if (type === "perfect") { let freshTimes = ["allerede", "nettopp", "flere ganger", "i dag"].filter(x => !usedPerfectTimes.has(x)); if (!freshTimes.length) { usedPerfectTimes.clear(); freshTimes = ["allerede", "nettopp", "flere ganger", "i dag"]; } perfectTime = shuffle(freshTimes)[0]; usedPerfectTimes.add(perfectTime); } q = makeQuestion(type, contextualVerb, questionSerial, perfectTime); }
-    q.rotationKey = type === "collocation" ? `collocation:${sentenceId(q.answer)}` : `${type}:${verb.id}:${q.rotationVariant || sentenceId(q.correctSentence || q.prompt)}`; qs.push(q);
+      q.rotationKey = type === "collocation" ? `collocation:${sentenceId(q.answer)}` : `${type}:${verb.id}:${q.rotationVariant || sentenceId(q.correctSentence || q.prompt)}`;
+      q.translation = repairQuestionTranslation(q); if (!hasReviewedChineseTranslation(q.answerTranslation)) q.answerTranslation = q.translation;
+      if (!q.translation) throw new Error(`练习题缺少中文译文：${q.id}`);
+      qs.push(q);
   }});
   const scheduled = dueMistakes.map(item => ({ ...item.question, id: `review-${item.id}-${Date.now()}`, scheduledReviewId: item.id, rotationKey: item.question.rotationKey || `review:${item.qid}` }));
   const questions = [...scheduled, ...qs];
@@ -726,13 +790,13 @@ function renderLearnStudy() {
   }
   const result = s.lastResult;
   if (s.usagePending && s.usageQuestion) { const q = s.usageQuestion; return `<section class="question-card vocab-card">${studyHeader}<div class="meaning-guide"><span>词形会背了，还要会选</span><strong>${esc(q.prompt)}</strong><p>${esc(q.zh)}</p>${q.scene ? `<p class="muted">判断线索：${esc(q.scene)}</p>` : ""}</div>${q.sentence ? `<div class="example-card"><code>${esc(q.sentence)}</code></div>` : ""}<div class="usage-options">${q.choices.map((choice, i) => `<button class="choice-button" data-vocab-usage-choice="${i}">${esc(choice)}</button>`).join("")}</div><p class="muted">先判断“一个还是多个”，再判断“新信息还是已知对象”。</p></section>`; }
-  if (entry.kind === "future") return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.pos)} · ${esc(entry.zh)}</span><div class="answer-headword"><h1>${esc(entry.word)}</h1><button class="sound-button headword-audio" data-say="${esc(entry.word)}" type="button">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 回忆正确" : "看答案，再主动回忆一次"}</h3><p>${esc(result.message)}</p></div>` : ""}<div class="meaning-guide"><span>词义与词形</span><strong>${esc(entry.zh)}</strong><p>${esc(entry.forms)}</p><p><b>例句译文：</b>${esc(entry.translation)}</p></div><div class="example-card"><code>${esc(entry.sentence)}</code><p>${esc(entry.translation)}</p><button class="sound-button" data-say="${esc(entry.sentence)}">🔊 听例句</button></div><div class="memory-tip"><strong>记忆方法</strong><span>先想象“${esc(entry.scene)}”所代表的场景，再把词放回整句；遮住中文复述挪威语，最后听读两遍。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
+  if (entry.kind === "future") { const context = s.contexts?.[entry.key] || entry.contexts?.[0]; return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.pos)} · ${esc(entry.zh)}</span><div class="answer-headword"><h1>${esc(entry.word)}</h1><button class="sound-button headword-audio" data-say="${esc(entry.word)}" type="button">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 回忆正确" : "看答案，再主动回忆一次"}</h3><p>${esc(result.message)}</p></div>` : ""}<div class="meaning-guide"><span>词义与词形</span><strong>${esc(entry.zh)}</strong><p>${esc(entry.forms)}</p></div>${context ? `<div class="example-card"><code>${esc(context.no)}</code><p>${esc(context.zh)}</p><p class="muted">${esc(context.note)}</p>${context.source ? `<a class="context-source" href="${esc(context.source)}" target="_blank" rel="noopener noreferrer">例句来源：Bokmålsordboka ↗</a>` : ""}<button class="sound-button" data-say="${esc(context.no)}">🔊 听例句</button></div>` : ""}<div class="memory-tip"><strong>记忆方法</strong><span>先想象“${esc(entry.scene)}”所代表的场景，再把词放回整句；遮住中文复述挪威语，最后听读两遍。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`; }
   if (entry.kind === "lexeme") {
     const context = s.contexts?.[entry.key] || entry.contexts?.[0];
     const q = s.usageQuestion;
     const forms = fields.map(field => renderWordForm(field.label, field.answer)).join("");
     const usage = q ? `<div class="meaning-guide"><span>放进语境里判断</span><strong>${esc(q.prompt)}</strong><p class="example">${esc(q.sentence)}</p><p>${esc(q.zh)}</p><p><b>为什么：</b>${esc(q.why)}</p></div>` : "";
-    return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.pos)} · ${esc(entry.zh)}</span><div class="answer-headword"><h1>${esc(entry.word)}</h1><button class="sound-button headword-audio" data-say="${esc(entry.word)}" type="button">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 回忆与运用都正确" : "还要巩固"}</h3><p>${esc(result.message)}</p>${s.usageQuestion ? `<p>你选：<code>${esc(s.usageGiven || "未选择")}</code> · 推荐形式：<code>${esc(s.usageQuestion.answer)}</code></p>` : ""}</div>` : ""}<div class="meaning-guide"><span>具体语义与用法</span><strong>${esc(entry.zh)}</strong><p>${esc(entry.note)}</p>${entry.collocations?.length ? `<p><b>常见搭配：</b>${entry.collocations.map(esc).join(" · ")}</p>` : ""}</div><div class="big-forms">${forms}</div>${context ? `<div class="example-card"><span>真实语境 · ${esc(entry.cluster)}</span><code>${esc(context.no)}</code><p>${esc(context.zh)}</p><p class="muted">${esc(context.note)}</p><button class="sound-button" data-say="${esc(context.no)}" type="button">🔊 听例句</button></div>` : ""}${usage}<div class="memory-tip"><strong>把形式和场景绑定</strong><span>遮住译文，先复述例句；再换掉主语或时间词，自己造一个新句。复习时系统会轮换词条和例句。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
+    return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.pos)} · ${esc(entry.zh)}</span><div class="answer-headword"><h1>${esc(entry.word)}</h1><button class="sound-button headword-audio" data-say="${esc(entry.word)}" type="button">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 回忆与运用都正确" : "还要巩固"}</h3><p>${esc(result.message)}</p>${s.usageQuestion ? `<p>你选：<code>${esc(s.usageGiven || "未选择")}</code> · 推荐形式：<code>${esc(s.usageQuestion.answer)}</code></p>` : ""}</div>` : ""}<div class="meaning-guide"><span>具体语义与用法</span><strong>${esc(entry.zh)}</strong><p>${esc(entry.note)}</p>${entry.collocations?.length ? `<p><b>常见搭配：</b>${entry.collocations.map(esc).join(" · ")}</p>` : ""}</div><div class="big-forms">${forms}</div>${context ? `<div class="example-card"><span>例句 · ${esc(entry.cluster)}</span><code>${esc(context.no)}</code><p>${esc(context.zh)}</p><p class="muted">${esc(context.note)}</p>${context.source ? `<a class="context-source" href="${esc(context.source)}" target="_blank" rel="noopener noreferrer">例句来源：Bokmålsordboka ↗</a>` : ""}<button class="sound-button" data-say="${esc(context.no)}" type="button">🔊 听例句</button></div>` : ""}${usage}<div class="memory-tip"><strong>把形式和场景绑定</strong><span>遮住译文，先复述例句；再换掉主语或时间词，自己造一个新句。复习时系统会轮换词条和例句。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
   }
   const headwordSound = entry.kind === "noun" ? fields[0].answer : entry.v1;
   const formCards = fields.map(field => [field.label, field.answer])
@@ -748,7 +812,7 @@ function renderLearnStudy() {
   const progressNote = entry.kind === "noun" ? "记名词时把冠词一起背：它告诉你词的性别；再留意定指词尾和复数变化。" : "把四形按节奏读出来，再用一个句子把它和日常生活连起来。";
   return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.kind === "noun" ? nounInfo.meaning : entry.zh)}</span><div class="answer-headword"><h1>${esc(title)}</h1><button class="sound-button headword-audio" data-say="${esc(headwordSound)}" type="button" aria-label="播放 ${esc(headwordSound)} 的挪威语发音">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 词形与运用都正确" : "还需要巩固"}</h3><p>${esc(result.message)}</p>${s.usageQuestion ? `<p>你选：<code>${esc(s.usageGiven || "未选择")}</code> · 推荐形式：<code>${esc(s.usageQuestion.answer)}</code></p>` : ""}</div>` : ""}${meaningBlock}${nounUsage}<p id="pronunciation-status" class="pronunciation-note" aria-live="polite">🔊 单词和词形都可单独播放，发音使用设备提供的挪威语语音。</p><div class="big-forms">${formCards}</div>${examples}<div class="theme-sentence"><span>专题整合句 · ${topic.title}</span><p class="example">${esc(topic.story)}</p><p class="muted">${esc(topic.storyZh)}</p><button class="sound-button" data-say="${esc(topic.story)}" type="button">🔊 听整句</button></div><div class="memory-tip"><strong>记忆小方法</strong><span>${progressNote} 明天、3天后和1周后再复习。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
 }
-function renderLearnDetail(v) { const n = state.learned[v.id] || 0; const forms = [["现在时", v.pres], ["过去时", v.past], ["完成分词", v.pp]].map(([label, word]) => renderWordForm(label, word)).join(""); const examples = verbExamples(v); return `<section class="panel wide detail-panel"><button class="text-button" data-back-learn>← 返回背词</button><span class="eyebrow">动词卡 · ${esc(v.zh)}</span><div class="answer-headword"><h1 style="font-size:58px">${esc(v.v1)}</h1><button class="sound-button headword-audio" data-say="${esc(v.v1)}" type="button" aria-label="播放 ${esc(v.v1)} 的挪威语发音">🔊 听原形</button></div><div class="big-forms">${forms}</div><div class="meaning-guide"><span>语义与固定搭配</span><strong>${esc(v.phrase)}</strong><p>这个搭配表示“${esc(VERB_USAGE_ZH[v.v1] || v.zh)}”。动词本身可表示“${esc(v.zh)}”，要和后面的成分一起理解。</p><button class="sound-button" data-say="${esc(v.phrase)}" type="button">🔊 听搭配</button></div><div class="four-sentences">${examples.map(example => `<div><span>${example.label}</span><code>${esc(example.no)}</code><p class="example-translation">${esc(example.zh)}</p><button class="sound-button" data-say="${esc(example.no)}" type="button">🔊 听例句</button></div>`).join("")}</div><p class="muted">本词已标记：${n}次。连续两次选择“我会了”后，系统会降低新词出现频率，之后按间隔复习。</p><div class="actions"><button class="button orange" data-again-verb="${v.id}">再练这个词</button><button class="button primary" data-know-verb="${v.id}">我会了</button></div></section>`; }
+function renderLearnDetail(v) { const n = state.learned[v.id] || 0; const forms = [["现在时", v.pres], ["过去时", v.past], ["完成分词", v.pp]].map(([label, word]) => renderWordForm(label, word)).join(""); const examples = verbExamples(v); return `<section class="panel wide detail-panel"><button class="text-button" data-back-learn>← 返回背词</button><span class="eyebrow">动词卡 · ${esc(v.zh)}</span><div class="answer-headword"><h1 style="font-size:58px">${esc(v.v1)}</h1><button class="sound-button headword-audio" data-say="${esc(v.v1)}" type="button" aria-label="播放 ${esc(v.v1)} 的挪威语发音">🔊 听原形</button></div><div class="big-forms">${forms}</div><div class="meaning-guide"><span>语义与固定搭配</span><strong>${esc(v.phrase)}</strong><p>这个搭配表示“${esc(VERB_USAGE_ZH[v.v1] || v.zh)}”。动词本身可表示“${esc(v.zh)}”，要和后面的成分一起理解。</p><button class="sound-button" data-say="${esc(v.phrase)}" type="button">🔊 听搭配</button></div><div class="four-sentences">${examples.map(example => `<div><span>${esc(example.label)}</span><code>${esc(example.no)}</code><p class="example-translation">${esc(example.zh)}</p>${example.note ? `<p class="muted">${esc(example.note)}</p>` : ""}${example.source ? `<a href="${esc(example.source)}" target="_blank" rel="noopener noreferrer">查看词典来源</a>` : ""}<button class="sound-button" data-say="${esc(example.no)}" type="button">🔊 听例句</button></div>`).join("")}</div><p class="muted">本词已标记：${n}次。连续两次选择“我会了”后，系统会降低新词出现频率，之后按间隔复习。</p><div class="actions"><button class="button orange" data-again-verb="${v.id}">再练这个词</button><button class="button primary" data-know-verb="${v.id}">我会了</button></div></section>`; }
 const MISTAKE_REVIEW_INTERVALS = [1, 3, 7, 14, 30];
 function activeMistakes() { return (state.mistakes || []).filter(item => !item.masteredAt); }
 function scheduleMistakeReview(item, correct, given = item.given) {
@@ -881,7 +945,7 @@ function detailedFeedback(q, kind, title, given = "") {
   const forms = verb ? `<div class="form-strip"><span>${verb.v1}</span><span>${verb.pres}</span><span>${verb.past}</span><span>${verb.pp}</span></div>` : "";
   const phraseMeaning = q.collocation ? `<div class="explain-block"><strong>本题固定搭配</strong><p><code>${esc(q.collocation.no)}</code> = ${esc(q.collocation.zh)}</p></div>` : verb ? `<div class="explain-block"><strong>本句词组</strong><p><code>${esc(verb.v1)} ${esc(verb.tail)}</code> = ${esc(verbActionZh(verb))}</p><p class="muted">把动词和后面的词一起理解；同一个动词换了搭配，意思也可能变化。</p></div>` : "";
   const givenBlock = given ? `<div class="answer-compare"><span>你的答案</span><code>${esc(given)}</code></div>` : "";
-  const translation = q.translation || q.answerTranslation || "这道题的中文译文正在校对，暂不提供不确定的直译。";
+  const translation = repairQuestionTranslation(q);
   return `<div class="feedback ${kind}"><h3>${title}</h3>${givenBlock}<div class="explain-block"><strong>完整句的中文意思</strong><p>${esc(translation)}</p></div>${phraseMeaning}<div class="explain-block"><strong>完整正确句</strong><p class="example">${esc(q.correctSentence || answer)} <button class="sound-button" data-say="${esc(q.correctSentence || answer)}" type="button">🔊 播放发音</button></p>${q.answerTranslation && q.answerTranslation !== translation ? `<p class="muted">答案提示：${esc(q.answerTranslation)}</p>` : ""}</div>${sentenceAnalysisMarkup(q)}<div class="explain-block"><strong>为什么这样用</strong><p>${esc(q.rule || q.explanation || "")}</p><p class="muted">${esc(q.explanation || "")}</p></div>${forms ? `<div class="explain-block"><strong>这个动词的四形</strong>${forms}</div>` : ""}<div class="memory-tip"><strong>记忆动作</strong><span>大声跟读完整句两遍，再自己替换一个词重新说一遍。</span></div><div class="actions"><button class="button primary" data-next>${state.session.index === state.session.total - 1 ? "查看总结" : "下一题"}</button></div></div>`;
 }
 function structuredCheck(q, given) { const valid = q.answers || [q.answer]; const ok = valid.some(x => normalize(x) === normalize(given)); record(q, given, ok, valid[0], q.explanation); document.querySelector("#feedback").innerHTML = detailedFeedback(q, ok ? "good" : "bad", ok ? "✓ 正确，但请看讲解" : "需要修改 · 这道题的规则", given); document.querySelector("[data-next]")?.addEventListener("click", nextQuestion); document.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => speakNorwegian(b.dataset.say))); }
