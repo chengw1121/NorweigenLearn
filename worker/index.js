@@ -34,11 +34,10 @@ const ZODIAC_NEW_YEARS = {
   "2031-01-23": ["pig", "猪", "🐖"], "2032-02-11": ["rat", "鼠", "🐀"], "2033-01-31": ["ox", "牛", "🐂"], "2034-02-19": ["tiger", "虎", "🐅"], "2035-02-08": ["rabbit", "兔", "🐇"], "2036-01-28": ["dragon", "龙", "🐉"], "2037-02-15": ["snake", "蛇", "🐍"],
 };
 const FIXED_FESTIVAL_MEDALS = [
-  ["01-01", "norway-new-year", "挪威新年同行", "挪威节日", "在挪威新年这一天完成学习"],
+  ["01-01", "new-year-learning", "新年启程", "特别纪念", "在新年第一天完成学习"],
   ["02-06", "sami-national-day", "萨米日共学", "挪威节日", "在萨米民族日完成学习"],
   ["05-17", "norway-national-day", "挪威国庆同行", "挪威节日", "在挪威宪法日完成学习"],
-  ["12-24", "norwegian-christmas", "挪威圣诞夜", "挪威节日", "在挪威圣诞夜完成学习"],
-  ["01-01", "international-new-year", "新年启程", "国际节日", "在新年第一天完成学习"],
+  ["12-24", "christmas-learning", "圣诞共学纪念章", "特别纪念", "在圣诞节期间完成学习"],
   ["02-21", "international-language-day", "母语守护者", "国际节日", "在国际母语日完成学习"],
   ["03-08", "international-womens-day", "致敬每一份坚持", "国际节日", "在国际妇女节完成学习"],
   ["04-22", "earth-day", "地球同行者", "国际节日", "在世界地球日完成学习"],
@@ -46,7 +45,6 @@ const FIXED_FESTIVAL_MEDALS = [
   ["05-01", "international-workers-day", "劳动者同行", "国际节日", "在国际劳动节完成学习"],
   ["06-05", "world-environment-day", "绿色学习者", "国际节日", "在世界环境日完成学习"],
   ["10-24", "un-day", "世界公民学习者", "国际节日", "在联合国日完成学习"],
-  ["12-25", "international-christmas", "圣诞学习之星", "国际节日", "在圣诞节完成学习"],
   ["10-01", "china-national-day", "中国国庆共学", "中国节日", "在中国国庆节完成学习"],
 ];
 
@@ -63,15 +61,6 @@ function festivalMedalsForDate(date) {
   const zodiac = ZODIAC_NEW_YEARS[date];
   if (zodiac) found.push({ code: `zodiac-${zodiac[0]}-${date.slice(0,4)}`, title: `${date.slice(0,4)}年 · ${zodiac[1]}年新春`, category: "春节生肖", description: `在${date.slice(0,4)}年春节当天完成学习，收集${zodiac[1]}年生肖纪念奖牌`, tier: "special", icon: zodiac[2], date });
   return found;
-}
-function upcomingFestivalGoals(today) {
-  const year = Number(today.slice(0,4)), dates = new Set();
-  for (let y = year; y <= year + 1; y++) {
-    for (const [mmdd] of FIXED_FESTIVAL_MEDALS) dates.add(`${y}-${mmdd}`);
-    for (const date of Object.keys(CHINESE_FESTIVALS)) if (Number(date.slice(0,4)) === y) dates.add(date);
-  }
-  for (const date of Object.keys(ZODIAC_NEW_YEARS)) dates.add(date);
-  return [...dates].filter(date => date >= today).sort().flatMap(date => festivalMedalsForDate(date)).map(medal => ({ ...medal, progress: 0, threshold: 1, earned: false }));
 }
 function supabaseUrl(env, path) { if (!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) throw new Error("AUTH_NOT_CONFIGURED"); return `${env.SUPABASE_URL.replace(/\/$/, "")}/auth/v1/${path}`; }
 async function authRequest(env, path, payload, accessToken = "", method = payload === null ? "GET" : "POST") {
@@ -131,7 +120,6 @@ async function issueMedals(env, userId, points, habits) {
     ...STREAK_MEDALS.map(m => ({ ...m, progress: Math.min(habits.currentStreak, m.threshold), earned: habits.longestStreak >= m.threshold })),
     { ...MONTH_MEDAL, code: `month-${habits.today.slice(0,7)}`, progress: Math.min(habits.monthDays, MONTH_MEDAL.threshold), earned: habits.monthDays >= MONTH_MEDAL.threshold },
     ...YEAR_MEDALS.map(m => ({ ...m, code: `year-${habits.today.slice(0,4)}-${m.threshold}`, progress: Math.min(habits.yearDays, m.threshold), earned: habits.yearDays >= m.threshold })),
-    ...upcomingFestivalGoals(habits.today).map(goal => ({ ...goal, progress: goal.date === habits.today && habits.todayQualifies ? 1 : 0, earned: goal.date === habits.today && habits.todayQualifies })),
   ];
   return { earned, goals, habits };
 }

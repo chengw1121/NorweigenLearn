@@ -316,7 +316,6 @@ let accountStudyHabits = { currentStreak: 0, monthDays: 0, yearDays: 0 };
 let accountNotice = "";
 let accountMode = "login";
 let accountTab = "overview";
-let accountMedalCategory = "progress";
 let boardPeriod = "all";
 let boardRows = [];
 let accountBackendUnavailable = false;
@@ -467,24 +466,69 @@ function renderAccount() {
   if (resetToken || params.get("recovery")==="1" || accountMode==="reset") return `<section class="panel account-panel"><span class="eyebrow">账号安全 · 重置密码</span><h1>设置新密码</h1><p class="muted">新密码至少12位。保存后请用新密码登录。</p><form class="account-form" data-account-form="reset"><label>新密码<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><button class="button primary" type="submit">更新密码</button></form>${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}</section>`;
   if (accountUser) {
     const rows = boardRows.length ? boardRows.map((row,i)=>`<li class="leader-row ${row.nickname===accountUser.nickname?"me":""}"><span class="leader-rank">${i+1}</span><strong>${esc(row.nickname)}</strong><span>${Number(row.points).toLocaleString()} 分</span></li>`).join("") : `<li class="leader-empty">排行榜加载中，完成练习后这里会更新。</li>`;
-    const earnedByCode = new Map(accountMedals.map(m => [m.code, m]));
     const habits = accountStudyHabits;
-    const specialCategories = ["中国节日", "挪威节日", "国际节日", "春节生肖"];
-    const goalCodes = new Set(accountMedalGoals.map(goal => goal.code));
-    const specialGoals = accountMedalGoals.filter(goal => specialCategories.includes(goal.category));
-    const earnedSpecials = accountMedals.filter(medal => !goalCodes.has(medal.code)).map(medal => ({ ...earnedMedalDetails(medal), ...medal, progress: 1, threshold: 1, earned: true }));
-    const allSpecials = [...specialGoals, ...earnedSpecials];
-    const selectedSpecials = allSpecials.filter(item => item.category === accountMedalCategory);
-    const medalTabs = [["progress","学习里程碑"], ["中国节日","中国节日"], ["挪威节日","挪威节日"], ["国际节日","国际节日"], ["春节生肖","生肖收藏"]];
-    const medalContent = accountTab === "medals" ? `<section class="account-subpage"><div class="account-subhead"><div><span class="eyebrow">Medal collection</span><h2>奖牌收藏室</h2><p class="muted">按系列浏览已获得和即将开放的奖牌，不用再翻完整长页。</p></div><strong class="medal-count">${accountMedals.length}<small>枚已获得</small></strong></div><div class="medal-category-tabs" role="tablist" aria-label="奖牌系列">${medalTabs.map(([id,label])=>`<button type="button" role="tab" aria-selected="${accountMedalCategory===id}" class="${accountMedalCategory===id?"selected":""}" data-medal-category="${id}">${label}</button>`).join("")}</div>${accountMedalCategory === "progress" ? `<p class="medal-rule-note">有效学习日：按挪威日期统计，当天至少获得 10 分。月牌需 20 天；年度牌目标为 120 / 180 / 240 天。</p><div class="medal-grid">${accountMedalGoals.filter(goal=>!specialCategories.includes(goal.category)).map(goal=>renderMedalCard(goal,earnedByCode.get(goal.code))).join("")}</div>` : `<p class="medal-rule-note">完成对应节日当天的学习即可领取专属纪念奖牌。生肖奖牌在对应农历新年当天开放。</p>${selectedSpecials.length?`<div class="medal-grid">${selectedSpecials.map(goal=>renderMedalCard(goal,earnedByCode.get(goal.code))).join("")}</div>`:`<div class="empty-medals">这个系列暂时没有待开放奖牌；已获得的纪念奖牌会保留在这里。</div>`}`}</section>` : "";
-    const accountContent = accountTab === "overview" ? `<section class="account-subpage"><div class="account-stats"><div><strong>${Number(accountUser.points||0).toLocaleString()}</strong><span>总积分</span></div><div><strong>${accountMedals.length}</strong><span>已获得奖牌</span></div><div><strong>${habits.currentStreak}</strong><span>当前连续学习日</span></div><div><strong>${habits.monthDays}/20</strong><span>本月有效学习日</span></div></div><div class="account-shortcuts"><button type="button" data-account-tab="medals"><span>🏅</span><strong>奖牌收藏室</strong><small>里程碑、节日与生肖系列 · ${accountMedals.length} 枚已获得</small></button><button type="button" data-account-tab="leaderboard"><span>🏆</span><strong>学习排行榜</strong><small>查看总积分榜和本周排名</small></button><button type="button" data-account-tab="preferences"><span>⚙</span><strong>练习偏好</strong><small>每日任务组合、题量和音效</small></button></div><section class="medal-intro compact"><span class="eyebrow">下一步目标</span><p>连续学习奖励：3、7、30、90、180、365、730、1,095 天；每月学习满 20 天可收集月牌。</p></section></section>` : accountTab === "medals" ? medalContent : accountTab === "leaderboard" ? `<section class="account-subpage"><div class="leader-heading"><div><span class="eyebrow">学习社区</span><h2>排行榜</h2><p class="muted">只显示公开昵称和积分，不会显示邮箱。</p></div><div class="board-tabs"><button class="${boardPeriod==="all"?"selected":""}" data-board-period="all">总榜</button><button class="${boardPeriod==="week"?"selected":""}" data-board-period="week">本周</button></div></div><ol class="leaderboard">${rows}</ol></section>` : `<section class="account-subpage"><div class="account-subhead"><div><span class="eyebrow">Preferences</span><h2>练习偏好</h2><p class="muted">调整每日任务组合、默认题量和答题音效。</p></div></div>${renderTrainingSettings()}</section>`;
+    const earnedMedals = normalizeEarnedMedals(accountMedals);
+    const earnedByCode = new Map(earnedMedals.map(m => [m.code, m]));
+    const showroom = buildMedalShowroom(earnedMedals, accountMedalGoals);
+    const medalContent = accountTab === "medals" ? `<section class="account-subpage"><div class="account-subhead"><div><span class="eyebrow">Medal collection</span><h2>奖牌陈列室</h2><p class="muted">点亮的奖牌在前；接下来可获得的里程碑在后。节日与生肖隐藏款会在解锁时揭晓。</p></div><strong class="medal-count">${earnedMedals.length}<small>枚已点亮</small></strong></div><p class="medal-rule-note">有效学习日按挪威当地日期统计，当天至少获得 10 分。月牌需 20 天；年度目标为 120 / 180 / 240 天。</p>${showroom.earned.length?`<h3 class="medal-section-title">已点亮 · ${showroom.earned.length}</h3><div class="medal-grid">${showroom.earned.map(goal=>renderMedalCard(goal,earnedByCode.get(goal.code))).join("")}</div>`:`<div class="empty-medals">完成一次学习，就会点亮你的第一枚奖牌。</div>`}${showroom.locked.length?`<h3 class="medal-section-title">下一步可解锁</h3><div class="medal-grid">${showroom.locked.map(goal=>renderMedalCard(goal,null)).join("")}</div>`:""}<p class="medal-secret-note">还有特别纪念款不会提前展示；在对应日期完成学习时，它会作为惊喜出现。</p></section>` : "";
+    const accountContent = accountTab === "overview" ? `<section class="account-subpage"><div class="account-stats"><div><strong>${Number(accountUser.points||0).toLocaleString()}</strong><span>总积分</span></div><div><strong>${earnedMedals.length}</strong><span>已获得奖牌</span></div><div><strong>${habits.currentStreak}</strong><span>当前连续学习日</span></div><div><strong>${habits.monthDays}/20</strong><span>本月有效学习日</span></div></div><div class="account-shortcuts"><button type="button" data-account-tab="medals"><span>🏅</span><strong>奖牌陈列室</strong><small>学习里程碑与隐藏纪念款 · ${earnedMedals.length} 枚已点亮</small></button><button type="button" data-account-tab="leaderboard"><span>🏆</span><strong>学习排行榜</strong><small>查看总积分榜和本周排名</small></button><button type="button" data-account-tab="preferences"><span>⚙</span><strong>练习偏好</strong><small>每日任务组合、题量和音效</small></button></div><section class="medal-intro compact"><span class="eyebrow">下一步目标</span><p>连续学习奖励：3、7、30、90、180、365、730、1,095 天；每月学习满 20 天可收集月牌。</p></section></section>` : accountTab === "medals" ? medalContent : accountTab === "leaderboard" ? `<section class="account-subpage"><div class="leader-heading"><div><span class="eyebrow">学习社区</span><h2>排行榜</h2><p class="muted">只显示公开昵称和积分，不会显示邮箱。</p></div><div class="board-tabs"><button class="${boardPeriod==="all"?"selected":""}" data-board-period="all">总榜</button><button class="${boardPeriod==="week"?"selected":""}" data-board-period="week">本周</button></div></div><ol class="leaderboard">${rows}</ol></section>` : `<section class="account-subpage"><div class="account-subhead"><div><span class="eyebrow">Preferences</span><h2>练习偏好</h2><p class="muted">调整每日任务组合、默认题量和答题音效。</p></div></div>${renderTrainingSettings()}</section>`;
     return `<section class="panel wide account-panel"><header class="account-header"><div><span class="eyebrow">Norsk hver dag · 我的学习空间</span><h1>你好，${esc(accountUser.nickname)}！</h1><p class="muted">查看学习进度、收藏成就，按自己的节奏继续。</p></div><button class="text-button account-logout" data-auth-logout>退出登录</button></header><nav class="account-tabs" aria-label="我的模块">${[["overview","概览"],["medals","奖牌"],["leaderboard","排行榜"],["preferences","练习偏好"]].map(([id,label])=>`<button type="button" class="${accountTab===id?"selected":""}" data-account-tab="${id}" aria-current="${accountTab===id?"page":"false"}">${label}</button>`).join("")}</nav>${accountContent}${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}</section>`;
   }
   const form = accountMode === "register" ? `<form class="account-form" data-account-form="register"><label>公开昵称<input name="nickname" minlength="2" maxlength="24" autocomplete="nickname" required></label><label>邮箱（不会公开）<input name="email" type="email" maxlength="254" autocomplete="email" required></label><label>密码（至少12位）<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><p class="fine-print">注册即表示你同意使用昵称公开展示积分榜。请勿在昵称中填写邮箱、真实姓名等隐私信息。</p><button class="button primary" type="submit">创建账号并发送验证邮件</button></form>` : accountMode === "forgot" ? `<form class="account-form" data-account-form="forgot"><label>注册邮箱<input name="email" type="email" autocomplete="email" required></label><button class="button primary" type="submit">发送重置链接</button></form>` : `<form class="account-form" data-account-form="login"><label>邮箱<input name="email" type="email" autocomplete="email" required></label><label>密码<input name="password" type="password" autocomplete="current-password" required></label><button class="button primary" type="submit">登录</button></form>`;
   return `<section class="panel account-panel"><span class="eyebrow">账号 · 排行榜 · 奖牌</span><h1>${accountMode==="register"?"创建学习账号":accountMode==="forgot"?"找回密码":"登录 Norsk hver dag"}</h1><p class="muted">跨设备保存学习积分和奖牌，查看本周与总积分榜。</p>${accountBackendUnavailable?`<div class="feedback close"><h3>账号服务正在配置中</h3><p>需要先配置 Supabase 邮箱认证、Cloudflare D1 数据库并部署 Worker；配置完成后即可注册。</p></div>`:""}${verificationEmail?`<form class="account-form resend-form" data-account-form="resend"><input type="hidden" name="email" value="${esc(verificationEmail)}"><button class="button secondary" type="submit">重发验证邮件</button></form>`:""}${form}<div class="account-switch">${accountMode==="login"?`<button class="text-button" data-account-mode="register">创建账号</button><button class="text-button" data-account-mode="forgot">忘记密码</button>`:`<button class="text-button" data-account-mode="login">返回登录</button>`}</div><details class="guest-preferences"><summary>本设备练习偏好</summary>${renderTrainingSettings()}</details>${accountNotice?`<p class="account-notice">${esc(accountNotice)}</p>`:""}<p class="fine-print">邮箱验证和密码由 Supabase Auth 管理；D1 只保存排行榜昵称、积分和奖牌。公开榜单仅展示昵称与分数。</p></section>`;
 }
+function medalLegacyGroup(code = "") {
+  const christmas = code.match(/^(?:norwegian-christmas|international-christmas|christmas-learning)-(\d{4})$/);
+  if (christmas) return { code: `christmas-learning-${christmas[1]}`, title: "圣诞共学纪念章", category: "特别纪念", description: "在圣诞节期间完成学习", tier: "special", icon: "🎄" };
+  const newYear = code.match(/^(?:norway-new-year|international-new-year|new-year-learning)-(\d{4})$/);
+  if (newYear) return { code: `new-year-learning-${newYear[1]}`, title: "新年启程", category: "特别纪念", description: "在新年第一天完成学习", tier: "special", icon: "✨" };
+  return null;
+}
+function normalizeEarnedMedals(medals = []) {
+  const byCode = new Map();
+  for (const medal of medals) {
+    const legacy = medalLegacyGroup(medal.code);
+    const details = earnedMedalDetails(medal);
+    const normalized = { ...details, ...medal, ...(legacy || {}), earned: true, progress: 1, threshold: 1 };
+    const previous = byCode.get(normalized.code);
+    if (!previous || String(normalized.earnedAt || "") > String(previous.earnedAt || "")) byCode.set(normalized.code, normalized);
+  }
+  return [...byCode.values()].sort((a,b) => String(b.earnedAt || "").localeCompare(String(a.earnedAt || "")));
+}
+function buildMedalShowroom(earnedMedals = [], goals = []) {
+  const earnedCodes = new Set(earnedMedals.map(medal => medal.code));
+  const earned = earnedMedals.map(medal => ({ ...earnedMedalDetails(medal), ...medal, earned: true, progress: 1, threshold: 1 }));
+  const families = [
+    { category: "积分", prefix: "points-" },
+    { category: "连续学习", prefix: "streak-" },
+    { category: "月度学习", prefix: "month-" },
+    { category: "年度学习", prefix: "year-" },
+  ];
+  const locked = families.flatMap(({ category, prefix }) => {
+    const next = goals.filter(goal => goal.category === category && goal.code?.startsWith(prefix) && !goal.earned && !earnedCodes.has(goal.code))
+      .sort((a,b) => Number(a.threshold || 0) - Number(b.threshold || 0))[0];
+    return next ? [next] : [];
+  });
+  return { earned, locked };
+}
+function showMedalCelebration(medals = []) {
+  if (!medals.length) return;
+  document.querySelector("[data-medal-celebration]")?.remove();
+  const overlay = document.createElement("div");
+  overlay.className = "medal-celebration-backdrop";
+  overlay.dataset.medalCelebration = "true";
+  overlay.innerHTML = `<section class="medal-celebration" role="dialog" aria-modal="true" aria-labelledby="medal-celebration-title"><button class="medal-celebration-close" type="button" aria-label="关闭">×</button><span class="eyebrow">Achievement unlocked · 成就解锁</span><h2 id="medal-celebration-title">新奖牌点亮！</h2><div class="medal-celebration-items">${medals.map(medal => `<article>${medalArt(medal.tier || "special", medal.icon && medal.icon !== "✦" ? medal.icon : "✦")}<div><strong>${esc(medal.title || "学习成就")}</strong><small>${esc(medal.description || "坚持学习，收获一枚纪念奖牌。")}</small>${["中国节日","挪威节日","国际节日","春节生肖","特别纪念"].includes(medal.category) ? `<em>隐藏纪念款 · 已收入陈列室</em>` : ""}</div></article>`).join("")}</div><button class="button primary" type="button" data-open-medals>查看奖牌陈列室</button></section>`;
+  const close = () => overlay.remove();
+  overlay.addEventListener("click", event => { if (event.target === overlay || event.target.closest(".medal-celebration-close")) close(); });
+  overlay.querySelector("[data-open-medals]").addEventListener("click", () => { close(); accountTab = "medals"; location.hash = "account"; refreshAccount().then(render); });
+  document.addEventListener("keydown", function escape(event) { if (event.key === "Escape" && document.body.contains(overlay)) { close(); document.removeEventListener("keydown", escape); } });
+  document.body.append(overlay);
+  overlay.querySelector(".medal-celebration-close")?.focus();
+}
 function medalTier(tier = "bronze") { return ["bronze", "silver", "gold", "diamond", "special"].includes(tier) ? tier : "bronze"; }
 function earnedMedalDetails(medal) {
+  const points = medal.code.match(/^points-(100|500|1500|5000)$/);
+  if (points) return { description: `累计获得 ${Number(points[1]).toLocaleString()} 学习积分`, category: "积分", tier: Number(points[1]) >= 5000 ? "diamond" : Number(points[1]) >= 1500 ? "gold" : Number(points[1]) >= 500 ? "silver" : "bronze" };
   if (/^month-\d{4}-\d{2}$/.test(medal.code)) return { description: "本自然月完成 20 个有效学习日", category: "月度学习", tier: "gold" };
   const yearly = medal.code.match(/^year-\d{4}-(120|180|240)$/);
   if (yearly) return { description: `本自然年完成 ${yearly[1]} 个有效学习日`, category: "年度学习", tier: yearly[1] === "240" ? "diamond" : yearly[1] === "180" ? "gold" : "silver" };
@@ -493,6 +537,7 @@ function earnedMedalDetails(medal) {
   if (/^zodiac-/.test(medal.code)) return { description: "在对应农历新年当天完成学习，收集生肖纪念奖牌", category: "春节生肖", tier: "special" };
   if (/^(qingming|dragon-boat|mid-autumn|lantern|qixi|double-ninth|chinese-new-year|china-new-year-gregorian|china-national-day)/.test(medal.code)) return { description: "在中国传统节日当天完成学习", category: "中国节日", tier: "special" };
   if (/^(norway-new-year|sami-national-day|norway-national-day|norwegian-christmas)/.test(medal.code)) return { description: "在挪威节日当天完成学习", category: "挪威节日", tier: "special" };
+  if (/^(new-year-learning|christmas-learning)/.test(medal.code)) return { description: "在节日期间完成学习，收集特别纪念奖牌", category: "特别纪念", tier: "special" };
   if (/^(international-|earth-day|world-book-day|world-environment-day|un-day)/.test(medal.code)) return { description: "在国际纪念日当天完成学习", category: "国际节日", tier: "special" };
   return { description: "在特别的日子里坚持学习", category: "特别日期", tier: "special" };
 }
@@ -918,7 +963,7 @@ async function refreshAccount() {
 async function refreshLeaderboard() { try { const data=await accountApi(`/api/leaderboard?period=${boardPeriod}`); boardRows=data.rows||[]; } catch { boardRows=[]; } }
 async function sendLearningEvent(type, correct = false) {
   if(!accountUser) return;
-  try { const eventId=crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16);}); const data=await accountApi("/api/score",{method:"POST",body:JSON.stringify({eventId,type,correct})}); accountUser={...accountUser,points:data.points}; if(data.newMedals?.length) accountMedals=[...data.newMedals,...accountMedals]; accountMedalGoals=data.medalGoals||accountMedalGoals;accountStudyHabits=data.studyHabits||accountStudyHabits; updateAccountButton(); if(route()==="account"){await refreshLeaderboard();render();} }
+  try { const eventId=crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16);}); const data=await accountApi("/api/score",{method:"POST",body:JSON.stringify({eventId,type,correct})}); accountUser={...accountUser,points:data.points}; if(data.newMedals?.length){accountMedals=[...data.newMedals,...accountMedals];showMedalCelebration(data.newMedals);} accountMedalGoals=data.medalGoals||accountMedalGoals;accountStudyHabits=data.studyHabits||accountStudyHabits; updateAccountButton(); if(route()==="account"){await refreshLeaderboard();render();} }
   catch { /* The learning app stays usable when the account service is offline. */ }
 }
 async function submitAccountForm(form) {
@@ -937,7 +982,6 @@ function bindView() {
   document.querySelector("[data-auth-logout]")?.addEventListener("click",async()=>{try{await accountApi("/api/auth/logout",{method:"POST",body:"{}"});}catch{}clearAccountSession();accountUser=null;accountMedals=[];accountNotice="已退出登录。";updateAccountButton();render();});
   document.querySelectorAll("[data-board-period]").forEach(button=>button.addEventListener("click",async()=>{boardPeriod=button.dataset.boardPeriod;await refreshLeaderboard();render();}));
   document.querySelectorAll("[data-account-tab]").forEach(button=>button.addEventListener("click",()=>{accountTab=button.dataset.accountTab;render();}));
-  document.querySelectorAll("[data-medal-category]").forEach(button=>button.addEventListener("click",()=>{accountMedalCategory=button.dataset.medalCategory;render();}));
   document.querySelector("[data-start]")?.addEventListener("click", () => { location.hash = state.session ? "practice" : `setup?n=${Number(state.trainingSettings?.dailyQuestionCount) || 10}`; });
   document.querySelectorAll("[data-start-daily]").forEach(button => button.addEventListener("click", () => state.session ? (location.hash = "practice") : startSession(Number(state.trainingSettings?.dailyQuestionCount) || 10)));
   document.querySelectorAll("[data-change-count]").forEach(button => button.addEventListener("click", () => { location.hash = `setup?n=${Number(state.trainingSettings?.dailyQuestionCount) || 10}`; }));

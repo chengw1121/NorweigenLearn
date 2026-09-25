@@ -71,6 +71,41 @@ const report = JSON.parse(results);
 assert.deepEqual(report.errors, [], `Question integrity failures:\n${JSON.stringify(report.errors.slice(0, 25), null, 2)}`);
 console.log(`Question integrity passed: ${report.verbs} verbs × all patterns, ${report.collocations} collocations, ${report.sessions} generated 30-question sessions.`);
 
+const medalReport = JSON.parse(vm.runInContext(`(() => {
+  const normalized = normalizeEarnedMedals([
+    { code: "norwegian-christmas-2026", title: "挪威圣诞夜", earnedAt: "2026-12-24T10:00:00Z" },
+    { code: "international-christmas-2026", title: "圣诞学习之星", earnedAt: "2026-12-25T10:00:00Z" },
+    { code: "points-100", title: "初学启程", earnedAt: "2026-09-25T10:00:00Z" },
+  ]);
+  const goals = [
+    { code: "points-100", category: "积分", threshold: 100, earned: true },
+    { code: "points-500", category: "积分", threshold: 500, earned: false },
+    { code: "streak-3", category: "连续学习", threshold: 3, earned: false },
+    { code: "streak-7", category: "连续学习", threshold: 7, earned: false },
+    { code: "month-2026-09", category: "月度学习", threshold: 20, earned: false },
+    { code: "year-2026-120", category: "年度学习", threshold: 120, earned: false },
+    { code: "christmas-learning-2026", category: "特别纪念", threshold: 1, earned: false },
+    { code: "zodiac-horse-2026", category: "春节生肖", threshold: 1, earned: false },
+  ];
+  const showroom = buildMedalShowroom(normalized, goals);
+  accountUser = { nickname: "Tester", points: 600 };
+  accountMedals = normalized;
+  accountMedalGoals = goals;
+  accountStudyHabits = { currentStreak: 3, monthDays: 2, yearDays: 2 };
+  accountTab = "medals";
+  const html = renderAccount();
+  return JSON.stringify({ normalizedCount: normalized.length, normalizedChristmasCode: normalized.find(m => m.category === "特别纪念")?.code, earnedFirst: showroom.earned[0]?.code, locked: showroom.locked.map(m => m.code), exposesHidden: showroom.locked.some(m => /christmas|zodiac/.test(m.code)), hasSingleShowroom: html.includes("奖牌陈列室") && !html.includes("data-medal-category"), earnedSectionBeforeGoals: html.indexOf("已点亮") < html.indexOf("下一步可解锁"), hiddenSecretsAbsent: !html.includes("zodiac-horse") && !html.includes("christmas-learning-2026") });
+})()`, context));
+assert.equal(medalReport.normalizedCount, 2, "legacy duplicate holiday medals should collapse into a single display medal");
+assert.equal(medalReport.normalizedChristmasCode, "christmas-learning-2026", "legacy Christmas medals should use the canonical annual display identity");
+assert.equal(medalReport.earnedFirst, "christmas-learning-2026", "earned medals should be present in the lit section after canonical grouping");
+assert.deepEqual(medalReport.locked, ["points-500", "streak-3", "month-2026-09", "year-2026-120"], "showroom should only show each category's next milestone");
+assert.equal(medalReport.exposesHidden, false, "unearned holiday and zodiac medals should stay hidden");
+assert.equal(medalReport.hasSingleShowroom, true, "medals should render in one collection without category tabs");
+assert.equal(medalReport.earnedSectionBeforeGoals, true, "earned medals should render before locked goals");
+assert.equal(medalReport.hiddenSecretsAbsent, true, "the showroom should not expose names or codes of secret medals");
+console.log("Medal showroom deduplication, milestone selection, and hidden medal checks passed.");
+
 const reviewReport = JSON.parse(vm.runInContext(`(() => {
   state.mistakes = [];
   state.session = { answers: {} };
