@@ -2,13 +2,13 @@
 const VERBS = [
   ["være","er","var","vært","是、处于","hjemme"], ["ha","har","hadde","hatt","有","tid"],
   ["gjøre","gjør","gjorde","gjort","做","en innsats"], ["gå","går","gikk","gått","走、去","til jobben"],
-  ["komme","kommer","kom","kommet","来","snart"], ["ta","tar","tok","tatt","拿；乘坐","bussen"],
+  ["komme","kommer","kom","kommet","来；到达","hjem"], ["ta","tar","tok","tatt","拿；乘坐","bussen"],
   ["se","ser","så","sett","看、看见","filmen"], ["si","sier","sa","sagt","说出；告诉；表示/意味着；告知（依搭配）","det"],
   ["vite","vet","visste","visst","知道","det"], ["finne","finner","fant","funnet","找到","en løsning"],
   ["få","får","fikk","fått","得到；获得","hjelp"], ["bli","blir","ble","blitt","变成、成为","bedre"],
   ["stå","står","sto","stått","站；放置","utenfor"], ["sitte","sitter","satt","sittet","坐","på en kafé"],
   ["ligge","ligger","lå","ligget","躺；位于","i Norge"], ["gi","gir","ga","gitt","给","ham boka"],
-  ["drikke","drikker","drakk","drukket","喝","kaffe"], ["sove","sover","sov","sovet","睡","godt"],
+  ["drikke","drikker","drakk","drukket","喝；饮用；喝酒（依语境）；（引申）消耗/耗用","kaffe"], ["sove","sover","sov","sovet","睡","godt"],
   ["forstå","forstår","forsto","forstått","理解；听懂；体谅（依搭配）","litt norsk"], ["spørre","spør","spurte","spurt","问；询问；请教；征求","læreren"],
   ["fortelle","forteller","fortalte","fortalt","告诉；讲述；叙述","meg det"], ["holde","holder","holdt","holdt","拿住；保持","døra"],
   ["velge","velger","valgte","valgt","选择","denne"], ["selge","selger","solgte","solgt","卖","bilen"],
@@ -20,9 +20,9 @@ const VERBS = [
   ["søke","søker","søkte","søkt","寻找；寻求；申请；前往（依结构）","på en jobb"], ["bo","bor","bodde","bodd","居住","i Norge"],
   ["møte","møter","møtte","møtt","遇见、会见","læreren"], ["hjelpe","hjelper","hjalp","hjulpet","帮助","meg"],
   ["bruke","bruker","brukte","brukt","使用、花费","mobilen"], ["trenge","trenger","trengte","trengt","需要","hjelp"],
-  ["prøve","prøver","prøvde","prøvd","尝试","å snakke norsk"], ["spise","spiser","spiste","spist","吃","frokost"],
-  ["lage","lager","laget","laget","做、制作","middag"], ["kjøpe","kjøper","kjøpte","kjøpt","买","mat"],
-  ["betale","betaler","betalte","betalt","支付","regningen"], ["kjøre","kjører","kjørte","kjørt","开车","til Oslo"],
+  ["prøve","prøver","prøvde","prøvd","尝试","å snakke norsk"], ["spise","spiser","spiste","spist","吃；用餐；（引申）耗掉、占去（依语境）","frokost"],
+  ["lage","lager","laget","laget","制作/做出；做饭；造成、引发（依语境）","middag"], ["kjøpe","kjøper","kjøpte","kjøpt","买；购买","mat"],
+  ["betale","betaler","betalte","betalt","付款；支付","regningen"], ["kjøre","kjører","kjørte","kjørt","开车","til Oslo"],
   ["reise","reiser","reiste","reist","旅行、出行","til Sverige"], ["vaske","vasker","vasket","vasket","洗、清洁","klær"],
   ["snakke","snakker","snakket","snakket","说话；交谈；谈论；说（某种语言）","med naboen"], ["like","liker","likte","likt","喜欢","å lære norsk"],
   ["tenke","tenker","tenkte","tenkt","想、思考","på framtida"], ["mene","mener","mente","ment","认为；觉得；意思是；指的是","det"],
@@ -36,9 +36,97 @@ const VERBS = [
 ].map(([v1,pres,past,pp,zh,tail], index) => ({ id: `${v1}-${index}`, v1, pres, past, pp, zh, tail, phrase: `${v1} ${tail}` }));
 
 const VERB_USAGE_ZH = {
-  "være":"待在家里", "ha":"有时间", "gjøre":"付出努力", "gå":"步行去上班", "komme":"很快过来", "ta":"乘坐公交车", "se":"看这部电影", "si":"说这件事", "vite":"知道这件事", "finne":"找到一个解决办法", "få":"得到帮助", "bli":"变得更好", "stå":"站在外面", "sitte":"坐在咖啡馆里", "ligge":"位于挪威", "gi":"把书给他", "drikke":"喝咖啡", "sove":"睡得好", "forstå":"懂一点挪威语", "spørre":"询问老师", "fortelle":"把这件事告诉我", "holde":"扶着门", "velge":"选择这个", "selge":"卖掉汽车", "kunne":"会说挪威语", "ville":"想学挪威语", "skulle":"打算工作", "måtte":"必须练习", "burde":"应该休息", "jobbe":"在奥斯陆工作", "lære":"学习挪威语", "øve":"每天练习", "lese":"读一本书", "skrive":"写一条消息", "søke":"申请一份工作", "bo":"住在挪威", "møte":"见老师", "hjelpe":"帮助我", "bruke":"使用手机", "trenge":"需要帮助", "prøve":"尝试说挪威语", "spise":"吃早餐", "lage":"做晚饭", "kjøpe":"购买食物", "betale":"支付账单", "kjøre":"开车去奥斯陆", "reise":"去瑞典旅行", "vaske":"洗衣服", "snakke":"和邻居交谈", "like":"喜欢学挪威语", "tenke":"思考未来", "mene":"表达这个意思", "synes":"觉得是这样", "huske":"记得这件事", "glemme":"忘记钥匙", "begynne":"开始工作", "slutte":"四点下班", "vente":"等公交车", "høre":"听见你说话", "sette":"坐下来", "legge":"躺下来", "løpe":"跑回家", "bære":"搬这个东西", "treffe":"见到她", "bestå":"通过B1考试"
+  "være":"待在家里", "ha":"有时间", "gjøre":"付出努力", "gå":"步行去上班", "komme":"回家/到达", "ta":"乘坐公交车", "se":"看这部电影", "si":"说这件事", "vite":"知道这件事", "finne":"找到一个解决办法", "få":"得到帮助", "bli":"变得更好", "stå":"站在外面", "sitte":"坐在咖啡馆里", "ligge":"位于挪威", "gi":"把书给他", "drikke":"喝咖啡", "sove":"睡得好", "forstå":"懂一点挪威语", "spørre":"询问老师", "fortelle":"把这件事告诉我", "holde":"扶着门", "velge":"选择这个", "selge":"卖掉汽车", "kunne":"会说挪威语", "ville":"想学挪威语", "skulle":"打算工作", "måtte":"必须练习", "burde":"应该休息", "jobbe":"在奥斯陆工作", "lære":"学习挪威语", "øve":"每天练习", "lese":"读一本书", "skrive":"写一条消息", "søke":"申请一份工作", "bo":"住在挪威", "møte":"见老师", "hjelpe":"帮助我", "bruke":"使用手机", "trenge":"需要帮助", "prøve":"尝试说挪威语", "spise":"吃早餐", "lage":"做晚饭", "kjøpe":"购买食物", "betale":"支付账单", "kjøre":"开车去奥斯陆", "reise":"去瑞典旅行", "vaske":"洗衣服", "snakke":"和邻居交谈", "like":"喜欢学挪威语", "tenke":"思考未来", "mene":"表达这个意思", "synes":"觉得是这样", "huske":"记得这件事", "glemme":"忘记钥匙", "begynne":"开始工作", "slutte":"四点下班", "vente":"等公交车", "høre":"听见你说话", "sette":"坐下来", "legge":"躺下来", "løpe":"跑回家", "bære":"搬这个东西", "treffe":"见到她", "bestå":"通过B1考试"
 };
 function verbActionZh(verb) { return verb.contextZh || VERB_USAGE_ZH[verb.v1] || verb.zh; }
+const PERFECT_REPEAT_CONTEXTS = {
+  "komme": { tail:"hit", zh:"已经来过这里好几次了", action:"hit 表示“到这里”；flere ganger 说明“来这里”这件事在本周发生了不止一次。" },
+  "kjøpe": { tail:"mat", zh:"已经买过好几次食物了", action:"mat 在这里泛指食物；flere ganger 说明买食物这件事在本周发生了不止一次。" },
+  "spise": { tail:"middag med familien", zh:"已经和家人一起吃过好几次晚饭了", action:"middag med familien 表示“和家人一起吃晚饭”；flere ganger 统计的是这整件用餐活动发生的次数。" },
+  "snakke": { tail:"med naboen", zh:"已经和邻居聊过好几次了", action:"med naboen 表示交谈对象是邻居；flere ganger 统计的是和邻居交谈发生的次数。" },
+  "prøve": { tail:"å snakke norsk", zh:"已经试着说过好几次挪威语了", action:"prøve å snakke norsk 表示“尝试说挪威语”；å 后接动词原形 snakke，flere ganger 说明尝试发生了多次。" },
+  "se": { tail:"en film hjemme", zh:"已经在家看过好几次电影了", action:"en film hjemme 表示“在家看电影”；flere ganger 说明看电影这件事重复发生。" }
+};
+function verbPhraseExplanation(verb) {
+  const phrase = `${verb.v1} ${verb.tail}`.trim();
+  const tail = verb.tail.trim();
+  const specific = {
+    "kjøpe|mat": "kjøpe 是“购买”，mat 在这里泛指食物/食品；合起来是“买食物”，不是“买一顿饭”。",
+    "komme|hjem": "hjem 在这里表示动作的目的地‘家’；komme hjem 是‘回家/到家’，说明人到达自己家，并非单纯说‘来’。若上下文有明确的说话地点，也可按视角译成‘回到家里’。",
+    "vente|på bussen": "vente på + 人或事物表示“等候……”。på 不能按“在……上面”直译；这里等的是公交车。",
+    "spørre|læreren": "spørre + 人表示向某人提问；læreren 是被询问的对象，所以整句是“问老师”。",
+    "snakke|med naboen": "snakke med + 人表示“和某人交谈”；med 标出交谈对象，不是“用邻居”。",
+    "søke|på en jobb": "søke på + 工作/职位表示“申请这份工作”；søke etter 才是“寻找”。",
+    "ta|bussen": "ta bussen 是固定说法“乘公交车”；这里 ta 不是把公交车拿起来。",
+    "tenke|på framtida": "tenke på + 主题表示“想着/考虑某事”；på 引出思考的内容。",
+    "få|hjelp": "få + 名词表示“得到/获得……”；få hjelp 是“得到帮助”。",
+    "bli|bedre": "bli + 形容词表示状态发生变化；bli bedre 是“变得更好/好转”。",
+    "være|hjemme": "hjemme 表示人在家里的状态；Jeg er hjemme 是“我在家”，不是“我成为家”。",
+    "ha|tid": "ha tid 是“有空/有时间”；tid 在这里指可支配的时间，不是钟点。",
+    "gjøre|en innsats": "gjøre en innsats 是“付出努力”；en innsats 是 gjøre 的宾语，整组表达一次努力行动。",
+    "gå|til jobben": "这里 gå 表示步行，til jobben 是目的地，所以 Jeg går til jobben 表示步行去上班；若不强调步行，可说 reise til jobben。",
+    "ta|bussen": "ta bussen 是乘坐公交的固定表达；bussen 用定指形式是常见搭配，ta 在这里不表示用手拿。",
+    "se|filmen": "se filmen 表示观看这部电影；定指形式 filmen 指说话双方已知或特指的那部电影。",
+    "si|det": "si det 表示把某件事说出来；det 回指前文提到的内容。",
+    "vite|det": "vite det 表示知道这件事；det 指已知的信息，不是泛指某个物品。",
+    "finne|en løsning": "finne en løsning 表示找到一个解决办法；en løsning 是找到的结果。",
+    "få|hjelp": "få hjelp 表示得到帮助；这里描述获得帮助，不是“拿帮助”。",
+    "stå|utenfor": "utenfor 在这里说明位置：人或物站/立在某处外面；具体参照物要由上下文补出。",
+    "sitte|på en kafé": "på en kafé 说明坐着的地点；på 在这里是“在（某场所）”，不是“坐在咖啡馆上面”。",
+    "ligge|i Norge": "i Norge 是地点状语，说明某物/某地位于挪威；ligge 除“躺”外也常描述位置。",
+    "gi|ham boka": "gi ham boka 的结构是“给 + 接收者 + 物品”：ham 是接收者，boka 是给出的书。",
+    "drikke|kaffe": "kaffe 在这里泛指咖啡这种饮品；不加冠词时通常不是指某一杯特定的咖啡。",
+    "sove|godt": "godt 修饰 sove，说明睡眠状态/质量；sove godt 就是“睡得好”。",
+    "forstå|litt norsk": "forstå litt norsk 是“懂一点挪威语”；litt 限定理解程度，norsk 是理解的内容。",
+    "spørre|læreren": "spørre læreren 是向老师提问；læreren 是被询问的人。若要说明所问内容，可再接 om + 内容。",
+    "fortelle|meg det": "fortelle meg det 是“把这件事告诉我”：meg 是听者，det 是要传达的内容。",
+    "holde|døra": "holde døra 表示扶住/按住门；døra 是动作直接作用的对象。",
+    "velge|denne": "denne 是限定词，后面通常还要有名词（如 denne boka）；单独写 denne 时须由上下文知道省略的对象。",
+    "selge|bilen": "bilen 是特指的那辆车；selge bilen 表示把这辆车卖掉。",
+    "kunne|snakke norsk": "kunne snakke norsk 表示有说挪威语的能力；情态动词 kunne 后直接接动词原形，不加 å。",
+    "ville|lære norsk": "ville lære norsk 表示想学挪威语；ville 表达意愿，后接原形 lære，不加 å。",
+    "skulle|jobbe": "skulle jobbe 要结合时间和上下文判断：可说计划/安排，也可说过去原本打算；不能只凭这个词组决定中文时态。",
+    "måtte|øve": "måtte øve 表示必须/不得不练习；måtte 是情态动词，后接原形 øve。",
+    "burde|hvile": "burde hvile 表示应该休息；burde 给出建议或责任判断，后接原形 hvile。",
+    "jobbe|i Oslo": "i Oslo 是工作地点，说明在哪里工作；i + 城市名表示“在某城市”。",
+    "lære|norsk": "norsk 在这里是学习的内容；lære norsk 表示学习挪威语，不需要在语言名称前加冠词。",
+    "øve|hver dag": "hver dag 是频率表达，回答“多久练习一次”；它修饰 øve，表示每天练习。",
+    "lese|ei bok": "ei bok 是 lese 的宾语；ei 表明 bok 是阴性名词的不定单数，语境中指一本书。",
+    "skrive|en melding": "en melding 是写作的内容/产物；整组表示写一条消息。",
+    "søke|på en jobb": "søke på en jobb/ stilling 表示申请工作；若是“寻找”则常说 søke etter。",
+    "bo|i Norge": "i Norge 标出居住地点；bo i + 地点表示住在某处。",
+    "møte|læreren": "møte læreren 表示见到/会见老师；此处 møte 后直接接人，不用 med。",
+    "hjelpe|meg": "meg 是帮助的对象；hjelpe + 人直接连接，不需加介词。",
+    "bruke|mobilen": "mobilen 是特指的手机；bruke mobilen 表示使用这部手机。",
+    "trenge|hjelp": "trenge hjelp 表示需要帮助；hjelp 在这里是不可数/泛指的帮助，不加冠词。",
+    "prøve|å snakke norsk": "prøve å + 动词原形表示尝试做某事；å snakke 是尝试的动作，不能漏掉 å。",
+    "spise|frokost": "frokost 泛指早餐这一餐；spise frokost 是“吃早餐”，一般不加冠词。",
+    "lage|middag": "middag 在这里指晚餐/晚饭；lage middag 是准备或做晚饭，不是字面“制作中午”。",
+    "betale|regningen": "regningen 指已知或特定的一笔账单；betale regningen 是把账单付清。",
+    "kjøre|til Oslo": "til Oslo 表示开车的目的地；kjøre til + 地点是“开车去……”。",
+    "reise|til Sverige": "til Sverige 表示旅行目的地；reise 强调出行/旅行，不一定说明使用何种交通工具。",
+    "vaske|klær": "klær 是衣物的泛称；vaske klær 表示洗衣服，不特指某一件衣物。",
+    "snakke|med naboen": "med naboen 标出谈话对象：是“和邻居交谈”；要表达谈论某个话题则用 snakke om。",
+    "like|å lære norsk": "like å + 动词原形表示喜欢做某事；å lære norsk 是喜欢的活动。",
+    "tenke|på framtida": "på framtida 是思考的主题；tenke på framtida 表示考虑/想着未来，不是“在未来思考”。",
+    "mene|det": "mene det 表示认为/确实是这个意思；det 回指一个观点或前文内容。",
+    "synes|det": "synes det 表示“对此觉得/认为……”；常需要结合后面的形容词或从句补全判断内容。",
+    "huske|det": "huske det 表示记得这件事；det 是被记住的信息。",
+    "glemme|nøklene": "nøklene 是定指复数，指语境中那串/那些钥匙；glemme nøklene 表示忘带或忘记钥匙，具体看上下文。",
+    "begynne|å jobbe": "begynne å + 动词原形表示开始做某事；å jobbe 说明开始的活动。",
+    "slutte|klokka fire": "klokka fire 给出停止/结束的时间：slutte klokka fire 是四点结束（如下班），不是“四点停止钟表”。",
+    "vente|på bussen": "vente på bussen 是等公交车；på 是 vente 的固定介词搭配，不表示人在公交车上等。",
+    "høre|deg": "høre deg 表示听见你/听到你的声音；deg 是 høre 的宾语。若强调主动聆听，通常说 høre på deg。",
+    "sette|seg ned": "sette seg ned 表示坐下这个动作；seg 随主语变化，sette 强调使身体进入坐姿。",
+    "legge|seg ned": "legge seg ned 表示躺下；seg 指动作回到主语自身，和 legge noe ned（把某物放下）区分。",
+    "løpe|hjem": "hjem 表示朝“家”这个目的地移动；løpe hjem 是跑回家，hjem 不用前置介词。",
+    "bære|denne": "bære denne 需要上下文补出被拿/搬的名词（如 denne stolen）；单独的 denne 不是完整明确的物品名称。",
+    "treffe|henne": "henne 是 treffe 的宾语；treffe henne 表示碰见/见到她。",
+    "bestå|B1-eksamen": "bestå en eksamen 表示考试通过；这与 bestå av（由……组成）是不同句型和词义。"
+  }[`${verb.v1}|${verb.tail}`];
+  if (specific) return specific;
+  throw new Error(`动词搭配缺少逐条、语境化的讲解：${phrase}`);
+}
 const VERB_SENTENCE_CONTEXTS = {
   "jobbe":[["i Oslo","在奥斯陆工作"],["hjemme","在家工作"],["på et kontor","在办公室工作"]],
   "lære":[["norsk","学习挪威语"],["nye ord","学习新单词"],["å lage mat","学习做饭"]],
@@ -107,8 +195,15 @@ function repairQuestionTranslation(q = {}) {
   if (modal && ["modal","correction","v2"].includes(q.category)) return translatedSentenceZh(cueZh, subject, modalActionZh(modal, { ...verb, contextZh: action }));
   if (q.category === "perfect") {
     const aspect = cueNo === "nettopp" ? "刚刚" : cueNo === "allerede" ? "已经" : "";
-    const suffix = cueNo === "flere ganger" ? "好几次" : "";
-    return `${cueZh ? `${cueZh}，` : ""}${subject}${aspect}${action}${suffix}。`;
+    if (cueNo === "flere ganger") {
+      const repeated = PERFECT_REPEAT_CONTEXTS[verb.v1];
+      if (repeated) return `这周，${subject}${repeated.zh}。`;
+      // Do not manufacture a repetition translation from an arbitrary verb
+      // gloss: it can yield Chinese such as “很快过来好几次”. Repetition
+      // examples must be explicitly curated with a natural context first.
+      return "";
+    }
+    return `${cueZh ? `${cueZh}，` : ""}${subject}${aspect}${action}。`;
   }
   if (["past"].includes(q.category) || (q.category === "v2" && ["i går","forrige uke","for to dager siden","i fjor"].some(cue => lower.includes(cue)))) {
     return translatedSentenceZh(cueZh, subject, pastActionZh(action));
@@ -139,10 +234,10 @@ function verbExamples(entry) {
 const NOUNS = [
   ["dag","en","dag","dagen","dager","dagene","天","Hver dag lærer jeg litt norsk.","每天我学一点挪威语。"],
   ["tid","ei","tid","tida","tider","tidene","时间","Jeg har tid i dag.","我今天有时间。"],
-  ["hjem","et","hjem","hjemmet","hjem","hjemmene","家","Jeg går hjem etter jobb.","下班后我回家。"],
+  ["hjem","et","hjem","hjemmet","hjem","hjemmene","家；住所；家庭共同生活的地方","Vi ønsker oss et rolig hjem.","我们希望有一个安宁的家。"],
   ["jobb","en","jobb","jobben","jobber","jobbene","工作","Jeg går på jobb om morgenen.","我早上去上班。"],
   ["mat","—","mat","maten","—","—","食物；饭菜；一顿饭/用餐（依语境）；食物、营养（较少见）","Han liker å lage mat.","他喜欢做饭。"],
-  ["vann","—","vann","vannet","—","—","水","Jeg drikker vann hver dag.","我每天喝水。"],
+  ["vann","et","vann","vannet","vann","vannene","水；一片水域/小湖（可数义）","Jeg drikker vann hver dag.","我每天喝水。"],
   ["familie","en","familie","familien","familier","familiene","家庭","Familien min bor i Norge.","我的家人住在挪威。"],
   ["barn","et","barn","barnet","barn","barna","孩子","Barnet leser en bok.","孩子在读一本书。"],
   ["venn","en","venn","vennen","venner","vennene","朋友","Jeg snakker med en venn.","我和一个朋友聊天。"],
@@ -159,12 +254,12 @@ const NOUNS = [
   ["bord","et","bord","bordet","bord","bordene","桌子","Boka ligger på bordet.","书在桌子上。"],
   ["stol","en","stol","stolen","stoler","stolene","椅子","Jeg sitter på en stol.","我坐在椅子上。"],
   ["dør","ei","dør","døra","dører","dørene","门","Lukk døra, takk.","请把门关上。"],
-  ["brød","et","brød","brødet","brød","brødene","面包","Jeg kjøper brød på butikken.","我在商店买面包。"],
-  ["melk","—","melk","melken","—","—","牛奶","Barnet drikker melk.","孩子喝牛奶。"],
-  ["kaffe","en","kaffe","kaffen","kaffer","kaffene","咖啡","Vil du ha en kopp kaffe?","你想喝一杯咖啡吗？"],
-  ["butikk","en","butikk","butikken","butikker","butikkene","商店","Jeg går til butikken.","我去商店。"],
-  ["penger","en","penge","pengen","penger","pengene","钱币；钱（泛指金钱时常用复数 penger）","Jeg sparer penger til en sykkel.","我在攒钱买一辆自行车。"],
-  ["frokost","en","frokost","frokosten","frokoster","frokostene","早餐","Vi spiser frokost klokka sju.","我们七点吃早餐。"],
+  ["brød","et","brød","brødet","brød","brødene","面包；整条/整块面包（按数量）","Jeg kjøper brød på butikken.","我在商店买面包。"],
+  ["melk","—","melk","melken","—","—","牛奶；乳汁；植物奶（如椰奶，依语境）","Barnet drikker melk.","孩子喝牛奶。"],
+  ["kaffe","en","kaffe","kaffen","kaffer","kaffene","咖啡；一杯咖啡（点单时）；咖啡茶点（依语境）","Vil du ha en kopp kaffe?","你想喝一杯咖啡吗？"],
+  ["butikk","en","butikk","butikken","butikker","butikkene","商店；店铺；（比喻）生意/业务","Jeg går til butikken.","我去商店。"],
+  ["penger","en","penge","pengen","penger","pengene","钱；钱币；钱款（泛指金钱时通常用复数 penger）","Jeg sparer penger til en sykkel.","我在攒钱买一辆自行车。"],
+  ["frokost","en","frokost","frokosten","frokoster","frokostene","早餐；早餐这一餐/时段","Vi spiser frokost klokka sju.","我们七点吃早餐。"],
   ["uke","ei","uke","uka","uker","ukene","星期；周","Jeg lærer norsk hver uke.","我每周学挪威语。"],
   ["morgen","en","morgen","morgenen","morgener","morgenene","早晨","Om morgenen drikker jeg kaffe.","早晨我喝咖啡。"],
   ["kveld","en","kveld","kvelden","kvelder","kveldene","晚上","Vi leser om kvelden.","我们晚上读书。"],
@@ -188,10 +283,10 @@ const NOUNS = [
 const NOUN_GUIDES = {
   "dag":["一天、日子；也可表示白天", "这里是时间单位 day，不是天空。天空是 himmel。"],
   "tid":["时间；一段时间", "ha tid 表示“有时间”；问几点通常用 Hva er klokka?"],
-  "hjem":["家、归属感或居所", "gå hjem 表示“回家”，前面通常不用 til；房屋建筑本身常用 hus。"],
+  "hjem":["家、住所；家庭生活和归属之处", "名词 et hjem 指家/住所，强调人在此生活和归属；hus 更侧重建筑。副词 hjem 表示“回家”的方向，如 gå hjem，不加 til；两者词性不同。"],
   "jobb":["工作、职位；也可指工作地点", "gå på jobb 是“去上班”；更宽泛的“劳动/工作”还可用 arbeid。"],
   "mat":["食物、饭菜的总称", "通常作为不可数概念使用；不是某一道具体菜名。"],
-  "vann":["水", "表示物质时通常不可数；一杯水可说 et glass vann。"],
+  "vann":["水；一片水域/小湖", "中性名词。饮用水通常不可数：drikke vann、et glass vann；表示一处小湖/水域时可数：et lite vann。复数不定式通常仍为 vann，定指复数 vannene。"],
   "familie":["家庭、家人这一群体", "指整个家庭；单独一位亲属通常用 familiemedlem。"],
   "barn":["孩子；儿童", "et barn 是一个孩子，barn 也可以是不定复数，要靠上下文判断。"],
   "venn":["朋友", "指一个具体朋友；vennlig 是“友好的”，不要混淆。"],
@@ -208,12 +303,12 @@ const NOUN_GUIDES = {
   "bord":["桌子", "这里是家具 table；不是“黑板”，黑板是 tavle。"],
   "stol":["椅子", "普通有靠背座椅；扶手椅通常用 lenestol。"],
   "dør":["门", "指门本身；门口/入口根据语境可用 inngang。"],
-  "brød":["面包；一条/一个面包", "et brød 可指一个完整面包；不定复数仍是 brød。"],
-  "melk":["牛奶", "作为饮品通常不可数；一杯牛奶说 et glass melk。"],
-  "kaffe":["咖啡；一杯咖啡", "作为饮品可不带冠词；点单时 en kaffe 常指“一杯咖啡”。"],
-  "butikk":["商店、店铺", "去商店常说 gå i/på butikken，具体介词会随语境变化。"],
+  "brød":["面包；整条/整块面包（按数量）", "中性名词。泛指面包这种食物常零冠词；一个完整面包可说 et brød，一片是 ei skive brød/brødskive。不定复数仍是 brød，定指复数 brødene。"],
+  "melk":["牛奶；乳汁；植物奶（如椰奶，依语境）", "通常作不可数名词；数包装时说 en kartong melk（一盒牛奶），一杯牛奶说 et glass melk。"],
+  "kaffe":["咖啡；一杯咖啡；咖啡茶点", "阳性名词。饮料泛指时常不加冠词；点单 en kaffe 表示一杯，be noen til kaffe 可指请人来喝咖啡/吃茶点。"],
+  "butikk":["商店；店铺；（比喻）生意/业务", "阳性名词。gå på butikken 是日常常见的‘去商店/买东西’；比喻义见 legge ned hele butikken（关闭整个业务）等完整搭配。"],
   "penger":["钱币；泛指金钱时通常用复数 penger", "en penge 指一枚钱币/一笔钱，复数 penger 常泛指钱；定指复数是 pengene。"],
-  "frokost":["早餐", "spise frokost 表示“吃早餐”，通常不需要冠词。"],
+  "frokost":["早餐；早餐这一餐/时段", "阳性名词。日常说吃早餐常用零冠词：spise frokost；具体某顿早餐可说 en frokost，已知那顿用 frokosten。"],
   "uke":["一周、星期这一时间段", "i uka 是“在这一周/每周”的常见表达；具体星期几用 ukedag。"],
   "morgen":["早晨", "i morgen 是“明天”，om morgenen 是“在早晨”，意义不同。"],
   "kveld":["晚上、傍晚", "通常指从傍晚到睡前；夜间更晚的时段是 natt。"],
@@ -282,6 +377,9 @@ function entryFields(entry) {
   if (entry.kind === "lexeme") return entry.forms.map((answer, i) => ({ key: `form${i}`, answer, label: entry.labels[i], hint: entry.pos === "形容词" ? "想一想名词的性数如何影响词尾" : entry.pos === "名词" ? "冠词、定指和复数都要与词一起记" : "回忆这个词形及其常见使用位置" }));
   return [{ key: "v1", answer: entry.v1, label: "动词原形", hint: "先根据中文和情境主动回忆词根" }, { key: "pres", answer: entry.pres, label: "现在时", hint: "表示现在或习惯" }, { key: "past", answer: entry.past, label: "过去时", hint: "表示已经发生" }, { key: "pp", answer: entry.pp, label: "完成分词", hint: "放在 har 后面" }];
 }
+function matchesLexicalAnswer(given, expected) {
+  return String(expected ?? "").split(/\s*\/\s*/u).some(answer => normalize(given) === normalize(answer));
+}
 
 function vocabContexts(entry, topicId = "daily") {
   const candidates = [...(entry.contexts || [])];
@@ -346,6 +444,31 @@ const COLLOCATIONS = [
   ["høre på", "听（音乐等）", "Jeg hører på musikk.", "我在听音乐。"], ["se på", "看（电视等）", "Jeg ser på TV.", "我在看电视。"],
   ["tenke på", "想到、考虑", "Jeg tenker på framtida.", "我在思考未来。"], ["være ferdig med", "完成某事", "Jeg er ferdig med jobben.", "我已经完成工作了。"]
 ].map(([no, zh, example, exampleZh]) => ({ no, zh, example, exampleZh }));
+
+const COLLOCATION_NOTES = {
+  "ha lyst til å":"ha lyst til å + 动词原形表达想做某事或有兴致；疑问句是在询问意愿，并不表示已经决定。",
+  "like å":"like å + 动词原形表示喜欢做某事；å 后接动作原形。",
+  "prøve å":"prøve å + 动词原形表示尝试做某事，表达努力尝试，不保证已经成功。",
+  "begynne å":"begynne å + 动词原形说明开始进行的动作；句中的 klokka åtte 给出开始时间。",
+  "bli ferdig":"bli ferdig 表示从尚未完成转为完成；若说完成某件事，常接 med：bli ferdig med jobben。",
+  "komme tilbake":"tilbake 表示回到先前所在处或先前状态；具体参照地点由说话场景决定。",
+  "ta på seg":"ta på seg + 衣物表示把衣物穿到自己身上；命令句中反身代词是 deg，主语变化时反身代词也变化。",
+  "gå på tur":"gå på tur 是外出散步或徒步的常见说法；tur 在这里指一次户外活动，不是旅游团。",
+  "gå til jobben":"这里 gå 表示步行，til jobben 标出目的地；若只说通勤而不强调步行，可用 reise til jobben。",
+  "ta bussen / toget":"ta + 交通工具表示乘坐；过去时是 tok。定指形式 bussen 是常见搭配，不能直译成“拿公交车”。",
+  "snakke med noen":"med 标出交谈对象；谈论某个话题则常用 snakke om。",
+  "si at …":"si at 引出说话内容；at 后面是从句，maten 是主语，er 是从句谓语。",
+  "søke på en jobb":"søke på + 职位表示申请；søke etter + 名词则表示寻找，介词不同，意思也不同。",
+  "vente på":"等待某人或某物用 vente på；på 是动词搭配的一部分，此处不是“在火车上等”。",
+  "høre på":"høre på 强调主动聆听；单独 høre 更常表示听见。musikk 在这里泛指音乐。",
+  "se på":"se på 表示把注意力放在对象上、观看；单独 se 更可能表示看见或看到。",
+  "tenke på":"tenke på + 主题表示想着或考虑某事；på 后面是思考内容，不是地点。",
+  "være ferdig med":"være ferdig med 表示事情已经完成的状态；bli ferdig 强调进入完成状态。"
+};
+for (const collocation of COLLOCATIONS) {
+  if (!Object.hasOwn(COLLOCATION_NOTES, collocation.no)) throw new Error(`固定搭配缺少逐条审核的讲解：${collocation.no}`);
+  collocation.note = COLLOCATION_NOTES[collocation.no];
+}
 
 const DISTRIBUTION = [
   ["form", "四形选择", .28], ["modal", "情态 + V1", .18], ["past", "过去时", .14],
@@ -448,7 +571,37 @@ function makeQuestion(type, verb, serial, perfectTime = null) {
   if (type === "form") { const sentence = serial % 2 ? `${subject.no} ${verb.pres} ${verb.tail} ${habit.no.toLocaleLowerCase("nb-NO")}.` : `${habit.no} ${verb.pres} ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`; const prompt = serial % 2 ? `${subject.no} ___ ${verb.tail} ${habit.no.toLocaleLowerCase("nb-NO")}.` : `${habit.no} ___ ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`; const meaning = translatedSentenceZh(habit.zh, subject.zh, verbActionZh(verb)); return makeChoice(id, type, "动词四形", prompt, verb, verb.pres, `这是现在时 ${verb.pres}。${habit.zh} 是习惯/频率线索，动词用现在时。`, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `现在时可表达当前状态、一般事实或习惯；主语换成不同人称，挪威语动词现在时通常不随人称变化。`, rotationVariant: sentenceId(sentence) }); }
   if (type === "modal") { const modals = [{ no:"skal", zh:"计划" },{ no:"vil", zh:"想" },{ no:"kan", zh:"能够" },{ no:"må", zh:"必须" },{ no:"bør", zh:"应该" }]; const modal = modals[serial % modals.length]; const sentence = `${subject.no} ${modal.no} ${verb.v1} ${verb.tail}.`; const meaning = modalActionZh(modal.no, verb); return makeChoice(id, type, "情态 + V1", `${subject.no} ${modal.no} ___ ${verb.tail}.`, verb, verb.v1, `${modal.no}（${modal.zh}）已经承担了变位，后面的动作使用原形 ${verb.v1}，不加 -r，也不加 å。`, { translation: translatedSentenceZh("", subject.zh, meaning), correctSentence: sentence, answerTranslation: translatedSentenceZh("", subject.zh, meaning), rule: `情态动词 ${modal.no} 后直接接动词原形：${modal.no} + V1。挪威语情态动词本身变位，后面的主要动词不变位。`, rotationVariant: sentenceId(sentence) }); }
   if (type === "past") { const time = PAST_TIMES[serial % PAST_TIMES.length]; const sentence = `${time.no} ${verb.past} ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`; const meaning = translatedSentenceZh(time.zh, subject.zh, pastActionZh(verbActionZh(verb))); return makeChoice(id, type, "过去时", `${time.no} ___ ${subject.no.toLocaleLowerCase("nb-NO")} ${verb.tail}.`, verb, verb.past, `${time.no} 明确表示过去，使用过去时 ${verb.past}。`, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `明确过去时间词（如 i går、forrige uke）通常搭配过去时。主语和时间短语变化不会改变过去时词形。`, rotationVariant: sentenceId(sentence) }); }
-  if (type === "perfect") { const time = perfectTime || ["allerede", "nettopp", "flere ganger", "i dag"][serial % 4]; const after = time === "flere ganger" || time === "i dag"; const sentence = after ? `${subject.no} har ${verb.pp} ${verb.tail} ${time}.` : `${subject.no} har ${time} ${verb.pp} ${verb.tail}.`; const action = verb.v1 === "kjøpe" ? "买了食物" : verbActionZh(verb); const meaning = time === "i dag" ? translatedSentenceZh("今天", subject.zh, action) : translatedSentenceZh("", subject.zh, `${time === "allerede" ? "已经" : time === "nettopp" ? "刚刚" : ""}${action}${time === "flere ganger" ? "好几次" : ""}`); return makeChoice(id, type, "har + 完成分词", after ? `${subject.no} har ___ ${verb.tail} ${time}.` : `${subject.no} har ${time} ___ ${verb.tail}.`, verb, verb.pp, `har 后使用完成分词 ${verb.pp}；主语变化时 har 仍保持不变。${time === "nettopp" ? " nettopp 表示“刚刚”，标准拼写为两个 p。" : ""}`, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `现在完成时结构是主语 + har + 完成分词。${time === "nettopp" ? "nettopp（刚刚）放在完成分词前。" : time === "allerede" ? "allerede（已经）放在完成分词前。" : time === "flere ganger" ? "flere ganger（好几次）放在句末。" : "i dag（今天）放在句末。"}填入完成分词后，题干应与完整正确句一致。`, rotationVariant: sentenceId(sentence) }); }
+  if (type === "perfect") {
+    let time = perfectTime || ["allerede", "nettopp", "flere ganger", "i dag"][serial % 4];
+    // Repeat-frequency practice uses only curated, natural verb/context pairs.
+    // Other verbs keep the sentence natural by using an already/just cue.
+    if (time === "flere ganger" && !PERFECT_REPEAT_CONTEXTS[verb.v1]) time = "allerede";
+    const repeated = time === "flere ganger" ? PERFECT_REPEAT_CONTEXTS[verb.v1] : null;
+    const tail = repeated ? repeated.tail : verb.tail;
+    const frequencyPhrase = "flere ganger denne uka";
+    const after = time === "i dag" || Boolean(repeated);
+    const sentence = repeated
+      ? `${subject.no} har ${verb.pp}${tail ? ` ${tail}` : ""} ${frequencyPhrase}.`
+      : after ? `${subject.no} har ${verb.pp} ${verb.tail} ${time}.` : `${subject.no} har ${time} ${verb.pp} ${verb.tail}.`;
+    const action = verbActionZh(verb);
+    const meaning = repeated
+      ? `这周，${subject.zh}${repeated.zh}。`
+      : time === "i dag" ? translatedSentenceZh("今天", subject.zh, pastActionZh(action))
+        : translatedSentenceZh("", subject.zh, `${time === "allerede" ? "已经" : "刚刚"}${pastActionZh(action)}`);
+    const prompt = repeated
+      ? `${subject.no} har ___${tail ? ` ${tail}` : ""} ${frequencyPhrase}.`
+      : after ? `${subject.no} har ___ ${verb.tail} ${time}.` : `${subject.no} har ${time} ___ ${verb.tail}.`;
+    const frontedFrequencySentence = repeated
+      ? `${subject.no} har flere ganger ${verb.pp}${tail ? ` ${tail}` : ""} denne uka.`
+      : "";
+    const frequencyRule = repeated
+      ? `整句自然地译为“${meaning.replace(/[。！？.!?]+$/u, "")}”。${repeated.action.replace(/[。！？.!?]+$/u, "")}。看语序：${verb.pp}${tail ? ` ${tail}` : ""} 与 har 一起构成“${action}”这个已完成的动作；flere ganger（好几次）是频率状语，修饰整个动作，回答“发生了几次”；denne uka（这周）是时间状语，说明这些次数都发生在什么时间范围内。挪威语常把次数放在动作之后、时间范围之前，所以句中是“动作 + 次数 + 时间范围”；它并非固定句尾（本句句尾实际是 denne uka）。也可以说 ${frontedFrequencySentence}，把 flere ganger 移到 har 后会更突出“好几次”，但不是唯一正确语序。flere ganger 只表示次数，不表示“很快”。`
+      : time === "nettopp" ? "nettopp（刚刚）常放在完成分词前；它说明动作刚发生。"
+        : time === "allerede" ? "allerede（已经）常放在完成分词前；它强调动作在相关时间点之前已完成。"
+          : "i dag（今天）是时间状语；本句放在句末，也可以根据强调重点移到句首并遵守 V2 语序。";
+    const explanation = `har 后使用完成分词 ${verb.pp}，与 har 一起构成现在完成时；主语变化时 har 仍保持不变。`;
+    return makeChoice(id, type, "har + 完成分词", prompt, verb, verb.pp, explanation, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `现在完成时由主语 + har + 完成分词构成。${frequencyRule}填入完成分词后，题干应与完整正确句一致。`, rotationVariant: sentenceId(sentence) });
+  }
   if (type === "infinitive") { const starters = [{ no:"Jeg liker å", zh:"我喜欢" },{ no:"Hun prøver å", zh:"她试着" },{ no:"Vi ønsker å", zh:"我们希望" },{ no:"De trenger å", zh:"他们需要" }]; const starter = starters[serial % starters.length]; const sentence = `${starter.no} ${verb.v1} ${verb.tail}.`; const meaning = `${starter.zh}${verbActionZh(verb)}。`; return makeChoice(id, type, "å + V1", `${starter.no} ___ ${verb.tail}.`, verb, verb.v1, `${starter.no.split(" ").slice(-1)[0]} 是变位动词/结构，后面的动作使用 å + 原形 ${verb.v1}。`, { translation: meaning, correctSentence: sentence, answerTranslation: meaning, rule: `两个动词连用时，liker / prøver / ønsker / trenger 后的第二个动词常用 å + V1；情态动词后则不加 å。`, rotationVariant: sentenceId(sentence) }); }
   if (type === "v2") return makeV2Question(serial);
   if (type === "collocation") return makeCollocationQuestion(COLLOCATIONS[serial % COLLOCATIONS.length], id);
@@ -458,7 +611,7 @@ function makeQuestion(type, verb, serial, perfectTime = null) {
   return { id, type: "free", category: type, skill: "自由输出", prompt: `用挪威语写一句关于${subject.zh}自己的句子，使用动词“${verb.v1}”，可加入时间“${habit.no.toLocaleLowerCase("nb-NO")}”。`, verbId: verb.id, target: verb.v1, example: sentence, translation: meaning, correctSentence: sentence, answerTranslation: meaning, rotationVariant: sentenceId(sentence) };
 }
 function makeCollocationQuestion(c, id) {
-  return { id, type: "choice", category: "collocation", skill: "固定搭配", prompt: `选择与“${c.zh}”对应的自然搭配。`, options: shuffle([c.no, ...shuffle(COLLOCATIONS.filter(x => x.no !== c.no)).slice(0, 3).map(x => x.no)]), answer: c.no, collocation: c, explanation: `固定搭配 ${c.no} 表示“${c.zh}”。请把短语连同例句一起记忆。`, translation: c.exampleZh, correctSentence: c.example, answerTranslation: c.exampleZh, rule: "把固定搭配作为整体记忆，再通过例句观察它在真实句子中的用法。" };
+  return { id, type: "choice", category: "collocation", skill: "固定搭配", prompt: `选择与“${c.zh}”对应的自然搭配。`, options: shuffle([c.no, ...shuffle(COLLOCATIONS.filter(x => x.no !== c.no)).slice(0, 3).map(x => x.no)]), answer: c.no, collocation: c, explanation: c.note, translation: c.exampleZh, correctSentence: c.example, answerTranslation: c.exampleZh, rule: c.note };
 }
 function questionIntegrityIssues(q) {
   const issues = [];
@@ -505,7 +658,7 @@ function buildSession(total, onlyVerbId = null) {
     const contextualVerb = sentenceContextFor(verb);
     if (type === "v2") q = makeV2Question(questionSerial, contextualVerb);
     else if (type === "collocation") { const unseen = COLLOCATIONS.filter(x => !usedCollocations.has(x.no)); const freshPhrases = unseen.filter(x => !history.slice(-100).includes(`collocation:${sentenceId(x.no)}`)); const c = shuffle(freshPhrases.length ? freshPhrases : unseen)[0] || shuffle(COLLOCATIONS)[0]; usedCollocations.add(c.no); q = makeCollocationQuestion(c, `${type}-${serial++}`); }
-    else { let perfectTime = null; if (type === "perfect") { let freshTimes = ["allerede", "nettopp", "flere ganger", "i dag"].filter(x => !usedPerfectTimes.has(x)); if (!freshTimes.length) { usedPerfectTimes.clear(); freshTimes = ["allerede", "nettopp", "flere ganger", "i dag"]; } perfectTime = shuffle(freshTimes)[0]; usedPerfectTimes.add(perfectTime); } q = makeQuestion(type, contextualVerb, questionSerial, perfectTime); }
+    else { let perfectTime = null; if (type === "perfect") { const availableTimes = ["allerede", "nettopp", ...(PERFECT_REPEAT_CONTEXTS[contextualVerb.v1] ? ["flere ganger"] : []), "i dag"]; let freshTimes = availableTimes.filter(x => !usedPerfectTimes.has(x)); if (!freshTimes.length) { usedPerfectTimes.clear(); freshTimes = availableTimes; } perfectTime = shuffle(freshTimes)[0]; usedPerfectTimes.add(perfectTime); } q = makeQuestion(type, contextualVerb, questionSerial, perfectTime); }
       q.rotationKey = type === "collocation" ? `collocation:${sentenceId(q.answer)}` : `${type}:${verb.id}:${q.rotationVariant || sentenceId(q.correctSentence || q.prompt)}`;
       q.translation = repairQuestionTranslation(q); if (!hasReviewedChineseTranslation(q.answerTranslation)) q.answerTranslation = q.translation;
       if (!q.translation) throw new Error(`练习题缺少中文译文：${q.id}`);
@@ -808,11 +961,11 @@ function renderLearnStudy() {
   const nounUsage = s.usageQuestion ? `<div class="meaning-guide"><span>本题为什么选这个形式</span><strong>${esc(s.usageQuestion.scene || "根据上下文判断")}</strong><p>${esc(s.usageQuestion.why)}</p><p><b>本题形式：</b>${esc(s.usageQuestion.answer)}</p></div>` : "";
   const meaningBlock = entry.kind === "noun"
     ? `<div class="meaning-guide"><span>语义和易混点</span><strong>${esc(nounInfo.meaning)}</strong><p>${esc(nounInfo.note)}</p><p><b>判断顺序：</b>先看数量（一个 / 多个），再看对象是否已明确（新信息 / 已知特指）。</p><p><b>例句：</b>${esc(entry.sentenceZh)}</p></div>`
-    : `<div class="meaning-guide"><span>这里具体怎么理解</span><strong>${esc(entry.phrase)}</strong><p>这个搭配在例句中表示“${esc(VERB_USAGE_ZH[entry.v1] || entry.zh)}”。动词本身可表示“${esc(entry.zh)}”，实际中文要结合后面的宾语或补语判断。</p></div>`;
+    : `<div class="meaning-guide"><span>这里具体怎么理解</span><strong>${esc(entry.phrase)}</strong><p>${esc(verbPhraseExplanation(entry))}</p></div>`;
   const progressNote = entry.kind === "noun" ? "记名词时把冠词一起背：它告诉你词的性别；再留意定指词尾和复数变化。" : "把四形按节奏读出来，再用一个句子把它和日常生活连起来。";
   return `<section class="question-card vocab-card">${studyHeader}<div class="vocab-front answer-front"><span class="eyebrow">${esc(entry.kind === "noun" ? nounInfo.meaning : entry.zh)}</span><div class="answer-headword"><h1>${esc(title)}</h1><button class="sound-button headword-audio" data-say="${esc(headwordSound)}" type="button" aria-label="播放 ${esc(headwordSound)} 的挪威语发音">🔊 听词</button></div></div>${result ? `<div class="feedback ${result.ok ? "good" : "close"}"><h3>${result.ok ? "✓ 词形与运用都正确" : "还需要巩固"}</h3><p>${esc(result.message)}</p>${s.usageQuestion ? `<p>你选：<code>${esc(s.usageGiven || "未选择")}</code> · 推荐形式：<code>${esc(s.usageQuestion.answer)}</code></p>` : ""}</div>` : ""}${meaningBlock}${nounUsage}<p id="pronunciation-status" class="pronunciation-note" aria-live="polite">🔊 单词和词形都可单独播放，发音使用设备提供的挪威语语音。</p><div class="big-forms">${formCards}</div>${examples}<div class="theme-sentence"><span>专题整合句 · ${topic.title}</span><p class="example">${esc(topic.story)}</p><p class="muted">${esc(topic.storyZh)}</p><button class="sound-button" data-say="${esc(topic.story)}" type="button">🔊 听整句</button></div><div class="memory-tip"><strong>记忆小方法</strong><span>${progressNote} 明天、3天后和1周后再复习。</span></div><div class="actions"><button class="button orange" data-vocab-retry>再测一次</button><button class="button primary" data-vocab-know>我记住了，下一词</button></div></section>`;
 }
-function renderLearnDetail(v) { const n = state.learned[v.id] || 0; const forms = [["现在时", v.pres], ["过去时", v.past], ["完成分词", v.pp]].map(([label, word]) => renderWordForm(label, word)).join(""); const examples = verbExamples(v); return `<section class="panel wide detail-panel"><button class="text-button" data-back-learn>← 返回背词</button><span class="eyebrow">动词卡 · ${esc(v.zh)}</span><div class="answer-headword"><h1 style="font-size:58px">${esc(v.v1)}</h1><button class="sound-button headword-audio" data-say="${esc(v.v1)}" type="button" aria-label="播放 ${esc(v.v1)} 的挪威语发音">🔊 听原形</button></div><div class="big-forms">${forms}</div><div class="meaning-guide"><span>语义与固定搭配</span><strong>${esc(v.phrase)}</strong><p>这个搭配表示“${esc(VERB_USAGE_ZH[v.v1] || v.zh)}”。动词本身可表示“${esc(v.zh)}”，要和后面的成分一起理解。</p><button class="sound-button" data-say="${esc(v.phrase)}" type="button">🔊 听搭配</button></div><div class="four-sentences">${examples.map(example => `<div><span>${esc(example.label)}</span><code>${esc(example.no)}</code><p class="example-translation">${esc(example.zh)}</p>${example.note ? `<p class="muted">${esc(example.note)}</p>` : ""}${example.source ? `<a href="${esc(example.source)}" target="_blank" rel="noopener noreferrer">查看词典来源</a>` : ""}<button class="sound-button" data-say="${esc(example.no)}" type="button">🔊 听例句</button></div>`).join("")}</div><p class="muted">本词已标记：${n}次。连续两次选择“我会了”后，系统会降低新词出现频率，之后按间隔复习。</p><div class="actions"><button class="button orange" data-again-verb="${v.id}">再练这个词</button><button class="button primary" data-know-verb="${v.id}">我会了</button></div></section>`; }
+function renderLearnDetail(v) { const n = state.learned[v.id] || 0; const forms = [["现在时", v.pres], ["过去时", v.past], ["完成分词", v.pp]].map(([label, word]) => renderWordForm(label, word)).join(""); const examples = verbExamples(v); return `<section class="panel wide detail-panel"><button class="text-button" data-back-learn>← 返回背词</button><span class="eyebrow">动词卡 · ${esc(v.zh)}</span><div class="answer-headword"><h1 style="font-size:58px">${esc(v.v1)}</h1><button class="sound-button headword-audio" data-say="${esc(v.v1)}" type="button" aria-label="播放 ${esc(v.v1)} 的挪威语发音">🔊 听原形</button></div><div class="big-forms">${forms}</div><div class="meaning-guide"><span>语义与固定搭配</span><strong>${esc(v.phrase)}</strong><p>${esc(verbPhraseExplanation(v))}</p><button class="sound-button" data-say="${esc(v.phrase)}" type="button">🔊 听搭配</button></div><div class="four-sentences">${examples.map(example => `<div><span>${esc(example.label)}</span><code>${esc(example.no)}</code><p class="example-translation">${esc(example.zh)}</p>${example.note ? `<p class="muted">${esc(example.note)}</p>` : ""}${example.source ? `<a href="${esc(example.source)}" target="_blank" rel="noopener noreferrer">查看词典来源</a>` : ""}<button class="sound-button" data-say="${esc(example.no)}" type="button">🔊 听例句</button></div>`).join("")}</div><p class="muted">本词已标记：${n}次。连续两次选择“我会了”后，系统会降低新词出现频率，之后按间隔复习。</p><div class="actions"><button class="button orange" data-again-verb="${v.id}">再练这个词</button><button class="button primary" data-know-verb="${v.id}">我会了</button></div></section>`; }
 const MISTAKE_REVIEW_INTERVALS = [1, 3, 7, 14, 30];
 function activeMistakes() { return (state.mistakes || []).filter(item => !item.masteredAt); }
 function scheduleMistakeReview(item, correct, given = item.given) {
@@ -921,6 +1074,20 @@ function sentenceStructure(sentence, question = {}) {
     const infinitiveMarker = lower.findIndex((word, index) => index > finiteIndex && word === "å");
     if (infinitiveMarker >= 0 && infinitiveIndex > infinitiveMarker) add([infinitiveMarker, infinitiveIndex], "不定式动词短语（补语）", "liker / prøver 等后常用 å + 动词原形。 ");
   }
+  const frequencyIndex = lower.findIndex((word, index) => word === "flere" && lower[index + 1] === "ganger");
+  if (frequencyIndex >= 0) {
+    const weekIndex = lower.findIndex((word, index) => word === "denne" && ["uka", "uken"].includes(lower[index + 1]));
+    const eventText = tokens.slice(1, frequencyIndex).join(" ");
+    const frontedSentence = weekIndex > frequencyIndex
+      ? `${tokens[0]} ${tokens[1]} flere ganger ${tokens.slice(2, frequencyIndex).join(" ")} ${tokens.slice(weekIndex).join(" ")}`
+      : "";
+    const positionNote = weekIndex > frequencyIndex
+      ? `在“${sentence}”中，flere ganger（好几次）修饰前面的谓语动作“${eventText}”，回答动作发生了几次；${tokens.slice(weekIndex, weekIndex + 2).join(" ")}（这周）另行限定时间范围。挪威语常把次数短语放在动作之后、时间范围之前，所以此处语序自然；它不是固定句尾。本句真正的句尾是时间短语。也可以说“${frontedSentence}”，把次数提前到 har 后会更突出“好几次”，但并非唯一正确语序。`
+      : `在“${sentence}”中，flere ganger（好几次）修饰前面的动作“${eventText}”，补充动作次数；它在本句中的位置自然，但不代表它必须放在句尾，也可以移到 har 后来突出“好几次”。`;
+    add([frequencyIndex, frequencyIndex + 1], "频率状语", positionNote);
+  }
+  const thisWeekIndex = lower.findIndex((word, index) => word === "denne" && ["uka", "uken"].includes(lower[index + 1]));
+  if (thisWeekIndex >= 0) add([thisWeekIndex, thisWeekIndex + 1], "时间状语", "denne uka/uken 把动作限定在“本周”；它可以跟在频率短语后面。 ");
   const adverbWords = new Set(["nettopp", "allerede", "ofte", "alltid", "vanligvis", "gjerne", "også", "ikke", "snart", "nå", "hjemme"]);
   lower.forEach((word, index) => { if (adverbWords.has(word)) add([index], /^(nettopp|allerede|ofte|alltid|vanligvis|snart|nå)$/.test(word) ? "时间/频率状语" : "句子/方式副词", "副词修饰动作发生的时间、频率、方式或整句语气。 "); });
   const remaining = tokens.map((_, index) => index).filter(index => !used.has(index));
@@ -941,12 +1108,12 @@ function sentenceAnalysisMarkup(question) {
   return `<div class="explain-block sentence-analysis"><strong>句子结构拆解</strong><p class="muted">先看主干：主语 + 限定动词；其余成分补充时间、对象或动作。这里标出本题可识别的核心成分。</p><div class="sentence-parts">${rows.map(row => `<div><code>${esc(row.text)}</code><span><b>${esc(row.role)}</b><small>${esc(row.note)}</small></span></div>`).join("")}</div></div>`;
 }
 function detailedFeedback(q, kind, title, given = "") {
-  const answer = (q.answers || [q.answer])[0]; const verb = q.verbId ? getVerb(q.verbId) : null;
+  const answer = (q.answers || [q.answer])[0]; const verb = !q.collocation && q.verbId ? getVerb(q.verbId) : null;
   const forms = verb ? `<div class="form-strip"><span>${verb.v1}</span><span>${verb.pres}</span><span>${verb.past}</span><span>${verb.pp}</span></div>` : "";
-  const phraseMeaning = q.collocation ? `<div class="explain-block"><strong>本题固定搭配</strong><p><code>${esc(q.collocation.no)}</code> = ${esc(q.collocation.zh)}</p></div>` : verb ? `<div class="explain-block"><strong>本句词组</strong><p><code>${esc(verb.v1)} ${esc(verb.tail)}</code> = ${esc(verbActionZh(verb))}</p><p class="muted">把动词和后面的词一起理解；同一个动词换了搭配，意思也可能变化。</p></div>` : "";
+  const phraseMeaning = q.collocation ? `<div class="explain-block"><strong>本题固定搭配</strong><p><code>${esc(q.collocation.no)}</code> = ${esc(q.collocation.zh)}</p><p>${esc(q.collocation.note)}</p><p class="muted">例句：<code>${esc(q.collocation.example)}</code><br>${esc(q.collocation.exampleZh)}</p></div>` : verb ? `<div class="explain-block"><strong>本句搭配怎么理解</strong><p><code>${esc(verb.v1)} ${esc(verb.tail)}</code> = ${esc(verbActionZh(verb))}</p><p class="muted">${esc(verbPhraseExplanation(verb))}</p></div>` : "";
   const givenBlock = given ? `<div class="answer-compare"><span>你的答案</span><code>${esc(given)}</code></div>` : "";
   const translation = repairQuestionTranslation(q);
-  return `<div class="feedback ${kind}"><h3>${title}</h3>${givenBlock}<div class="explain-block"><strong>完整句的中文意思</strong><p>${esc(translation)}</p></div>${phraseMeaning}<div class="explain-block"><strong>完整正确句</strong><p class="example">${esc(q.correctSentence || answer)} <button class="sound-button" data-say="${esc(q.correctSentence || answer)}" type="button">🔊 播放发音</button></p>${q.answerTranslation && q.answerTranslation !== translation ? `<p class="muted">答案提示：${esc(q.answerTranslation)}</p>` : ""}</div>${sentenceAnalysisMarkup(q)}<div class="explain-block"><strong>为什么这样用</strong><p>${esc(q.rule || q.explanation || "")}</p><p class="muted">${esc(q.explanation || "")}</p></div>${forms ? `<div class="explain-block"><strong>这个动词的四形</strong>${forms}</div>` : ""}<div class="memory-tip"><strong>记忆动作</strong><span>大声跟读完整句两遍，再自己替换一个词重新说一遍。</span></div><div class="actions"><button class="button primary" data-next>${state.session.index === state.session.total - 1 ? "查看总结" : "下一题"}</button></div></div>`;
+  return `<div class="feedback ${kind}"><h3>${title}</h3>${givenBlock}<div class="explain-block"><strong>完整句的中文意思</strong><p>${esc(translation)}</p></div>${phraseMeaning}<div class="explain-block"><strong>完整正确句</strong><p class="example">${esc(q.correctSentence || answer)} <button class="sound-button" data-say="${esc(q.correctSentence || answer)}" type="button">🔊 播放发音</button></p>${q.answerTranslation && q.answerTranslation !== translation ? `<p class="muted">答案提示：${esc(q.answerTranslation)}</p>` : ""}</div>${sentenceAnalysisMarkup(q)}<div class="explain-block"><strong>为什么这样用</strong><p>${esc(q.rule || q.explanation || "")}</p>${q.explanation && q.explanation !== q.rule ? `<p class="muted">${esc(q.explanation)}</p>` : ""}</div>${forms ? `<div class="explain-block"><strong>这个动词的四形</strong>${forms}</div>` : ""}<div class="memory-tip"><strong>记忆动作</strong><span>大声跟读完整句两遍，再自己替换一个词重新说一遍。</span></div><div class="actions"><button class="button primary" data-next>${state.session.index === state.session.total - 1 ? "查看总结" : "下一题"}</button></div></div>`;
 }
 function structuredCheck(q, given) { const valid = q.answers || [q.answer]; const ok = valid.some(x => normalize(x) === normalize(given)); record(q, given, ok, valid[0], q.explanation); document.querySelector("#feedback").innerHTML = detailedFeedback(q, ok ? "good" : "bad", ok ? "✓ 正确，但请看讲解" : "需要修改 · 这道题的规则", given); document.querySelector("[data-next]")?.addEventListener("click", nextQuestion); document.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => speakNorwegian(b.dataset.say))); }
 function analyze(text, q = null) {
@@ -988,7 +1155,7 @@ function advanceVocabStep() {
   if (status) status.textContent = "";
   const recallValues = { ...(s.recallValues || {}), [field.key]: value };
   if (step < fields.length - 1) { s.recallValues = recallValues; s.recallStep = step + 1; saveState(); render(); requestAnimationFrame(() => document.querySelector("#vocab-current")?.scrollIntoView({ block: "center", behavior: "smooth" })); return; }
-  const values = fields.map(item => recallValues[item.key] || ""); const correct = fields.map((item, i) => ["word", "v1"].includes(item.key) ? [item.answer, item.answer.replace(/^å\s+/i, "")].some(answer => normalize(values[i]) === normalize(answer)) : normalize(values[i]) === normalize(item.answer));
+  const values = fields.map(item => recallValues[item.key] || ""); const correct = fields.map((item, i) => ["word", "v1"].includes(item.key) ? [item.answer, item.answer.replace(/^å\s+/i, "")].some(answer => matchesLexicalAnswer(values[i], answer)) : matchesLexicalAnswer(values[i], item.answer));
   s.recallValues = recallValues;
   s.lastResult = { meaningOk: correct[0], morphologyOk: correct.slice(1).every(Boolean), formsOk: correct.every(Boolean), ok: false, message: correct.every(Boolean) ? `词义回忆和${fields.length - 1}项词形都正确。再判断一次真实语境中的用法。` : fields.map((item, i) => `${item.label}${correct[i] ? "✓" : "✗"}`).join("，") + "。看一遍后，合上答案再回想。" };
   playLearningSound(s.lastResult.formsOk ? "correct" : "wrong");

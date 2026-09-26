@@ -1,5 +1,5 @@
-const CACHE = "norsk-hver-dag-v141";
-const FILES = ["./", "./index.html", "./styles.css?v=21", "./app.js?v=28", "./topic-fremtid.js?v=11", "./reading-library.js?v=1", "./vocab-v2-library.js?v=115", "./manifest.webmanifest", "./icon.svg"];
+const CACHE = "norsk-hver-dag-v177";
+const FILES = ["./", "./index.html", "./styles.css?v=21", "./app.js?v=45", "./topic-fremtid.js?v=12", "./reading-library.js?v=1", "./vocab-v2-library.js?v=142", "./manifest.webmanifest", "./icon.svg"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES))));
 self.addEventListener("activate", event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))));
 self.addEventListener("fetch", event => {
